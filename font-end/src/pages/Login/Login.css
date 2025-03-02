@@ -1,0 +1,22 @@
+@import "tailwindcss";
+
+.loginBg {
+  position: relative;
+  color: #fff;
+  font-size: 3.2em;
+  text-shadow: 2px 2px 10px #000000;
+}
+
+.loginBg::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url(../../assets/login-bg.jpg);
+  background-size: cover;
+  background-position: right;
+  z-index: -1;
+
+  mask-image: url(../../assets/ink.png);
+  mask-size: cover;
+  mask-position: center;
+}
