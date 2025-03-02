@@ -40,7 +40,7 @@ const LoginForm = () => {
   };
 
   return (
-    <div className='login-form backdrop-blur-lg bg-white/10 border border-white/20 rounded-2xl shadow-xl w-full max-w-md h-4/5 px-12 py-16 mx-6 my-10 sm:mx-0 sm:my-0'>
+    <div className='login-form backdrop-blur-lg bg-white/10 border border-white/20 rounded-2xl shadow-xl w-full max-w-md p-10 mx-6 my-10 sm:mx-0 sm:my-0'>
       <div className='text-center'>
         <h1 className='text-3xl font-bold text-gray-800 dark:text-white'>
           Đăng nhập
@@ -134,7 +134,7 @@ const LoginForm = () => {
         <div className='mt-10'>
           <button
             type='submit'
-            className='w-full py-4 px-6 rounded-xl bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:ring-blue-200/40 text-white font-semibold text-[16px] transition-all duration-200 ease-in-out dark:bg-blue-500 dark:hover:bg-blue-600'>
+            className='submit-btn w-full py-4 px-6 bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:ring-blue-200/40 text-white font-semibold text-[16px] transition-all duration-200 ease-in-out dark:bg-blue-500 dark:hover:bg-blue-600'>
             Đăng nhập
           </button>
         </div>
