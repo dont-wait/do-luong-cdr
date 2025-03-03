@@ -1,3 +1,3 @@
-# Login page
+# LOGIN PAGE
 
-![Login-page](login-page.png)
+![Login-page](login-page.gif)
