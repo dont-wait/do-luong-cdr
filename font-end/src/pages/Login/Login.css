@@ -2,9 +2,9 @@
 
 .loginBg {
   position: relative;
-  color: #fff;
-  font-size: 3.2em;
-  text-shadow: 2px 2px 10px #28282a;
+  color: #ffffff;
+  font-size: 3em;
+  text-shadow: 2px 2px 10px #000000;
 }
 
 .loginBg::before {
@@ -16,10 +16,20 @@
   background-position: right;
   z-index: -1;
 
-  mask-image: url(../../assets/ink.png);
-  mask-size: contain;
-  mask-position: center;
-  mask-repeat: no-repeat;
+  mask-image: url(../../assets/ink-video.gif);
+  mask-size: cover;
+  mask-position: right;
+}
+
+.login-text {
+  opacity: 0;
+  animation: fade 1s 5s ease-in-out forwards;
+}
+
+@keyframes fade {
+  to {
+    opacity: 1;
+  }
 }
 
 @media only screen and (max-width: 970px) {
