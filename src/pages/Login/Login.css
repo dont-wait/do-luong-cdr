@@ -31,3 +31,23 @@
     opacity: 1;
   }
 }
+
+@media only screen and (max-width: 970px) {
+  .loginBg {
+    font-size: 2em;
+  }
+}
+
+@media only screen and (max-width: 432px) {
+  .login-page {
+    padding: 0;
+  }
+
+  .loginBg {
+    font-size: 1.5em;
+  }
+
+  .login-box {
+    padding: 0;
+  }
+}
