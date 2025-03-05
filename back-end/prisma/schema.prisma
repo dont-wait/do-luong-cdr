@@ -1,8 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
   provider = "prisma-client-js"
@@ -12,3 +7,71 @@ datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
 }
+
+
+model Department {
+  department_id   String  @id @db.Char(10)
+  department_name String  @db.VarChar(255)
+
+  academics Academic[]
+}
+
+model Academic {
+  academic_id   String  @id @db.Char(10)
+  academic_name String  @db.VarChar(50)
+  academic_level Int
+  academic_type  Int
+  department_id  String  @db.Char(10)
+
+  department  Department @relation(fields: [department_id], references: [department_id])
+  subjects    Subject[]
+  plos        Plo[]  
+  targets     Target[]
+}
+
+model Plo {
+  plo_id     String  @id @db.Char(10)
+  plo_name   String  @db.VarChar(255)
+  academic_id String @db.Char(10) 
+
+  academic   Academic @relation(fields: [academic_id], references: [academic_id]) 
+  chitietTargets ChitietTarget[] @relation("PloToChitietTarget") 
+}
+
+
+
+model Subject {
+  subject_id        String  @id @db.Char(10)
+  subject_name      String  @db.VarChar(255)
+  practical_credits Int
+  theoretical_credits Int
+  academic_id       String  @db.Char(10)
+  description       String? @db.VarChar(255)
+
+  academic  Academic @relation(fields: [academic_id], references: [academic_id])
+  targets   Target[]
+}
+
+
+model Target {
+  target_id   String  @id @db.Char(10)
+  target_name String  @db.VarChar(255)
+  subject_id  String  @db.Char(10)
+  academic_id String  @db.Char(10)
+
+  subject  Subject @relation(fields: [subject_id], references: [subject_id])
+  academic Academic @relation(fields: [academic_id], references: [academic_id])
+  chitiet_targets ChitietTarget[]
+}
+
+
+model ChitietTarget {
+  plo_id   String
+  target_id String
+
+  plo    Plo    @relation(fields: [plo_id], references: [plo_id], name: "PloToChitietTarget")
+  target Target @relation(fields: [target_id], references: [target_id])
+
+  @@id([plo_id, target_id])
+}
+
