@@ -1,0 +1,52 @@
+.modal {
+  transition: opacity 0.3s ease;
+}
+
+.slide-in {
+  animation: slideIn 0.3s forwards;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.tab-content {
+  display: none;
+}
+
+.tab-content.active {
+  display: block;
+  animation: fadeIn 0.3s forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Custom styles for form elements */
+.form-input:focus,
+.form-select:focus {
+  border-color: #5d5cde;
+  box-shadow: 0 0 0 3px rgba(93, 92, 222, 0.3);
+}
+
+/* Toggle button for dark mode */
+.toggle-checkbox:checked {
+  right: 0;
+  border-color: #5d5cde;
+}
+.toggle-checkbox:checked + .toggle-label {
+  background-color: #5d5cde;
+}

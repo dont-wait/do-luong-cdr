@@ -1,8 +1,13 @@
-import "./index.css";
-import Login from "./pages/Login/Login";
+import AppRoutes from "./routes";
+import { ToastProvider } from "./context/ToastProvider";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 function App() {
-  return <Login />;
+  return (
+    <ToastProvider>
+      <AppRoutes />
+    </ToastProvider>
+  );
 }
 
 export default App;

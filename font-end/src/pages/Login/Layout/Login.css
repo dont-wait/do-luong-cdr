@@ -11,12 +11,12 @@
   content: "";
   position: absolute;
   inset: 0;
-  background-image: url(../../assets/login-bg.jpg);
+  background-image: url(../../../assets/login-bg.jpg);
   background-size: cover;
   background-position: right;
   z-index: -1;
 
-  mask-image: url(../../assets/ink-video.gif);
+  mask-image: url(../../../assets/ink-video.gif);
   mask-size: cover;
   mask-position: right;
 }
