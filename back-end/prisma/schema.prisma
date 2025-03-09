@@ -24,54 +24,168 @@ model Academic {
   department_id  String  @db.Char(10)
 
   department  Department @relation(fields: [department_id], references: [department_id])
-  subjects    Subject[]
+  academic_subject Academic_subject[]
   plos        Plo[]  
   targets     Target[]
+  lecturer Lecturer[]
+  student Student[]
 }
+
+model Academic_subject{
+  academic_id String @db.Char(10)
+  academic Academic @relation(fields: [academic_id], references: [academic_id])
+
+  subject_id String @db.Char(10)
+  subject Subject @relation(fields: [subject_id], references: [subject_id])
+
+  target Target[]
+  @@id([academic_id, subject_id])
+}
+
+model Lecturer{
+  leturer_id String @id @db.Char(12)
+
+  academic_id String @db.Char(10)
+  academic Academic @relation(fields: [academic_id], references: [academic_id] )
+
+  subjects Subject[]
+  class Class[]
+}
+
 
 model Plo {
   plo_id     String  @id @db.Char(10)
-  plo_name   String  @db.VarChar(255)
-  academic_id String @db.Char(10) 
+  plo_content   String  @db.VarChar(255)
 
+  academic_id String @db.Char(10) 
   academic   Academic @relation(fields: [academic_id], references: [academic_id]) 
-  chitietTargets ChitietTarget[] @relation("PloToChitietTarget") 
+
+  plo_detail Plo_detail[]
 }
 
 
+model Plo_detail{
+  plo_detail_id String @id @db.Char(10)
+  plo_content String @db.VarChar(255)
+
+  plo_id String @db.Char(10)
+  plo Plo @relation(fields: [plo_id], references: [plo_id])
+}
 
 model Subject {
   subject_id        String  @id @db.Char(10)
   subject_name      String  @db.VarChar(255)
   practical_credits Int
   theoretical_credits Int
-  academic_id       String  @db.Char(10)
   description       String? @db.VarChar(255)
 
-  academic  Academic @relation(fields: [academic_id], references: [academic_id])
+  leturer_id String @db.Char(12)
+  lecturer Lecturer @relation(fields: [leturer_id], references: [leturer_id])
+
   targets   Target[]
+  academic_subject Academic_subject[]
+  class Class[]
 }
 
 
 model Target {
-  target_id   String  @id @db.Char(10)
+  target_id   String  @db.Char(10)
   target_name String  @db.VarChar(255)
-  subject_id  String  @db.Char(10)
-  academic_id String  @db.Char(10)
 
+  subject_id String @db.Char(10)
   subject  Subject @relation(fields: [subject_id], references: [subject_id])
+
+  academic_id String @db.Char(10)
   academic Academic @relation(fields: [academic_id], references: [academic_id])
-  chitiet_targets ChitietTarget[]
+
+  academic_subject Academic_subject @relation(fields: [academic_id, subject_id], references: [academic_id, subject_id])
+
+  target_clo Target_clo[]
+
+  @@id([target_id, subject_id, academic_id])
+}
+
+model Target_clo{
+  target_id String @db.Char(10)
+  clo_id String @db.Char(10)
+  academic_id String @db.Char(10)
+  subject_id String @db.Char(10)
+
+  clo Clo @relation(fields: [clo_id], references: [clo_id])
+  target Target @relation(fields: [target_id, academic_id, subject_id], references: [target_id, academic_id, subject_id])
+
+
+  @@id([target_id, clo_id, academic_id, subject_id])
+}
+
+model Clo{
+  clo_id String @id @db.Char(10)
+  clo_content String @db.VarChar(255) 
+
+  target_clo Target_clo[] @relation(map: "Clo_TargetClorelation")
+  test_detail Test_detail @relation(map: "Clo_TestDetailrelation")
+}
+
+model Class{
+  class_id String @id @db.Char(10)
+  class_name String @db.VarChar(255)
+  
+  subject_id String @db.Char(10)
+  subject Subject @relation(fields: [subject_id], references: [subject_id])
+
+  leturer_id String @db.Char(12)
+  lecturer Lecturer @relation(fields: [leturer_id], references: [leturer_id])
+
+  tests Tests[]
+}
+
+model Tests{
+  test_id String @id @db.Char(10)
+  test_name String @db.VarChar(255)
+  date DateTime @default(now())
+  class_id String @db.Char(10)
+  class Class @relation(fields: [class_id], references: [class_id])
+
+  test_detail Test_detail[]
+}
+
+model Test_detail {
+  test_id String @db.Char(10)  
+  clo_id  String @db.Char(10)
+
+  tests Tests @relation(fields: [test_id], references: [test_id])
+  clo   Clo   @relation(fields: [clo_id], references: [clo_id])
+
+  question_name String @db.VarChar(15)
+
+  @@id([test_id, clo_id])
 }
 
 
-model ChitietTarget {
-  plo_id   String
-  target_id String
+model Role{
+  role_id Int @id
+  role_name String @db.VarChar(50)
 
-  plo    Plo    @relation(fields: [plo_id], references: [plo_id], name: "PloToChitietTarget")
-  target Target @relation(fields: [target_id], references: [target_id])
+  user_account User_account[]
+}
 
-  @@id([plo_id, target_id])
+
+model User_account{
+  user_account_id String @id @db.Char(12)
+  first_name String @db.VarChar(255)
+  last_name String @db.VarChar(255)
+  password String @db.VarChar(255) 
+  email String @db.VarChar(255) @unique
+  phone String @db.Char(12) @unique
+
+  role_id Int
+  role Role @relation(fields: [role_id], references: [role_id])
+}
+
+model Student{
+  student_id String @id @db.Char(12)
+
+  academic_id String @db.Char(10)
+  academic Academic @relation(fields: [academic_id], references: [academic_id])
 }
 
