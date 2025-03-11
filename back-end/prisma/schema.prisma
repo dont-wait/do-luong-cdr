@@ -100,6 +100,7 @@ model Subject {
 
 model Target {
   target_id   String @id @db.Char(10)
+  target_name String @db.Char(10)
   target_content String  @db.VarChar(255)
 
   subject_id String @db.Char(10)
@@ -110,6 +111,7 @@ model Target {
 
 model Clo {
   clo_id String @id @db.Char(10)
+  clo_name String @db.Char(10)
   clo_content String @db.VarChar(255) 
   target_id String @db.VarChar(10)
   subject_id String @db.VarChar(10)
