@@ -72,10 +72,10 @@ model Plo_detail {
 
   plo_id String @db.Char(10)
   plo Plo @relation(fields: [plo_id], references: [plo_id])
-  target_plo Target_Plo[]
+  target_plo_detail Target_Plo_Detail[]
 }
 
-model Target_Plo {
+model Target_Plo_Detail {
   subject_id String @db.VarChar(10)
   target_id String @db.VarChar(10)
   plo_details_id String @db.VarChar(10)
@@ -99,7 +99,7 @@ model Subject {
   targets   Target[]
   academic_subject Academic_subject[]
   class Class[]
-  target_plo Target_Plo[]
+  target_plo_detail Target_Plo_Detail[]
 }
 
 model Target {
