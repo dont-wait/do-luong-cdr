@@ -44,7 +44,7 @@ model Academic_subject{
 }
 
 model Lecturer{
-  leturer_id String @id @db.Char(12)
+  lecturer_id String @id @db.Char(12)
 
   academic_id String @db.Char(10)
   academic Academic @relation(fields: [academic_id], references: [academic_id] )
@@ -93,8 +93,8 @@ model Subject {
   theoretical_credits Int
   description       String? @db.VarChar(255)
 
-  leturer_id String @db.Char(12)
-  lecturer Lecturer @relation(fields: [leturer_id], references: [leturer_id])
+  lecturer_id String @db.Char(12)
+  lecturer Lecturer @relation(fields: [lecturer_id], references: [lecturer_id])
 
   targets   Target[]
   academic_subject Academic_subject[]
@@ -121,7 +121,7 @@ model Clo {
   subject_id String @db.VarChar(10)
 
   target Target @relation(fields: [target_id], references: [target_id])
-  exam_deatails Exam_detail[]
+  exam_details Exam_detail[]
 }
 
 model Exam_detail {
@@ -151,8 +151,8 @@ model Class{
   subject_id String @db.Char(10)
   subject Subject @relation(fields: [subject_id], references: [subject_id])
 
-  leturer_id String @db.Char(12)
-  lecturer Lecturer @relation(fields: [leturer_id], references: [leturer_id])
+  lecturer_id String @db.Char(12)
+  lecturer Lecturer @relation(fields: [lecturer_id], references: [lecturer_id])
 
   exams Exam[]
 }

@@ -33,7 +33,7 @@ Table Academic_subject {
 }
 
 Table Lecturer {
-  leturer_id String [pk]
+  lecturer_id String [pk]
   academic_id String [not null]
   academic Academic [not null]
   subjects Subject [not null]
@@ -76,7 +76,7 @@ Table Subject {
   practical_credits Int [not null]
   theoretical_credits Int [not null]
   description String
-  leturer_id String [not null]
+  lecturer_id String [not null]
   lecturer Lecturer [not null]
   targets Target [not null]
   academic_subject Academic_subject [not null]
@@ -100,7 +100,7 @@ Table Clo {
   target_id String [not null]
   subject_id String [not null]
   target Target [not null]
-  exam_deatails Exam_detail [not null]
+  exam_details Exam_detail [not null]
 }
 
 Table Exam_detail {
@@ -129,7 +129,7 @@ Table Class {
   class_name String [not null]
   subject_id String [not null]
   subject Subject [not null]
-  leturer_id String [not null]
+  lecturer_id String [not null]
   lecturer Lecturer [not null]
   exams Exam [not null]
 }
@@ -173,7 +173,7 @@ Ref: Target_Plo.subject_id > Subject.subject_id
 
 Ref: Target_Plo.plo_details_id > Plo_detail.plo_detail_id
 
-Ref: Subject.leturer_id > Lecturer.leturer_id
+Ref: Subject.lecturer_id > Lecturer.lecturer_id
 
 Ref: Target.subject_id > Subject.subject_id
 
@@ -187,7 +187,7 @@ Ref: Exam.class_id > Class.class_id
 
 Ref: Class.subject_id > Subject.subject_id
 
-Ref: Class.leturer_id > Lecturer.leturer_id
+Ref: Class.lecturer_id > Lecturer.lecturer_id
 
 Ref: User_account.role_id > Role.role_id
 
