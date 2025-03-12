@@ -122,6 +122,8 @@ model Clo {
 
   target Target @relation(fields: [target_id], references: [target_id])
   exam_details Exam_detail[]
+
+  Result Result[]
 }
 
 model Exam_detail {
@@ -143,6 +145,9 @@ model Exam {
 
   exam_details Exam_detail[]
   class Class @relation(fields: [class_id], references: [class_id])
+
+
+  Result Result[]
 }
 model Class{
   class_id String @id @db.Char(10)
@@ -182,5 +187,21 @@ model Student{
 
   academic_id String @db.Char(10)
   academic Academic @relation(fields: [academic_id], references: [academic_id])
+
+
+  Result Result[]
 }
 
+model Result {
+  result_id Int @id 
+  score Float 
+  student_id String @db.Char(12)
+  exam_id String @db.Char(10)
+  clo_id String @db.Char(10)
+
+  student Student @relation(fields: [student_id], references: [student_id])
+  exam Exam @relation(fields: [exam_id], references: [exam_id])
+  clo Clo @relation(fields: [clo_id], references: [clo_id])
+
+
+}
