@@ -55,10 +55,10 @@ Table Plo_detail {
   plo_content String [not null]
   plo_id String [not null]
   plo Plo [not null]
-  target_plo Target_Plo [not null]
+  target_plo_detail Target_Plo_Detail [not null]
 }
 
-Table Target_Plo {
+Table Target_Plo_Detail {
   subject_id String [not null]
   target_id String [not null]
   plo_details_id String [not null]
@@ -81,7 +81,7 @@ Table Subject {
   targets Target [not null]
   academic_subject Academic_subject [not null]
   class Class [not null]
-  target_plo Target_Plo [not null]
+  target_plo_detail Target_Plo_Detail [not null]
 }
 
 Table Target {
@@ -101,6 +101,7 @@ Table Clo {
   subject_id String [not null]
   target Target [not null]
   exam_details Exam_detail [not null]
+  Result Result [not null]
 }
 
 Table Exam_detail {
@@ -122,6 +123,7 @@ Table Exam {
   class_id String [not null]
   exam_details Exam_detail [not null]
   class Class [not null]
+  Result Result [not null]
 }
 
 Table Class {
@@ -155,6 +157,18 @@ Table Student {
   student_id String [pk]
   academic_id String [not null]
   academic Academic [not null]
+  Result Result [not null]
+}
+
+Table Result {
+  result_id Int [pk]
+  score Float [not null]
+  student_id String [not null]
+  exam_id String [not null]
+  clo_id String [not null]
+  student Student [not null]
+  exam Exam [not null]
+  clo Clo [not null]
 }
 
 Ref: Academic.department_id > Department.department_id
@@ -169,9 +183,9 @@ Ref: Plo.academic_id > Academic.academic_id
 
 Ref: Plo_detail.plo_id > Plo.plo_id
 
-Ref: Target_Plo.subject_id > Subject.subject_id
+Ref: Target_Plo_Detail.subject_id > Subject.subject_id
 
-Ref: Target_Plo.plo_details_id > Plo_detail.plo_detail_id
+Ref: Target_Plo_Detail.plo_details_id > Plo_detail.plo_detail_id
 
 Ref: Subject.lecturer_id > Lecturer.lecturer_id
 
@@ -192,3 +206,9 @@ Ref: Class.lecturer_id > Lecturer.lecturer_id
 Ref: User_account.role_id > Role.role_id
 
 Ref: Student.academic_id > Academic.academic_id
+
+Ref: Result.student_id > Student.student_id
+
+Ref: Result.exam_id > Exam.exam_id
+
+Ref: Result.clo_id > Clo.clo_id
