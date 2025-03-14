@@ -92,7 +92,7 @@ Table Clo {
   clo_id Int [pk]
   clo_name String [not null]
   clo_content String [not null]
-  target_id String [not null]
+  clo_parent_id Int
   subject_id String [not null]
   subject Subject [not null]
   exam_details Exam_detail [not null]

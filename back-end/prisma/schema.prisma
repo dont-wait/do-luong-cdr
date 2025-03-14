@@ -12,14 +12,14 @@ generator dbml {
 }
 
 model Department {
-  department_id   String @id @default(cuid()) @db.Char(10)
+  department_id   String @id @default(cuid())
   department_name String @db.VarChar(255)
 
   academics Academic[]
 }
 
 model Academic {
-  academic_id    String @id @default(cuid()) @db.Char(10)
+  academic_id    String @id @default(cuid())
   academic_name  String @db.VarChar(50)
   academic_level Int
   academic_type  Int
@@ -33,8 +33,8 @@ model Academic {
 }
 
 model Academic_subject {
-  academic_id String @default(cuid()) @db.Char(10)
-  subject_id  String @db.Char(10)
+  academic_id String
+  subject_id  String
 
   academic Academic @relation(fields: [academic_id], references: [academic_id])
   subject  Subject  @relation(fields: [subject_id], references: [subject_id])
@@ -43,15 +43,15 @@ model Academic_subject {
 }
 
 model Lecturer {
-  lecturer_id String @id @default(cuid()) @db.Char(12)
+  lecturer_id String @id @default(cuid())
   first_name  String @db.VarChar(15)
   last_name   String @db.VarChar(50)
   email       String @unique @db.VarChar(255)
   phone       String @unique @db.Char(12)
 
-  degree_id   String   @db.Char(10)
+  degree_id   String   
   degree      Degree   @relation(fields: [degree_id], references: [degree_id])
-  academic_id String   @db.Char(10)
+  academic_id String   
   academic    Academic @relation(fields: [academic_id], references: [academic_id])
 
   subjects Subject[]
@@ -63,7 +63,7 @@ model Plo {
   plo_name    String @db.Char(10)
   plo_content String @db.VarChar(255)
 
-  academic_id String   @db.Char(10)
+  academic_id String   
   academic    Academic @relation(fields: [academic_id], references: [academic_id])
 
   plo_detail Plo_detail[]
@@ -81,7 +81,7 @@ model Plo_clo {
 }
 
 model Plo_detail {
-  plo_detail_id   String @id @default(cuid()) @db.Char(10)
+  plo_detail_id   String @id @default(cuid())
   plo_detail_name String @db.Char(10)
   plo_content     String @db.VarChar(255)
 
@@ -90,13 +90,13 @@ model Plo_detail {
 }
 
 model Subject {
-  subject_id          String  @id @default(cuid()) @db.Char(10)
+  subject_id          String  @id @default(cuid())
   subject_name        String  @db.VarChar(255)
   practical_credits   Int
   theoretical_credits Int
   description         String? @db.VarChar(255)
 
-  lecturer_id String   @db.Char(12)
+  lecturer_id String
   lecturer    Lecturer @relation(fields: [lecturer_id], references: [lecturer_id])
 
   academic_subject Academic_subject[]
@@ -107,10 +107,10 @@ model Subject {
 model Clo {
   clo_id      Int    @id
   clo_name    String @db.Char(10)
-  clo_content String @db.VarChar(255)
-  target_id   String @db.VarChar(10)
-
-  subject_id   String        @db.VarChar(10)
+  clo_content String @db.VarChar(255) 
+  clo_parent_id Int?
+  
+  subject_id   String
   subject      Subject       @relation(fields: [subject_id], references: [subject_id])
   exam_details Exam_detail[]
   Result       Result[]
@@ -119,7 +119,7 @@ model Clo {
 
 model Exam_detail {
   clo_id  Int
-  exam_id String @db.Char(10)
+  exam_id String
 
   exam Exam @relation(fields: [exam_id], references: [exam_id])
   clo  Clo  @relation(fields: [clo_id], references: [clo_id])
@@ -128,11 +128,11 @@ model Exam_detail {
 }
 
 model Exam {
-  exam_id   String   @id @default(cuid()) @db.Char(10)
+  exam_id   String   @id @default(cuid())
   exam_name String   @db.VarChar(255)
   date      DateTime @default(now())
 
-  class_id String @db.Char(10)
+  class_id String
   class    Class  @relation(fields: [class_id], references: [class_id])
 
   exam_details Exam_detail[]
@@ -140,12 +140,12 @@ model Exam {
 }
 
 model Class {
-  class_id String @id @default(cuid()) @db.Char(10)
+  class_id String @id @default(cuid())
 
-  subject_id String  @db.Char(10)
+  subject_id String
   subject    Subject @relation(fields: [subject_id], references: [subject_id])
 
-  lecturer_id String   @db.Char(12)
+  lecturer_id String
   lecturer    Lecturer @relation(fields: [lecturer_id], references: [lecturer_id])
 
   exams Exam[]
@@ -159,7 +159,7 @@ model Role {
 }
 
 model User_account {
-  user_account_id String @id @default(cuid()) @db.Char(12)
+  user_account_id String @id @default(cuid())
   password        String @db.VarChar(255)
 
   role_id Int
@@ -167,13 +167,13 @@ model User_account {
 }
 
 model Student {
-  student_id String @id @default(cuid()) @db.Char(12)
+  student_id String @id @default(cuid())
   first_name String @db.VarChar(255)
   last_name  String @db.VarChar(255)
   email      String @unique @db.VarChar(255)
   phone      String @unique @db.Char(12)
 
-  academic_id String   @db.Char(10)
+  academic_id String
   academic    Academic @relation(fields: [academic_id], references: [academic_id])
 
   Result Result[]
@@ -183,8 +183,8 @@ model Result {
   result_id String @id @default(cuid())
   score     Float
 
-  student_id String @db.Char(12)
-  exam_id    String @db.Char(10)
+  student_id String
+  exam_id    String
   clo_id     Int
 
   student Student @relation(fields: [student_id], references: [student_id])
@@ -193,7 +193,7 @@ model Result {
 }
 
 model Degree {
-  degree_id   String @id @default(cuid()) @db.Char(10)
+  degree_id   String @id @default(cuid())
   degree_name String @db.VarChar(255)
 
   leturer Lecturer[]

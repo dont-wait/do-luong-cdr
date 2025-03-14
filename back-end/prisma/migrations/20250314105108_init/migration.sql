@@ -1,121 +1,119 @@
-/*
-  Warnings:
+-- CreateTable
+CREATE TABLE `Department` (
+    `department_id` VARCHAR(191) NOT NULL,
+    `department_name` VARCHAR(255) NOT NULL,
 
-  - You are about to alter the column `plo_name` on the `plo` table. The data in that column could be lost. The data in that column will be cast from `VarChar(255)` to `Char(10)`.
-  - You are about to drop the column `academic_id` on the `subject` table. All the data in the column will be lost.
-  - You are about to drop the column `academic_id` on the `target` table. All the data in the column will be lost.
-  - You are about to alter the column `target_name` on the `target` table. The data in that column could be lost. The data in that column will be cast from `VarChar(255)` to `Char(10)`.
-  - You are about to drop the `chitiettarget` table. If the table is not empty, all the data it contains will be lost.
-  - Added the required column `plo_content` to the `Plo` table without a default value. This is not possible if the table is not empty.
-  - Added the required column `lecturer_id` to the `Subject` table without a default value. This is not possible if the table is not empty.
-  - Added the required column `target_content` to the `Target` table without a default value. This is not possible if the table is not empty.
+    PRIMARY KEY (`department_id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
-*/
--- DropForeignKey
-ALTER TABLE `chitiettarget` DROP FOREIGN KEY `ChitietTarget_plo_id_fkey`;
+-- CreateTable
+CREATE TABLE `Academic` (
+    `academic_id` VARCHAR(191) NOT NULL,
+    `academic_name` VARCHAR(50) NOT NULL,
+    `academic_level` INTEGER NOT NULL,
+    `academic_type` INTEGER NOT NULL,
+    `department_id` CHAR(10) NOT NULL,
 
--- DropForeignKey
-ALTER TABLE `chitiettarget` DROP FOREIGN KEY `ChitietTarget_target_id_fkey`;
-
--- DropForeignKey
-ALTER TABLE `subject` DROP FOREIGN KEY `Subject_academic_id_fkey`;
-
--- DropForeignKey
-ALTER TABLE `target` DROP FOREIGN KEY `Target_academic_id_fkey`;
-
--- DropIndex
-DROP INDEX `Subject_academic_id_fkey` ON `subject`;
-
--- DropIndex
-DROP INDEX `Target_academic_id_fkey` ON `target`;
-
--- AlterTable
-ALTER TABLE `plo` ADD COLUMN `plo_content` VARCHAR(255) NOT NULL,
-    MODIFY `plo_name` CHAR(10) NOT NULL;
-
--- AlterTable
-ALTER TABLE `subject` DROP COLUMN `academic_id`,
-    ADD COLUMN `lecturer_id` CHAR(12) NOT NULL;
-
--- AlterTable
-ALTER TABLE `target` DROP COLUMN `academic_id`,
-    ADD COLUMN `target_content` VARCHAR(255) NOT NULL,
-    MODIFY `target_name` CHAR(10) NOT NULL;
-
--- DropTable
-DROP TABLE `chitiettarget`;
+    PRIMARY KEY (`academic_id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
 CREATE TABLE `Academic_subject` (
-    `academic_id` CHAR(10) NOT NULL,
-    `subject_id` CHAR(10) NOT NULL,
+    `academic_id` VARCHAR(191) NOT NULL,
+    `subject_id` VARCHAR(191) NOT NULL,
 
     PRIMARY KEY (`academic_id`, `subject_id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
 CREATE TABLE `Lecturer` (
-    `lecturer_id` CHAR(12) NOT NULL,
-    `academic_id` CHAR(10) NOT NULL,
+    `lecturer_id` VARCHAR(191) NOT NULL,
+    `first_name` VARCHAR(15) NOT NULL,
+    `last_name` VARCHAR(50) NOT NULL,
+    `email` VARCHAR(255) NOT NULL,
+    `phone` CHAR(12) NOT NULL,
+    `degree_id` VARCHAR(191) NOT NULL,
+    `academic_id` VARCHAR(191) NOT NULL,
 
+    UNIQUE INDEX `Lecturer_email_key`(`email`),
+    UNIQUE INDEX `Lecturer_phone_key`(`phone`),
     PRIMARY KEY (`lecturer_id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
+CREATE TABLE `Plo` (
+    `plo_id` INTEGER NOT NULL,
+    `plo_name` CHAR(10) NOT NULL,
+    `plo_content` VARCHAR(255) NOT NULL,
+    `academic_id` VARCHAR(191) NOT NULL,
+
+    PRIMARY KEY (`plo_id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `Plo_clo` (
+    `plo_id` INTEGER NOT NULL,
+    `clo_id` INTEGER NOT NULL,
+
+    PRIMARY KEY (`plo_id`, `clo_id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
 CREATE TABLE `Plo_detail` (
-    `plo_detail_id` CHAR(10) NOT NULL,
+    `plo_detail_id` VARCHAR(191) NOT NULL,
     `plo_detail_name` CHAR(10) NOT NULL,
     `plo_content` VARCHAR(255) NOT NULL,
-    `plo_id` CHAR(10) NOT NULL,
+    `plo_id` INTEGER NOT NULL,
 
     PRIMARY KEY (`plo_detail_id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE `Target_Plo_Detail` (
-    `subject_id` VARCHAR(10) NOT NULL,
-    `target_id` VARCHAR(10) NOT NULL,
-    `plo_details_id` VARCHAR(10) NOT NULL,
+CREATE TABLE `Subject` (
+    `subject_id` VARCHAR(191) NOT NULL,
+    `subject_name` VARCHAR(255) NOT NULL,
+    `practical_credits` INTEGER NOT NULL,
+    `theoretical_credits` INTEGER NOT NULL,
+    `description` VARCHAR(255) NULL,
+    `lecturer_id` VARCHAR(191) NOT NULL,
 
-    PRIMARY KEY (`subject_id`, `plo_details_id`)
+    PRIMARY KEY (`subject_id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
 CREATE TABLE `Clo` (
-    `clo_id` CHAR(10) NOT NULL,
+    `clo_id` INTEGER NOT NULL,
     `clo_name` CHAR(10) NOT NULL,
     `clo_content` VARCHAR(255) NOT NULL,
-    `target_id` VARCHAR(10) NOT NULL,
-    `subject_id` VARCHAR(10) NOT NULL,
+    `clo_parent_id` INTEGER NULL,
+    `subject_id` VARCHAR(191) NOT NULL,
 
     PRIMARY KEY (`clo_id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
 CREATE TABLE `Exam_detail` (
-    `clo_id` CHAR(10) NOT NULL,
-    `question_name` VARCHAR(15) NOT NULL,
-    `exam_id` CHAR(10) NOT NULL,
+    `clo_id` INTEGER NOT NULL,
+    `exam_id` VARCHAR(191) NOT NULL,
 
     PRIMARY KEY (`exam_id`, `clo_id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
 CREATE TABLE `Exam` (
-    `exam_id` CHAR(10) NOT NULL,
+    `exam_id` VARCHAR(191) NOT NULL,
     `exam_name` VARCHAR(255) NOT NULL,
     `date` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-    `class_id` CHAR(10) NOT NULL,
+    `class_id` VARCHAR(191) NOT NULL,
 
     PRIMARY KEY (`exam_id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
 CREATE TABLE `Class` (
-    `class_id` CHAR(10) NOT NULL,
-    `class_name` VARCHAR(255) NOT NULL,
-    `subject_id` CHAR(10) NOT NULL,
-    `lecturer_id` CHAR(12) NOT NULL,
+    `class_id` VARCHAR(191) NOT NULL,
+    `subject_id` VARCHAR(191) NOT NULL,
+    `lecturer_id` VARCHAR(191) NOT NULL,
 
     PRIMARY KEY (`class_id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -130,37 +128,48 @@ CREATE TABLE `Role` (
 
 -- CreateTable
 CREATE TABLE `User_account` (
-    `user_account_id` CHAR(12) NOT NULL,
-    `first_name` VARCHAR(255) NOT NULL,
-    `last_name` VARCHAR(255) NOT NULL,
+    `user_account_id` VARCHAR(191) NOT NULL,
     `password` VARCHAR(255) NOT NULL,
-    `email` VARCHAR(255) NOT NULL,
-    `phone` CHAR(12) NOT NULL,
     `role_id` INTEGER NOT NULL,
 
-    UNIQUE INDEX `User_account_email_key`(`email`),
-    UNIQUE INDEX `User_account_phone_key`(`phone`),
     PRIMARY KEY (`user_account_id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
 CREATE TABLE `Student` (
-    `student_id` CHAR(12) NOT NULL,
-    `academic_id` CHAR(10) NOT NULL,
+    `student_id` VARCHAR(191) NOT NULL,
+    `first_name` VARCHAR(255) NOT NULL,
+    `last_name` VARCHAR(255) NOT NULL,
+    `email` VARCHAR(255) NOT NULL,
+    `phone` CHAR(12) NOT NULL,
+    `academic_id` VARCHAR(191) NOT NULL,
 
+    UNIQUE INDEX `Student_email_key`(`email`),
+    UNIQUE INDEX `Student_phone_key`(`phone`),
     PRIMARY KEY (`student_id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
 CREATE TABLE `Result` (
-    `result_id` INTEGER NOT NULL,
+    `result_id` VARCHAR(191) NOT NULL,
     `score` DOUBLE NOT NULL,
-    `student_id` CHAR(12) NOT NULL,
-    `exam_id` CHAR(10) NOT NULL,
-    `clo_id` CHAR(10) NOT NULL,
+    `student_id` VARCHAR(191) NOT NULL,
+    `exam_id` VARCHAR(191) NOT NULL,
+    `clo_id` INTEGER NOT NULL,
 
     PRIMARY KEY (`result_id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `Degree` (
+    `degree_id` VARCHAR(191) NOT NULL,
+    `degree_name` VARCHAR(255) NOT NULL,
+
+    PRIMARY KEY (`degree_id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- AddForeignKey
+ALTER TABLE `Academic` ADD CONSTRAINT `Academic_department_id_fkey` FOREIGN KEY (`department_id`) REFERENCES `Department`(`department_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `Academic_subject` ADD CONSTRAINT `Academic_subject_academic_id_fkey` FOREIGN KEY (`academic_id`) REFERENCES `Academic`(`academic_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -169,22 +178,28 @@ ALTER TABLE `Academic_subject` ADD CONSTRAINT `Academic_subject_academic_id_fkey
 ALTER TABLE `Academic_subject` ADD CONSTRAINT `Academic_subject_subject_id_fkey` FOREIGN KEY (`subject_id`) REFERENCES `Subject`(`subject_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE `Lecturer` ADD CONSTRAINT `Lecturer_degree_id_fkey` FOREIGN KEY (`degree_id`) REFERENCES `Degree`(`degree_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE `Lecturer` ADD CONSTRAINT `Lecturer_academic_id_fkey` FOREIGN KEY (`academic_id`) REFERENCES `Academic`(`academic_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `Plo` ADD CONSTRAINT `Plo_academic_id_fkey` FOREIGN KEY (`academic_id`) REFERENCES `Academic`(`academic_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `Plo_clo` ADD CONSTRAINT `Plo_clo_plo_id_fkey` FOREIGN KEY (`plo_id`) REFERENCES `Plo`(`plo_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `Plo_clo` ADD CONSTRAINT `Plo_clo_clo_id_fkey` FOREIGN KEY (`clo_id`) REFERENCES `Clo`(`clo_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `Plo_detail` ADD CONSTRAINT `Plo_detail_plo_id_fkey` FOREIGN KEY (`plo_id`) REFERENCES `Plo`(`plo_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `Target_Plo_Detail` ADD CONSTRAINT `Target_Plo_Detail_subject_id_fkey` FOREIGN KEY (`subject_id`) REFERENCES `Subject`(`subject_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE `Target_Plo_Detail` ADD CONSTRAINT `Target_Plo_Detail_plo_details_id_fkey` FOREIGN KEY (`plo_details_id`) REFERENCES `Plo_detail`(`plo_detail_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
 ALTER TABLE `Subject` ADD CONSTRAINT `Subject_lecturer_id_fkey` FOREIGN KEY (`lecturer_id`) REFERENCES `Lecturer`(`lecturer_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `Clo` ADD CONSTRAINT `Clo_target_id_fkey` FOREIGN KEY (`target_id`) REFERENCES `Target`(`target_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `Clo` ADD CONSTRAINT `Clo_subject_id_fkey` FOREIGN KEY (`subject_id`) REFERENCES `Subject`(`subject_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `Exam_detail` ADD CONSTRAINT `Exam_detail_exam_id_fkey` FOREIGN KEY (`exam_id`) REFERENCES `Exam`(`exam_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
