@@ -1,26 +1,37 @@
 import { Injectable } from '@nestjs/common';
 import { CreateAcademicDto } from './dto/create-academic.dto';
-import { UpdateAcademicDto } from './dto/update-academic.dto';
+import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class AcademicService {
-  create(createAcademicDto: CreateAcademicDto) {
-    return 'This action adds a new academic';
+  constructor(private readonly prisma: PrismaService) {}
+  async create(createAcademicDto: CreateAcademicDto) {
+    return await this.prisma.academic.create({
+      data: createAcademicDto,
+    });
   }
 
-  findAll() {
-    return `This action returns all academic`;
+  async findAll() {
+    return await this.prisma.academic.findMany();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} academic`;
+  async findOne(academic_id: string) {
+    return await this.prisma.academic.findUnique({
+      where: { academic_id: academic_id },
+    });
   }
 
-  update(id: number, updateAcademicDto: UpdateAcademicDto) {
-    return `This action updates a #${id} academic`;
+  async update(id: string, updateAcademicDto: CreateAcademicDto) {
+    return await this.prisma.academic.update({
+      where: { academic_id: id },
+      data: updateAcademicDto,
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} academic`;
+  async createMany(data: CreateAcademicDto[]) {
+    return await this.prisma.academic.createMany({
+      data,
+    });
   }
+
 }

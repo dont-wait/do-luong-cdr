@@ -38,7 +38,7 @@ Table Lecturer {
   last_name String [not null]
   email String [unique, not null]
   phone String [unique, not null]
-  degree_id String [not null]
+  degree_id Int [not null]
   degree Degree [not null]
   academic_id String [not null]
   academic Academic [not null]
@@ -102,7 +102,7 @@ Table Clo {
 
 Table Exam_detail {
   clo_id Int [not null]
-  exam_id String [not null]
+  exam_id Int [not null]
   exam Exam [not null]
   clo Clo [not null]
 
@@ -112,13 +112,13 @@ Table Exam_detail {
 }
 
 Table Exam {
-  exam_id String [pk]
+  exam_id Int [pk, increment]
   exam_name String [not null]
   date DateTime [default: `now()`, not null]
   class_id String [not null]
   class Class [not null]
   exam_details Exam_detail [not null]
-  Result Result [not null]
+  result Result [not null]
 }
 
 Table Class {
@@ -158,7 +158,7 @@ Table Result {
   result_id String [pk]
   score Float [not null]
   student_id String [not null]
-  exam_id String [not null]
+  exam_id Int [not null]
   clo_id Int [not null]
   student Student [not null]
   exam Exam [not null]
@@ -166,9 +166,17 @@ Table Result {
 }
 
 Table Degree {
-  degree_id String [pk]
+  degree_id Int [pk]
   degree_name String [not null]
   leturer Lecturer [not null]
+}
+
+Table Admin {
+  admin_id String [pk]
+  first_name String [not null]
+  last_name String [not null]
+  email String [unique, not null]
+  phone String [unique, not null]
 }
 
 Ref: Academic.department_id > Department.department_id
