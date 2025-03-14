@@ -16,7 +16,7 @@ Table Academic {
   department_id String [not null]
   department Department [not null]
   academic_subject Academic_subject [not null]
-  plos Plo [not null]
+  plo Plo [not null]
   lecturer Lecturer [not null]
   student Student [not null]
 }
@@ -34,6 +34,12 @@ Table Academic_subject {
 
 Table Lecturer {
   lecturer_id String [pk]
+  first_name String [not null]
+  last_name String [not null]
+  email String [unique, not null]
+  phone String [unique, not null]
+  degree_id String [not null]
+  degree Degree [not null]
   academic_id String [not null]
   academic Academic [not null]
   subjects Subject [not null]
@@ -41,33 +47,32 @@ Table Lecturer {
 }
 
 Table Plo {
-  plo_id String [pk]
+  plo_id Int [pk]
   plo_name String [not null]
   plo_content String [not null]
   academic_id String [not null]
   academic Academic [not null]
   plo_detail Plo_detail [not null]
+  plo_clo Plo_clo [not null]
+}
+
+Table Plo_clo {
+  plo_id Int [not null]
+  clo_id Int [not null]
+  plo Plo [not null]
+  clo Clo [not null]
+
+  indexes {
+    (plo_id, clo_id) [pk]
+  }
 }
 
 Table Plo_detail {
   plo_detail_id String [pk]
   plo_detail_name String [not null]
   plo_content String [not null]
-  plo_id String [not null]
+  plo_id Int [not null]
   plo Plo [not null]
-  target_plo_detail Target_Plo_Detail [not null]
-}
-
-Table Target_Plo_Detail {
-  subject_id String [not null]
-  target_id String [not null]
-  plo_details_id String [not null]
-  subject Subject [not null]
-  plo_details Plo_detail [not null]
-
-  indexes {
-    (subject_id, plo_details_id) [pk]
-  }
 }
 
 Table Subject {
@@ -78,35 +83,25 @@ Table Subject {
   description String
   lecturer_id String [not null]
   lecturer Lecturer [not null]
-  targets Target [not null]
   academic_subject Academic_subject [not null]
   class Class [not null]
-  target_plo_detail Target_Plo_Detail [not null]
-}
-
-Table Target {
-  target_id String [pk]
-  target_name String [not null]
-  target_content String [not null]
-  subject_id String [not null]
-  subject Subject [not null]
   clo Clo [not null]
 }
 
 Table Clo {
-  clo_id String [pk]
+  clo_id Int [pk]
   clo_name String [not null]
   clo_content String [not null]
   target_id String [not null]
   subject_id String [not null]
-  target Target [not null]
+  subject Subject [not null]
   exam_details Exam_detail [not null]
   Result Result [not null]
+  plo_clo Plo_clo [not null]
 }
 
 Table Exam_detail {
-  clo_id String [not null]
-  question_name String [not null]
+  clo_id Int [not null]
   exam_id String [not null]
   exam Exam [not null]
   clo Clo [not null]
@@ -121,14 +116,13 @@ Table Exam {
   exam_name String [not null]
   date DateTime [default: `now()`, not null]
   class_id String [not null]
-  exam_details Exam_detail [not null]
   class Class [not null]
+  exam_details Exam_detail [not null]
   Result Result [not null]
 }
 
 Table Class {
   class_id String [pk]
-  class_name String [not null]
   subject_id String [not null]
   subject Subject [not null]
   lecturer_id String [not null]
@@ -144,31 +138,37 @@ Table Role {
 
 Table User_account {
   user_account_id String [pk]
-  first_name String [not null]
-  last_name String [not null]
   password String [not null]
-  email String [unique, not null]
-  phone String [unique, not null]
   role_id Int [not null]
   role Role [not null]
 }
 
 Table Student {
   student_id String [pk]
+  first_name String [not null]
+  last_name String [not null]
+  email String [unique, not null]
+  phone String [unique, not null]
   academic_id String [not null]
   academic Academic [not null]
   Result Result [not null]
 }
 
 Table Result {
-  result_id Int [pk]
+  result_id String [pk]
   score Float [not null]
   student_id String [not null]
   exam_id String [not null]
-  clo_id String [not null]
+  clo_id Int [not null]
   student Student [not null]
   exam Exam [not null]
   clo Clo [not null]
+}
+
+Table Degree {
+  degree_id String [pk]
+  degree_name String [not null]
+  leturer Lecturer [not null]
 }
 
 Ref: Academic.department_id > Department.department_id
@@ -177,21 +177,21 @@ Ref: Academic_subject.academic_id > Academic.academic_id
 
 Ref: Academic_subject.subject_id > Subject.subject_id
 
+Ref: Lecturer.degree_id > Degree.degree_id
+
 Ref: Lecturer.academic_id > Academic.academic_id
 
 Ref: Plo.academic_id > Academic.academic_id
 
+Ref: Plo_clo.plo_id > Plo.plo_id
+
+Ref: Plo_clo.clo_id > Clo.clo_id
+
 Ref: Plo_detail.plo_id > Plo.plo_id
-
-Ref: Target_Plo_Detail.subject_id > Subject.subject_id
-
-Ref: Target_Plo_Detail.plo_details_id > Plo_detail.plo_detail_id
 
 Ref: Subject.lecturer_id > Lecturer.lecturer_id
 
-Ref: Target.subject_id > Subject.subject_id
-
-Ref: Clo.target_id > Target.target_id
+Ref: Clo.subject_id > Subject.subject_id
 
 Ref: Exam_detail.exam_id > Exam.exam_id
 
