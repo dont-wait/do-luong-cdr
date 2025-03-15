@@ -96,7 +96,6 @@ Table Clo {
   subject_id String [not null]
   subject Subject [not null]
   exam_details Exam_detail [not null]
-  Result Result [not null]
   plo_clo Plo_clo [not null]
 }
 
@@ -105,6 +104,7 @@ Table Exam_detail {
   exam_id Int [not null]
   exam Exam [not null]
   clo Clo [not null]
+  result Result [not null]
 
   indexes {
     (exam_id, clo_id) [pk]
@@ -117,8 +117,7 @@ Table Exam {
   date DateTime [default: `now()`, not null]
   class_id String [not null]
   class Class [not null]
-  exam_details Exam_detail [not null]
-  result Result [not null]
+  exam_detail Exam_detail [not null]
 }
 
 Table Class {
@@ -161,8 +160,7 @@ Table Result {
   exam_id Int [not null]
   clo_id Int [not null]
   student Student [not null]
-  exam Exam [not null]
-  clo Clo [not null]
+  exam_detail Exam_detail [not null]
 }
 
 Table Degree {
@@ -217,6 +215,4 @@ Ref: Student.academic_id > Academic.academic_id
 
 Ref: Result.student_id > Student.student_id
 
-Ref: Result.exam_id > Exam.exam_id
-
-Ref: Result.clo_id > Clo.clo_id
+Ref: Result.(exam_id, clo_id) > Exam_detail.(exam_id, clo_id)

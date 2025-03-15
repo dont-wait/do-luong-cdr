@@ -115,7 +115,6 @@ model Clo {
   subject    Subject @relation(fields: [subject_id], references: [subject_id])
 
   exam_details Exam_detail[]
-  Result       Result[]
   plo_clo      Plo_clo[]
 }
 
@@ -126,6 +125,7 @@ model Exam_detail {
   exam Exam @relation(fields: [exam_id], references: [exam_id])
   clo  Clo  @relation(fields: [clo_id], references: [clo_id])
 
+  result Result[]
   @@id([exam_id, clo_id])
 }
 
@@ -137,8 +137,7 @@ model Exam {
   class_id String
   class    Class  @relation(fields: [class_id], references: [class_id])
 
-  exam_details Exam_detail[]
-  result       Result[]
+  exam_detail Exam_detail[]
 }
 
 model Class {
@@ -190,8 +189,7 @@ model Result {
   clo_id     Int
 
   student Student @relation(fields: [student_id], references: [student_id])
-  exam    Exam    @relation(fields: [exam_id], references: [exam_id])
-  clo     Clo     @relation(fields: [clo_id], references: [clo_id])
+  exam_detail Exam_detail @relation(fields: [exam_id, clo_id], references: [exam_id, clo_id])
 }
 
 model Degree {
