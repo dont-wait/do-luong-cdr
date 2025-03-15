@@ -23,7 +23,7 @@ Table Academic {
 
 Table Academic_subject {
   academic_id String [not null]
-  subject_id String [not null]
+  subject_id Int [not null]
   academic Academic [not null]
   subject Subject [not null]
 
@@ -47,7 +47,7 @@ Table Lecturer {
 }
 
 Table Plo {
-  plo_id Int [pk]
+  plo_id Int [pk, increment]
   plo_name String [not null]
   plo_content String [not null]
   academic_id String [not null]
@@ -76,7 +76,7 @@ Table Plo_detail {
 }
 
 Table Subject {
-  subject_id String [pk]
+  subject_id Int [pk, increment]
   subject_name String [not null]
   practical_credits Int [not null]
   theoretical_credits Int [not null]
@@ -89,11 +89,11 @@ Table Subject {
 }
 
 Table Clo {
-  clo_id Int [pk]
+  clo_id Int [pk, increment]
   clo_name String [not null]
   clo_content String [not null]
   clo_parent_id Int
-  subject_id String [not null]
+  subject_id Int [not null]
   subject Subject [not null]
   exam_details Exam_detail [not null]
   plo_clo Plo_clo [not null]
@@ -122,7 +122,7 @@ Table Exam {
 
 Table Class {
   class_id String [pk]
-  subject_id String [not null]
+  subject_id Int [not null]
   subject Subject [not null]
   lecturer_id String [not null]
   lecturer Lecturer [not null]
@@ -154,7 +154,7 @@ Table Student {
 }
 
 Table Result {
-  result_id String [pk]
+  result_id Int [pk, increment]
   score Float [not null]
   student_id String [not null]
   exam_id Int [not null]
