@@ -5,28 +5,34 @@ import { CreateAcademicDto } from './dto/create-academic.dto';
 @Controller('academic')
 export class AcademicController {
   constructor(private readonly academicService: AcademicService) {}
+  
   @Post()
-  create(@Body() createAcademicDto: CreateAcademicDto) {
-    return this.academicService.create(createAcademicDto);
+  create(@Body() Data: CreateAcademicDto){
+    return this.academicService.create(Data)
+  }
+
+  @Post("createMany")
+  createMany(@Body() Data: CreateAcademicDto[]){
+    return this.academicService.createMany(Data)
   }
 
   @Get()
-  findAll() {
-    return this.academicService.findAll();
+  findMany(){
+    return this.academicService.findMany();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.academicService.findOne(id);
+  @Get("id")
+  findOne(@Param("id") id: string){
+    return this.academicService.findOne(id)
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateAcademicDto: CreateAcademicDto) {
-    return this.academicService.update(id, updateAcademicDto);
+  @Patch("id")
+  update(@Param("id") id: string, Data: CreateAcademicDto){
+    return this.academicService.update(id,Data)
   }
 
-  @Post('createMany')
-  createMany(@Body() data: CreateAcademicDto[]) {
-    return this.academicService.createMany(data);
+  @Delete("id")
+  remove(@Param("id") id: string){
+    return this.academicService.remove(id)
   }
 }

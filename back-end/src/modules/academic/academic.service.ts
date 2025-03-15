@@ -5,33 +5,36 @@ import { PrismaService } from '../prisma/prisma.service';
 @Injectable()
 export class AcademicService {
   constructor(private readonly prisma: PrismaService) {}
-  async create(createAcademicDto: CreateAcademicDto) {
-    return await this.prisma.academic.create({
-      data: createAcademicDto,
-    });
+  async create(Data: CreateAcademicDto){
+    return this.prisma.academic.create({data: Data})
   }
 
-  async findAll() {
-    return await this.prisma.academic.findMany();
+  async createMany(Data: CreateAcademicDto[]){
+    return this.prisma.academic.createMany({
+      data: Data.map(d => ({...d, academic_level: +d.academic_level, academic_type: +d.academic_type}))
+    })
   }
 
-  async findOne(academic_id: string) {
-    return await this.prisma.academic.findUnique({
-      where: { academic_id: academic_id },
-    });
+  async findMany(){
+    return this.prisma.academic.findMany();
   }
 
-  async update(id: string, updateAcademicDto: CreateAcademicDto) {
-    return await this.prisma.academic.update({
-      where: { academic_id: id },
-      data: updateAcademicDto,
-    });
+  async findOne(id: string){
+    return this.prisma.academic.findUnique({
+      where: {academic_id: id}
+    })
   }
 
-  async createMany(data: CreateAcademicDto[]) {
-    return await this.prisma.academic.createMany({
-      data,
-    });
+  async update(id: string, Data: CreateAcademicDto){
+    return this.prisma.academic.update({
+      where: {academic_id: id},
+      data: Data,
+    })
   }
 
+  async remove(id: string){
+    return this.prisma.academic.delete({
+      where: {academic_id: id},
+    })
+  }
 }

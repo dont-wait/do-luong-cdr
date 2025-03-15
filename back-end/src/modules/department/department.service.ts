@@ -1,35 +1,46 @@
 import { Injectable } from '@nestjs/common';
-import { CreateDepartmentDto } from './dto/create-departman.dto';
+import { CreateDepartmentDto } from './dto/create-department.dto';
 import { PrismaService } from '../prisma/prisma.service';
+
+
 
 @Injectable()
 export class DepartmentService {
   constructor(private readonly prisma: PrismaService) {}
-  async create(createDepartmentDto: CreateDepartmentDto) {
-    return await this.prisma.department.create({
-      data: createDepartmentDto,
-    });
+  async create(Data: CreateDepartmentDto){
+    return this.prisma.department.create({data: Data});
   }
 
-  async findAll() {
-    return await this.prisma.department.findMany();
+  async createMany(Data: CreateDepartmentDto[]){
+    return this.prisma.department.createMany({data: Data});
   }
 
-  async findOne(parment_id: string) {
-    return await this.prisma.department.findUnique({
-      where: { department_id: parment_id },
-    });
+  async findAll(){
+    return this.prisma.department.findMany();
   }
 
-  async update(id: string, updateDepartmanDto: CreateDepartmentDto) {
-    return await this.prisma.department.update({
-      where: { department_id: id },
-      data: updateDepartmanDto,
-    });
+  async findOne(id: string){
+    return this.prisma.department.findUnique(
+      {
+        where: {department_id: id},
+      }
+    );
   }
-  async createMany(data: CreateDepartmentDto[]) {
-    return await this.prisma.department.createMany({
-      data,
-    });
+
+  async update(id: string, Data: CreateDepartmentDto){
+    return this.prisma.department.update(
+      {
+        where: {department_id: id},
+        data: Data,
+      }
+    );
+  }
+
+  async remove(id: string){
+    return this.prisma.department.delete(
+      {
+        where: {department_id: id},
+      }
+    )
   }
 }

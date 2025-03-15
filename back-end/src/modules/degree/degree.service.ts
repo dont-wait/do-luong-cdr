@@ -1,26 +1,46 @@
 import { Injectable } from '@nestjs/common';
 import { CreateDegreeDto } from './dto/create-degree.dto';
-import { UpdateDegreeDto } from './dto/update-degree.dto';
+import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class DegreeService {
-  create(createDegreeDto: CreateDegreeDto) {
-    return 'This action adds a new degree';
+  constructor(private readonly prisma: PrismaService) {}
+  async create(Data: CreateDegreeDto) {
+    return this.prisma.degree.create({ 
+      data: {
+        ...Data,
+        degree_id: +Data.degree_id
+      }
+     });
   }
 
-  findAll() {
-    return `This action returns all degree`;
+  async findAll() {
+    return this.prisma.degree.findMany();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} degree`;
+  async findOne(id: number) {
+    return this.prisma.degree.findUnique({
+      where: { degree_id: id },
+    });
   }
 
-  update(id: number, updateDegreeDto: UpdateDegreeDto) {
-    return `This action updates a #${id} degree`;
+  async update(id: number, Data: CreateDegreeDto) {
+    return this.prisma.degree.update({
+      where: { degree_id: id },
+      data: Data,
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} degree`;
+  async remove(id: number) {
+    return this.prisma.degree.delete({
+      where: { degree_id: id },
+    });
   }
+
+  async createMany(Data: CreateDegreeDto[]) {
+    return this.prisma.degree.createMany({
+      data: Data.map(d => ({ ...d, degree_id: +d.degree_id })),
+    });
+  }
+
 }

@@ -4,6 +4,10 @@ import { IsNotEmpty, isString, IsString } from "class-validator";
 export class CreateAcademicDto {
     @IsString()
     @IsNotEmpty()
+    academic_id: string;
+
+    @IsString()
+    @IsNotEmpty()
     academic_name: string;
 
     @IsNotEmpty()

@@ -114,7 +114,7 @@ Table Exam_detail {
 Table Exam {
   exam_id Int [pk, increment]
   exam_name String [not null]
-  date DateTime [default: `now()`, not null]
+  date DateTime [default: `now()`]
   class_id String [not null]
   class Class [not null]
   exam_detail Exam_detail [not null]
@@ -155,7 +155,7 @@ Table Student {
 
 Table Result {
   result_id Int [pk, increment]
-  score Float [not null]
+  score Float
   student_id String [not null]
   exam_id Int [not null]
   clo_id Int [not null]

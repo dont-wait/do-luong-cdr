@@ -133,7 +133,7 @@ model Exam_detail {
 model Exam {
   exam_id   Int      @id @default(autoincrement())
   exam_name String   @db.VarChar(255)
-  date      DateTime @default(now())
+  date      DateTime? @default(now())
 
   class_id String
   class    Class  @relation(fields: [class_id], references: [class_id])
@@ -183,7 +183,7 @@ model Student {
 
 model Result {
   result_id Int   @id @default(autoincrement())
-  score     Float
+  score     Float?
 
   student_id String
   exam_id    Int

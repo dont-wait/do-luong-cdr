@@ -6,13 +6,4 @@ import { CreateLecturerDto } from './dto/create-lecturer.dto';
 export class LecturerController {
   constructor(private readonly lecturerService: LecturerService) {}
 
-  @Post()
-  create(@Body() data: CreateLecturerDto) {
-    return this.lecturerService.create(data);
-  }
-
-  @Get()
-  findAll() {
-    return this.lecturerService.findAll();
-  }
 }
