@@ -22,7 +22,7 @@ export class AppLoggerService {
   logStartup(port: number, env: string): void {
     this.defaultLogger.log(`🚀 Application starting in ${env.toUpperCase()} mode`);
     this.defaultLogger.log(`🔌 Server listening on port ${port}`);
-    this.defaultLogger.log(`📝 API Documentation available at /api/docs`);
+    this.defaultLogger.log(`📝 API Documentation available at ${process.env.GLOBAL_PREFIX}/docs`);
   }
 
   logShutdown(signal: string): void {

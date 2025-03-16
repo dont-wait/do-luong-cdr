@@ -3,6 +3,7 @@ import { AppModule } from './app.module';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { ValidationPipe, INestApplication, ConsoleLogger } from '@nestjs/common';
 import { AppLoggerService } from './modules/appLogger/AppLogger.service';
+import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
@@ -11,6 +12,17 @@ async function bootstrap() {
       prefix: "HUIT-CDR"
     })
   });
+
+  app.setGlobalPrefix(process.env.GLOBAL_PREFIX!);
+
+  const config = new DocumentBuilder()
+    .setTitle('API DOCUMENTS')
+    .setDescription('Tài liệu api của CDR')
+    .setVersion('1.0')
+    .build();
+
+  const documentFactory = () => SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup(`${process.env.GLOBAL_PREFIX}/docs`, app, documentFactory);
 
   const logger = app.get(AppLoggerService);
 
