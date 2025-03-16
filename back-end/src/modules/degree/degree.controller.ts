@@ -1,5 +1,5 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { DegreeService } from './degree.service';
+import { DegreeService } from './Degree.service';
 import { CreateDegreeDto } from './dto/create-degree.dto';
 
 @Controller('degree')

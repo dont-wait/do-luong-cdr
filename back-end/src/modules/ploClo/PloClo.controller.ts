@@ -1,5 +1,5 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { PloCloService } from './plo_clo.service';
+import { PloCloService } from './PloClo.service';
 import { CreatePloCloDto } from './dto/create-plo_clo.dto';
 import { UpdatePloCloDto } from './dto/update-plo_clo.dto';
 

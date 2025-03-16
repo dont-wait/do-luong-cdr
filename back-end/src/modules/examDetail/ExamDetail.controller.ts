@@ -1,5 +1,5 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { ExamDetailService } from './exam_detail.service';
+import { ExamDetailService } from './ExamDetail.service';
 import { CreateExamDetailDto } from './dto/create-exam_detail.dto';
 import { UpdateExamDetailDto } from './dto/update-exam_detail.dto';
 

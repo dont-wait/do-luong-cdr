@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
-import { PloService } from './plo.service';
-import { PloController } from './plo.controller';
+import { PloService } from './Plo.service';
+import { PloController } from './Plo.controller';
 
 @Module({
   controllers: [PloController],

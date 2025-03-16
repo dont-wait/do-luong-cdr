@@ -1,5 +1,5 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { DepartmentService } from './department.service';
+import { DepartmentService } from './Department.service';
 import { CreateDepartmentDto } from './dto/create-department.dto';
 
 @Controller('department')

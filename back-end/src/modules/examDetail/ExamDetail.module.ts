@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
-import { ExamDetailService } from './exam_detail.service';
-import { ExamDetailController } from './exam_detail.controller';
+import { ExamDetailService } from './ExamDetail.service';
+import { ExamDetailController } from './ExamDetail.controller';
 
 @Module({
   controllers: [ExamDetailController],

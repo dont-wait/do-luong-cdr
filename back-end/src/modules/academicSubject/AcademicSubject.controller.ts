@@ -1,5 +1,5 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { AcademicSubjectService } from './academic_subject.service';
+import { AcademicSubjectService } from './AcademicSubject.service';
 import { CreateAcademicSubjectDto } from './dto/create-academic_subject.dto';
 import { UpdateAcademicSubjectDto } from './dto/update-academic_subject.dto';
 

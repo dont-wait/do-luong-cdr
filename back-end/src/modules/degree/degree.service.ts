@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { CreateDegreeDto } from './dto/create-degree.dto';
-import { PrismaService } from '../prisma/prisma.service';
+import { PrismaService } from '../prisma/Prisma.service';
 
 @Injectable()
 export class DegreeService {

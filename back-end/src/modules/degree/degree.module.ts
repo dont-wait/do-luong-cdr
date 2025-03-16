@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
-import { DegreeService } from './degree.service';
-import { DegreeController } from './degree.controller';
+import { DegreeService } from './Degree.service';
+import { DegreeController } from './Degree.controller';
 
 @Module({
   controllers: [DegreeController],

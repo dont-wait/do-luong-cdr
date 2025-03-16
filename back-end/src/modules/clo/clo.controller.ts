@@ -1,5 +1,5 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { CloService } from './clo.service';
+import { CloService } from './Clo.service';
 import { CreateCloDto } from './dto/create-clo.dto';
 import { UpdateCloDto } from './dto/update-clo.dto';
 
