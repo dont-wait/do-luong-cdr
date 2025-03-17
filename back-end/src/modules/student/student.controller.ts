@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { BadRequestException, Controller, Get, NotFoundException } from '@nestjs/common';
 import { StudentService } from './Student.service';
 import { CreateStudentDto } from './dto/create-student.dto';
 
@@ -7,7 +7,7 @@ export class StudentController {
   constructor(private readonly studentService: StudentService) {}
 
   @Get("id")
-  public getId(): string {
-    return this.studentService.getId();
+  public getId() {
+    
   }
 }

@@ -4,6 +4,8 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import { ValidationPipe, INestApplication, ConsoleLogger } from '@nestjs/common';
 import { AppLoggerService } from './modules/appLogger/AppLogger.service';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import { HttpResponseInterceptor } from './common/interceptors/HttpResponse.interceptor';
+import { HttpExceptionFilter } from './common/filter/HttpException.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
@@ -14,6 +16,8 @@ async function bootstrap() {
   });
 
   app.setGlobalPrefix(process.env.GLOBAL_PREFIX!);
+  app.useGlobalInterceptors(new HttpResponseInterceptor());
+  app.useGlobalFilters(new HttpExceptionFilter);
 
   const config = new DocumentBuilder()
     .setTitle('API DOCUMENTS')
