@@ -15,17 +15,11 @@ import { Request, Response } from 'express';
       const status = exception.getStatus();
       const exceptionResponse = exception.getResponse();
 
-      let details = {};
-
-      if (typeof exceptionResponse === 'object' && exceptionResponse !== null) {
-        details = exceptionResponse;
-      }
-
       response.status(status).json({
         statusCode: status,
         message: 'Error',
         error: exception.name,
-        details,
+        details: exceptionResponse,
         path: request.url
       });
     }
