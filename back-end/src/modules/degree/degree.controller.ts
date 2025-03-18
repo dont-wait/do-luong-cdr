@@ -7,32 +7,32 @@ export class DegreeController {
   constructor(private readonly degreeService: DegreeService) {}
 
   @Post()
-  create(@Body() createDegreeDto: CreateDegreeDto) {
-    return this.degreeService.create(createDegreeDto);
+  createDegree(@Body() createDegreeDto: CreateDegreeDto) {
+    return this.degreeService.createDegree(createDegreeDto);
   }
 
   @Post('createMany')
-  createMany(@Body() createDegreeDto: CreateDegreeDto[]) {
-    return this.degreeService.createMany(createDegreeDto);
+  createManyDegree(@Body() createDegreeDto: CreateDegreeDto[]) {
+    return this.degreeService.createManyDegree(createDegreeDto);
   }
 
   @Get()
-  findAll() {
-    return this.degreeService.findAll();
+  findAllDegree() {
+    return this.degreeService.findAllDegree();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.degreeService.findOne(+id);
+  findOneDegree(@Param('id') id: string) {
+    return this.degreeService.findOneDegree(+id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() Data: CreateDegreeDto) {
-    return this.degreeService.update(+id, Data);
+  updateDegree(@Param('id') id: string, @Body() Data: CreateDegreeDto) {
+    return this.degreeService.updateDegree(+id, Data);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.degreeService.remove(+id);
+  removeDegree(@Param('id') id: string) {
+    return this.degreeService.removeDegree(+id);
   }
 }

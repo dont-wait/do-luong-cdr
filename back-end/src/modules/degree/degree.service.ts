@@ -5,7 +5,7 @@ import { PrismaService } from '../prisma/Prisma.service';
 @Injectable()
 export class DegreeService {
   constructor(private readonly prisma: PrismaService) {}
-  async create(Data: CreateDegreeDto) {
+  async createDegree(Data: CreateDegreeDto) {
     return this.prisma.degree.create({ 
       data: {
         ...Data,
@@ -14,30 +14,30 @@ export class DegreeService {
      });
   }
 
-  async findAll() {
+  async findAllDegree() {
     return this.prisma.degree.findMany();
   }
 
-  async findOne(id: number) {
+  async findOneDegree(id: number) {
     return this.prisma.degree.findUnique({
       where: { degree_id: id },
     });
   }
 
-  async update(id: number, Data: CreateDegreeDto) {
+  async updateDegree(id: number, Data: CreateDegreeDto) {
     return this.prisma.degree.update({
       where: { degree_id: id },
       data: Data,
     });
   }
 
-  async remove(id: number) {
+  async removeDegree(id: number) {
     return this.prisma.degree.delete({
       where: { degree_id: id },
     });
   }
 
-  async createMany(Data: CreateDegreeDto[]) {
+  async createManyDegree(Data: CreateDegreeDto[]) {
     return this.prisma.degree.createMany({
       data: Data.map(d => ({ ...d, degree_id: +d.degree_id })),
     });

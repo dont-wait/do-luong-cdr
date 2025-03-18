@@ -5,34 +5,34 @@ import { PrismaService } from '../prisma/Prisma.service';
 @Injectable()
 export class AcademicService {
   constructor(private readonly prisma: PrismaService) {}
-  async create(Data: CreateAcademicDto){
+  async createAcademic(Data: CreateAcademicDto){
     return this.prisma.academic.create({data: Data})
   }
 
-  async createMany(Data: CreateAcademicDto[]){
+  async createManyAcademic(Data: CreateAcademicDto[]){
     return this.prisma.academic.createMany({
       data: Data.map(d => ({...d, academic_level: +d.academic_level, academic_type: +d.academic_type}))
     })
   }
 
-  async findMany(){
+  async findManyAcademic(){
     return this.prisma.academic.findMany();
   }
 
-  async findOne(id: string){
+  async findOneAcademic(id: string){
     return this.prisma.academic.findUnique({
       where: {academic_id: id}
     })
   }
 
-  async update(id: string, Data: CreateAcademicDto){
+  async updateAcademic(id: string, Data: CreateAcademicDto){
     return this.prisma.academic.update({
       where: {academic_id: id},
       data: Data,
     })
   }
 
-  async remove(id: string){
+  async removeAcademic(id: string){
     return this.prisma.academic.delete({
       where: {academic_id: id},
     })

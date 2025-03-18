@@ -7,32 +7,32 @@ export class AcademicController {
   constructor(private readonly academicService: AcademicService) {}
   
   @Post()
-  create(@Body() Data: CreateAcademicDto){
-    return this.academicService.create(Data)
+  createAcademic(@Body() Data: CreateAcademicDto){
+    return this.academicService.createAcademic(Data)
   }
 
   @Post("createMany")
-  createMany(@Body() Data: CreateAcademicDto[]){
-    return this.academicService.createMany(Data)
+  createManyAcademic(@Body() Data: CreateAcademicDto[]){
+    return this.academicService.createManyAcademic(Data)
   }
 
   @Get()
-  findMany(){
-    return this.academicService.findMany();
+  findManyAcademic(){
+    return this.academicService.findManyAcademic();
   }
 
   @Get("id")
-  findOne(@Param("id") id: string){
-    return this.academicService.findOne(id)
+  findOneAcademic(@Param("id") id: string){
+    return this.academicService.findOneAcademic(id)
   }
 
   @Patch("id")
-  update(@Param("id") id: string, Data: CreateAcademicDto){
-    return this.academicService.update(id,Data)
+  updateAcademic(@Param("id") id: string, Data: CreateAcademicDto){
+    return this.academicService.updateAcademic(id,Data)
   }
 
   @Delete("id")
-  remove(@Param("id") id: string){
-    return this.academicService.remove(id)
+  removeAcademic(@Param("id") id: string){
+    return this.academicService.removeAcademic(id)
   }
 }
