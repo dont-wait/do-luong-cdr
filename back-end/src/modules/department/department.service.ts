@@ -2,24 +2,23 @@ import { Injectable } from '@nestjs/common';
 import { CreateDepartmentDto } from './dto/create-department.dto';
 import { PrismaService } from '../prisma/Prisma.service';
 
-
-
 @Injectable()
 export class DepartmentService {
   constructor(private readonly prisma: PrismaService) {}
-  async create(Data: CreateDepartmentDto){
-    return this.prisma.department.create({data: Data});
+  
+  public async createDeparment(data: CreateDepartmentDto){
+    return this.prisma.department.create({ data });
   }
 
-  async createMany(Data: CreateDepartmentDto[]){
-    return this.prisma.department.createMany({data: Data});
+  public async createManyDepartment(data: CreateDepartmentDto[]){
+    return this.prisma.department.createMany({ data });
   }
 
-  async findAll(){
+  public async getAllDepartments(){
     return this.prisma.department.findMany();
   }
 
-  async findOne(id: string){
+  public async getDepartmentById(id: string){
     return this.prisma.department.findUnique(
       {
         where: {department_id: id},
@@ -27,16 +26,16 @@ export class DepartmentService {
     );
   }
 
-  async update(id: string, Data: CreateDepartmentDto){
+  public async updateDepartment(id: string, data: CreateDepartmentDto){
     return this.prisma.department.update(
       {
         where: {department_id: id},
-        data: Data,
+        data
       }
     );
   }
 
-  async remove(id: string){
+  public async deleteDepartment(id: string){
     return this.prisma.department.delete(
       {
         where: {department_id: id},

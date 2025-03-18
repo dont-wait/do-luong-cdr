@@ -2,36 +2,37 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { DepartmentService } from './Department.service';
 import { CreateDepartmentDto } from './dto/create-department.dto';
 
-@Controller('department')
+@Controller('departments')
 export class DepartmentController {
   constructor(private readonly departmentService: DepartmentService) {}
+
   @Post()
-  create(@Body() Data: CreateDepartmentDto){
-    return this.departmentService.create(Data)
+  createDepartment(@Body() data: CreateDepartmentDto){
+    return this.departmentService.createDeparment(data)
   }
 
   @Post("createMany")
-  createMany(@Body() Data: CreateDepartmentDto[]){
-    return this.departmentService.createMany(Data)
+  createManyDepartment(@Body() data: CreateDepartmentDto[]){
+    return this.departmentService.createManyDepartment(data)
   }
 
-    @Get()
-    findAll() {
-      return this.departmentService.findAll();
-    }
-  
-    @Get(':id')
-    findOne(@Param('id') id: string) {
-      return this.departmentService.findOne(id);
-    }
-  
-    @Patch(':id')
-    update(@Param('id') id: string, @Body() Data: CreateDepartmentDto) {
-      return this.departmentService.update(id, Data);
-    }
-  
-    @Delete(':id')
-    remove(@Param('id') id: string) {
-      return this.departmentService.remove(id);
-    }
+  @Get()
+  getAllDeparment() {
+    return this.departmentService.getAllDepartments();
+  }
+
+  @Get(':id')
+  getDepartmentById(@Param('id') id: string) {
+    return this.departmentService.getDepartmentById(id);
+  }
+
+  @Patch(':id')
+  updateDepartment(@Param('id') id: string, @Body() data: CreateDepartmentDto) {
+    return this.departmentService.updateDepartment(id, data);
+  }
+
+  @Delete(':id')
+  deleteDepartment(@Param('id') id: string) {
+    return this.departmentService.deleteDepartment(id);
+  }
 }

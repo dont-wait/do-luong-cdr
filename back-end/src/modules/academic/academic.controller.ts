@@ -2,33 +2,28 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { AcademicService } from './Academic.service';
 import { CreateAcademicDto } from './dto/create-academic.dto';
 
-@Controller('academic')
+@Controller('academics')
 export class AcademicController {
   constructor(private readonly academicService: AcademicService) {}
   
   @Post()
-  createAcademic(@Body() Data: CreateAcademicDto){
-    return this.academicService.createAcademic(Data)
-  }
-
-  @Post("createMany")
-  createManyAcademic(@Body() Data: CreateAcademicDto[]){
-    return this.academicService.createManyAcademic(Data)
+  createAcademic(@Body() data: CreateAcademicDto | CreateAcademicDto[]) {
+    return this.academicService.createAcademic(data)
   }
 
   @Get()
-  findManyAcademic(){
-    return this.academicService.findManyAcademic();
+  findManyAcademics(){
+    return this.academicService.findManyAcademics();
   }
 
   @Get("id")
-  findOneAcademic(@Param("id") id: string){
-    return this.academicService.findOneAcademic(id)
+  getAcademicById(@Param("id") id: string){
+    return this.academicService.getAcademicById(id);
   }
 
   @Patch("id")
-  updateAcademic(@Param("id") id: string, Data: CreateAcademicDto){
-    return this.academicService.updateAcademic(id,Data)
+  updateAcademic(@Param("id") id: string, data: CreateAcademicDto){
+    return this.academicService.updateAcademic(id, data)
   }
 
   @Delete("id")
