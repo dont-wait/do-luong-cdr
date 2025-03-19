@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateStudentDto } from './dto/create-student.dto';
 import { PrismaService } from '../prisma/Prisma.service';
 import { AcademicService } from '../academic/Academic.service';
@@ -12,6 +12,19 @@ export class StudentService {
   
   public getAllStudents() {
     return this.prisma.student.findMany();
+  }
+
+  public getStudent(id: string) {
+    const student = this.prisma.student.findFirst({
+      where: {
+        student_id: id
+      }
+    })
+
+    if (!student)
+      throw new NotFoundException("Không tìm thấy Student ID này");
+
+    return student;
   }
 
   public async createStudent(data: CreateStudentDto) {

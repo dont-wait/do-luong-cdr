@@ -1,6 +1,7 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { StudentService } from './Student.service';
 import { CreateStudentDto } from './dto/create-student.dto';
+import { } from "@prisma/client";
 
 @Controller('students')
 export class StudentController {
@@ -9,6 +10,11 @@ export class StudentController {
   @Get()
   public getAllStudents() {
     return this.studentService.getAllStudents();
+  }
+
+  @Get(":id")
+  public getStundent(@Param('id') id: string) {
+    return this.studentService.getStudent(id);
   }
 
   @Post()
