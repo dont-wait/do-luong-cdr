@@ -32,20 +32,6 @@ Table Academic_subject {
   }
 }
 
-Table Lecturer {
-  lecturer_id String [pk]
-  first_name String [not null]
-  last_name String [not null]
-  email String [unique, not null]
-  phone String [unique, not null]
-  degree_id Int [not null]
-  degree Degree [not null]
-  academic_id String [not null]
-  academic Academic [not null]
-  subjects Subject [not null]
-  class Class [not null]
-}
-
 Table Plo {
   plo_id Int [pk, increment]
   plo_name String [not null]
@@ -138,8 +124,29 @@ Table Role {
 Table User_account {
   user_account_id String [pk]
   password String [not null]
+  admin_id String [unique]
+  student_id String [unique]
+  lecturer_id String [unique]
   role_id Int [not null]
   role Role [not null]
+  admin Admin
+  student Student
+  lecturer Lecturer
+}
+
+Table Lecturer {
+  lecturer_id String [pk]
+  first_name String [not null]
+  last_name String [not null]
+  email String [unique, not null]
+  phone String [unique, not null]
+  degree_id Int [not null]
+  degree Degree [not null]
+  academic_id String [not null]
+  academic Academic [not null]
+  subjects Subject [not null]
+  class Class [not null]
+  user_account User_account
 }
 
 Table Student {
@@ -151,6 +158,16 @@ Table Student {
   academic_id String [not null]
   academic Academic [not null]
   Result Result [not null]
+  user_account User_account
+}
+
+Table Admin {
+  admin_id String [pk]
+  first_name String [not null]
+  last_name String [not null]
+  email String [unique, not null]
+  phone String [unique, not null]
+  user_account User_account
 }
 
 Table Result {
@@ -169,23 +186,11 @@ Table Degree {
   leturer Lecturer [not null]
 }
 
-Table Admin {
-  admin_id String [pk]
-  first_name String [not null]
-  last_name String [not null]
-  email String [unique, not null]
-  phone String [unique, not null]
-}
-
 Ref: Academic.department_id > Department.department_id
 
 Ref: Academic_subject.academic_id > Academic.academic_id
 
 Ref: Academic_subject.subject_id > Subject.subject_id
-
-Ref: Lecturer.degree_id > Degree.degree_id
-
-Ref: Lecturer.academic_id > Academic.academic_id
 
 Ref: Plo.academic_id > Academic.academic_id
 
@@ -210,6 +215,16 @@ Ref: Class.subject_id > Subject.subject_id
 Ref: Class.lecturer_id > Lecturer.lecturer_id
 
 Ref: User_account.role_id > Role.role_id
+
+Ref: User_account.admin_id - Admin.admin_id
+
+Ref: User_account.student_id - Student.student_id
+
+Ref: User_account.lecturer_id - Lecturer.lecturer_id
+
+Ref: Lecturer.degree_id > Degree.degree_id
+
+Ref: Lecturer.academic_id > Academic.academic_id
 
 Ref: Student.academic_id > Academic.academic_id
 

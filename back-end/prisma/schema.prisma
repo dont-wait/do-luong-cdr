@@ -43,22 +43,6 @@ model Academic_subject {
   @@id([academic_id, subject_id])
 }
 
-model Lecturer {
-  lecturer_id String @id
-  first_name  String @db.VarChar(15)
-  last_name   String @db.VarChar(50)
-  email       String @unique @db.VarChar(255)
-  phone       String @unique @db.Char(12)
-
-  degree_id   Int
-  degree      Degree   @relation(fields: [degree_id], references: [degree_id])
-  academic_id String
-  academic    Academic @relation(fields: [academic_id], references: [academic_id])
-
-  subjects Subject[]
-  class    Class[]
-}
-
 model Plo {
   plo_id      Int    @id @default(autoincrement())
   plo_name    String @db.Char(10)
@@ -161,11 +145,34 @@ model Role {
 }
 
 model User_account {
-  user_account_id String @id
+  user_account_id String @id @default(cuid()) 
   password        String @db.VarChar(255)
-
+  admin_id    String? @unique
+  student_id  String? @unique
+  lecturer_id String? @unique
   role_id Int
+
   role    Role @relation(fields: [role_id], references: [role_id])
+  admin    Admin?   @relation(fields: [admin_id], references: [admin_id])
+  student  Student? @relation(fields: [student_id], references: [student_id])
+  lecturer Lecturer? @relation(fields: [lecturer_id], references: [lecturer_id])
+}
+
+model Lecturer {
+  lecturer_id String @id
+  first_name  String @db.VarChar(15)
+  last_name   String @db.VarChar(50)
+  email       String @unique @db.VarChar(255)
+  phone       String @unique @db.Char(12)
+
+  degree_id   Int
+  degree      Degree   @relation(fields: [degree_id], references: [degree_id])
+  academic_id String
+  academic    Academic @relation(fields: [academic_id], references: [academic_id])
+
+  subjects Subject[]
+  class    Class[]
+  user_account User_account?
 }
 
 model Student {
@@ -179,6 +186,16 @@ model Student {
   academic    Academic @relation(fields: [academic_id], references: [academic_id])
 
   Result Result[]
+  user_account User_account?
+}
+
+model Admin {
+  admin_id   String @id
+  first_name String @db.VarChar(255)
+  last_name  String @db.VarChar(255)
+  email      String @unique @db.VarChar(255)
+  phone      String @unique @db.Char(12)
+  user_account User_account?
 }
 
 model Result {
@@ -198,12 +215,4 @@ model Degree {
   degree_name String @db.VarChar(255)
 
   leturer Lecturer[]
-}
-
-model Admin {
-  admin_id   String @id
-  first_name String @db.VarChar(255)
-  last_name  String @db.VarChar(255)
-  email      String @unique @db.VarChar(255)
-  phone      String @unique @db.Char(12)
 }
