@@ -1,0 +1,84 @@
+{
+  "departments": [
+    {
+      "id": "1",
+      "Department": "Human Resources"
+    },
+    {
+      "id": "2",
+      "Department": "Finance"
+    },
+    {
+      "id": "3",
+      "Department": "Marketing"
+    },
+    {
+      "id": "4",
+      "Department": "Sales"
+    },
+    {
+      "id": "5",
+      "Department": "IT"
+    },
+    {
+      "id": "6",
+      "Department": "Customer Service"
+    },
+    {
+      "id": "7",
+      "Department": "Operations"
+    },
+    {
+      "id": "8",
+      "Department": "Legal"
+    },
+    {
+      "id": "9",
+      "Department": "Research and Development"
+    },
+    {
+      "id": "10",
+      "Department": "Product Management"
+    },
+    {
+      "id": "11",
+      "Department": "Supply Chain"
+    },
+    {
+      "id": "12",
+      "Department": "Quality Assurance"
+    },
+    {
+      "id": "13",
+      "Department": "Business Development"
+    },
+    {
+      "id": "14",
+      "Department": "Public Relations"
+    },
+    {
+      "id": "15",
+      "Department": "Training and Development"
+    },
+    {
+      "id": "16",
+      "Department": "Compliance"
+    },
+    {
+      "id": "17",
+      "Department": "Accounting"
+    },
+    {
+      "id": "18",
+      "Department": "Facilities"
+    },
+    {
+      "id": "19",
+      "Department": "Information Security"
+    },
+    {
+      "id": "20",
+      "Department": "Data Analysis"
+    }
+  ]
+}
