@@ -88,20 +88,6 @@
       "Curriculum Type": 1,
       "Curriculum Level": 1,
       "Department Id": "10"
-    },
-    {
-      "id": "12345",
-      "Curriculum Name": "Công nghệ thông tin",
-      "Curriculum Type": 1,
-      "Curriculum Level": 1,
-      "Department Id": "5"
-    },
-    {
-      "id": "123",
-      "Curriculum Name": "Công nghệ thông tin",
-      "Curriculum Type": 1,
-      "Curriculum Level": 1,
-      "Department Id": "1"
     }
   ]
 }

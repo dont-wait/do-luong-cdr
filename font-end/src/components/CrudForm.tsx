@@ -205,7 +205,7 @@ const CrudForm = ({
                         </Row>
                       ) : (
                         <Form.Control
-                          readOnly={editMode}
+                          readOnly={editMode && idx === 0}
                           type={type}
                           placeholder={`Input ${label}`}
                           className='px-2 py-3 text-base'
