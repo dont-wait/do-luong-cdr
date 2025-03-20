@@ -1,34 +1,28 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { UserAccountService } from './UseAccount.service';
-import { CreateUserAccountDto } from './dto/create-user_account.dto';
 import { UpdateUserAccountDto } from './dto/update-user_account.dto';
 
-@Controller('user-account')
+@Controller('accounts')
 export class UserAccountController {
   constructor(private readonly userAccountService: UserAccountService) {}
 
-  @Post()
-  create(@Body() createUserAccountDto: CreateUserAccountDto) {
-    return this.userAccountService.create(createUserAccountDto);
-  }
-
   @Get()
-  findAll() {
-    return this.userAccountService.findAll();
+  getAllUserAccout() {
+    return this.userAccountService.getAllUserAccout();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.userAccountService.findOne(+id);
+  getUserAccountById(@Param('id') id: string) {
+    return this.userAccountService.getUserAccountById(+id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserAccountDto: UpdateUserAccountDto) {
-    return this.userAccountService.update(+id, updateUserAccountDto);
+  updateUserAccount(@Param('id') id: string, @Body() updateUserAccountDto: UpdateUserAccountDto) {
+    return this.userAccountService.updateUserAccount(+id, updateUserAccountDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.userAccountService.remove(+id);
+  deleteUserAccount(@Param('id') id: string) {
+    return this.userAccountService.deleteUserAccount(+id);
   }
 }

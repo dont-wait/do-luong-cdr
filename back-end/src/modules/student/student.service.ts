@@ -1,13 +1,16 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { CreateStudentDto } from './dto/create-student.dto';
 import { PrismaService } from '../prisma/Prisma.service';
 import { AcademicService } from '../academic/Academic.service';
+import { UserAccountService } from '../userAccount/UseAccount.service';
+import { roles } from "../../configs/config.json";
 
 @Injectable()
 export class StudentService {
   constructor(
     private readonly prisma: PrismaService,
-    private readonly academic: AcademicService
+    private readonly academic: AcademicService,
+    private readonly userAccount: UserAccountService
   ) {}
   
   public getAllStudents() {
@@ -28,14 +31,43 @@ export class StudentService {
   }
 
   public async createStudent(data: CreateStudentDto) {
-    const { academic_id } = data;
+    const { academic_id, student_id, password, ...rest } = data;
     const isExistAcademicId = await this.academic.getAcademicById(academic_id);
 
     if (!isExistAcademicId)
       throw new BadRequestException("Academic ID không hợp lệ");
 
-    return this.prisma.student.create({
-      data: data
-    })
+    const studentRole = roles.find(r => r.role_name === "student");
+
+    if (!studentRole?.role_id) 
+      throw new BadRequestException("Không tìm thấy role student");
+    
+    try {
+      const createUserAccountDto = {
+        student_id,
+        password,
+        role_id: studentRole.role_id,
+        admin_id: null, 
+        lecturer_id: null 
+      };
+      
+      await this.prisma.student.create({
+        data: {
+          student_id,
+          academic_id,
+          ...rest
+        }
+      });
+  
+      await this.userAccount.createUserAccount(createUserAccountDto, password);
+
+      return {
+        student_id,
+        academic_id,
+        ...rest
+      }
+    } catch(err) {
+      throw new InternalServerErrorException(err.message);
+    }
   }
 }

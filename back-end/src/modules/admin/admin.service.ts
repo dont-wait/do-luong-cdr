@@ -1,26 +1,74 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { CreateAdminDto } from './dto/create-admin.dto';
 import { UpdateAdminDto } from './dto/update-admin.dto';
+import { PrismaService } from '../prisma/Prisma.service';
+import { UserAccountService } from '../userAccount/UseAccount.service';
+import { roles } from "../../configs/config.json";
 
 @Injectable()
 export class AdminService {
-  create(createAdminDto: CreateAdminDto) {
-    return 'This action adds a new admin';
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly userAccount: UserAccountService
+  ) {}
+
+  public async createAdmin(data: CreateAdminDto) {
+    const { admin_id, password, ...rest } = data;
+
+    const adminRole = roles.find(r => r.role_name === "student");
+
+    if (!adminRole?.role_id) 
+      throw new BadRequestException("Không tìm thấy role admin");
+    
+    try {
+      const createUserAccountDto = {
+        admin_id,
+        password,
+        role_id: adminRole.role_id,
+        student_id: null, 
+        lecturer_id: null 
+      };
+      
+      await this.prisma.admin.create({
+        data: {
+          admin_id,
+          ...rest
+        }
+      });
+  
+      await this.userAccount.createUserAccount(createUserAccountDto, password);
+
+      return {
+        admin_id,
+        ...rest
+      }
+    } catch(err) {
+      throw new InternalServerErrorException(err.message);
+    }
   }
 
-  findAll() {
-    return `This action returns all admin`;
+  public async getAllAdmin() {
+    return await this.prisma.admin.findMany();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} admin`;
+  public async getAdminById(id: string) {
+    const admin = await this.prisma.admin.findFirst({
+      where: {
+        admin_id: id
+      }
+    })
+
+    if (!admin)
+      throw new NotFoundException("Không tìm thấy Admin ID này");
+
+    return admin;
   }
 
-  update(id: number, updateAdminDto: UpdateAdminDto) {
-    return `This action updates a #${id} admin`;
+  updateAdmin(id: number, updateAdminDto: UpdateAdminDto) {
+
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} admin`;
+  deleteAdmin(id: number) {
+
   }
 }
