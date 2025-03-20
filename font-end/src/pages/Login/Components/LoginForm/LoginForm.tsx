@@ -1,7 +1,7 @@
 // LoginForm.tsx
 import { useRef, useState, useEffect, FormEvent, ChangeEvent } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { FormData } from "../../../../types/types";
+import { AccountData } from "../../../../types/types";
 import useAuth from "../../../../hook/useAuth";
 import { useToast } from "../../../../hook/useToast";
 import InputField from "../../../../components/InputField";
@@ -24,7 +24,7 @@ const LoginForm: React.FC = () => {
   };
 
   const [loginState, setLoginState] = useState<{
-    formData: FormData;
+    formData: AccountData;
     showPassword: boolean;
     roles?: number[];
   }>(() => {

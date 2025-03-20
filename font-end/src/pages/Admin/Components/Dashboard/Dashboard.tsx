@@ -1,12 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import Chart from "chart.js/auto";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faBuilding,
-  faGraduationCap,
-  faBook,
-  faUserTie,
-} from "@fortawesome/free-solid-svg-icons";
+import { FaBuilding, FaGraduationCap, FaBook } from "react-icons/fa";
+import { FaUserGraduate } from "react-icons/fa6";
 
 const Dashboard: React.FC = () => {
   const departmentChartRef = useRef<HTMLCanvasElement | null>(null);
@@ -89,81 +84,63 @@ const Dashboard: React.FC = () => {
   }, []);
 
   return (
-    <section id='dashboard-section'>
+    <section id='dashboard-section' className='m-4'>
       <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6'>
-        <div className='bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md'>
+        <div className='bg-white p-4 rounded-lg shadow-md'>
           <div className='flex items-center'>
-            <div className='p-3 rounded-full bg-blue-100 dark:bg-blue-900'>
-              <FontAwesomeIcon
-                icon={faBuilding}
-                className='text-blue-500 dark:text-blue-300'
-              />
+            <div className='p-3 rounded-full bg-blue-100 '>
+              <FaBuilding className='text-blue-500' />
             </div>
             <div className='ml-4'>
-              <p className='text-sm font-medium text-gray-500 dark:text-gray-400'>
-                Departments
-              </p>
+              <p className='text-sm font-medium text-gray-500 '>Departments</p>
               <p className='text-lg font-semibold'>12</p>
             </div>
           </div>
         </div>
-        <div className='bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md'>
+        <div className='bg-white p-4 rounded-lg shadow-md'>
           <div className='flex items-center'>
-            <div className='p-3 rounded-full bg-green-100 dark:bg-green-900'>
-              <FontAwesomeIcon
-                icon={faGraduationCap}
-                className='text-green-500 dark:text-green-300'
-              />
+            <div className='p-3 rounded-full bg-green-100'>
+              <FaGraduationCap className='text-green-500' />
             </div>
             <div className='ml-4'>
-              <p className='text-sm font-medium text-gray-500 dark:text-gray-400'>
+              <p className='text-sm font-medium text-gray-500'>
                 Training Programs
               </p>
               <p className='text-lg font-semibold'>48</p>
             </div>
           </div>
         </div>
-        <div className='bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md'>
+        <div className='bg-white p-4 rounded-lg shadow-md'>
           <div className='flex items-center'>
-            <div className='p-3 rounded-full bg-yellow-100 dark:bg-yellow-900'>
-              <FontAwesomeIcon
-                icon={faBook}
-                className='text-yellow-500 dark:text-yellow-300'
-              />
+            <div className='p-3 rounded-full bg-yellow-100 '>
+              <FaBook className='text-yellow-500' />
             </div>
             <div className='ml-4'>
-              <p className='text-sm font-medium text-gray-500 dark:text-gray-400'>
-                Courses
-              </p>
+              <p className='text-sm font-medium text-gray-500'>Courses</p>
               <p className='text-lg font-semibold'>157</p>
             </div>
           </div>
         </div>
-        <div className='bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md'>
+        <div className='bg-white p-4 rounded-lg shadow-md'>
           <div className='flex items-center'>
-            <div className='p-3 rounded-full bg-purple-100 dark:bg-purple-900'>
-              <FontAwesomeIcon
-                icon={faUserTie}
-                className='text-purple-500 dark:text-purple-300'
-              />
+            <div className='p-3 rounded-full bg-purple-100'>
+              <FaUserGraduate className='text-purple-500' />
             </div>
             <div className='ml-4'>
-              <p className='text-sm font-medium text-gray-500 dark:text-gray-400'>
-                Lecturers
-              </p>
+              <p className='text-sm font-medium text-gray-500'>Lecturers</p>
               <p className='text-lg font-semibold'>64</p>
             </div>
           </div>
         </div>
       </div>
       <div className='grid grid-cols-1 lg:grid-cols-3 gap-4'>
-        <div className='bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md lg:col-span-2'>
+        <div className='bg-white p-4 rounded-lg shadow-md lg:col-span-2'>
           <h2 className='text-lg font-semibold'>Department Performance</h2>
           <div className='h-64'>
             <canvas ref={departmentChartRef}></canvas>
           </div>
         </div>
-        <div className='bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md'>
+        <div className='bg-white p-4 rounded-lg shadow-md'>
           <h2 className='text-lg font-semibold'>Program Distribution</h2>
           <div className='h-64'>
             <canvas ref={programChartRef}></canvas>

@@ -3,6 +3,6 @@ import Sidebar from "./Sidebar/Sidebar";
 import Content from "./Content/Content";
 import Dashboard from "./Dashboard/Dashboard";
 import Department from "./Department/Department";
-import Modal from "./Modal/Modal";
+import Curriculum from "./Curriculum/Curriculum";
 
-export { Navbar, Sidebar, Content, Department, Dashboard, Modal };
+export { Navbar, Sidebar, Content, Department, Dashboard, Curriculum };
