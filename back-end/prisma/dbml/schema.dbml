@@ -117,7 +117,7 @@ Table Class {
 
 Table Role {
   role_id Int [pk]
-  role_name String [not null]
+  role_name String [unique, not null]
   user_account User_account [not null]
 }
 
