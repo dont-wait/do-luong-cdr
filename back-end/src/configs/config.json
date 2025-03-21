@@ -19,5 +19,19 @@
         "last_name": "Administrator",
         "email": "admin@test.edu.vn",
         "phone": "0123456789"
-    }
+    },
+    "degree": [
+        {
+            "degree_id": 1,
+            "degree_name": "Thạc sĩ"
+        },
+        {
+            "degree_id": 2,
+            "degree_name": "Tiến sĩ"
+        },
+        {
+            "degree_id": 3,
+            "degree_name": "Giáo sư"
+        }
+    ]
 }

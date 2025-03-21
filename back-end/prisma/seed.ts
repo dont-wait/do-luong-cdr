@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import { roles, admin } from "../src/configs/config.json";
+import { roles, admin, degree } from "../src/configs/config.json";
 import * as bcrypt from 'bcrypt';
 
 const prisma = new PrismaClient();
@@ -43,6 +43,16 @@ async function main() {
 
     console.log("Seeded admin account thành công");
   }
+
+  for (const d of degree) {
+    await prisma.degree.upsert({
+      where: { degree_id: d.degree_id },
+      update: {},
+      create: { degree_id: d.degree_id, degree_name: d.degree_name },
+    });
+  }
+
+  console.log("Seeded degree thành công");
 }
 
 main()
