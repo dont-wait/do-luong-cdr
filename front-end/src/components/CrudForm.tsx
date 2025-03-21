@@ -205,7 +205,7 @@ const CrudForm = ({
                                             selectedValues.includes(value)
                                               ? selectedValues.filter(
                                                   (v) => v !== value
-                                                ) // Bỏ chọn
+                                                )
                                               : [...selectedValues, value];
 
                                           setSelectedValues(updatedValues);
@@ -218,9 +218,14 @@ const CrudForm = ({
                               ) : (
                                 <Form.Select
                                   className='dropdown-custom px-2 py-3 text-base'
-                                  {...register(label, { required: true })}
+                                  {...register(isPrimaryKey ? "id" : label, {
+                                    required: true,
+                                  })}
                                   onChange={(e) => {
-                                    setValue(label, e.target.value);
+                                    setValue(
+                                      isPrimaryKey ? "id" : label,
+                                      e.target.value
+                                    );
                                     setFilterText("");
                                   }}>
                                   {filterHandle(dataDrop, dropLabel)?.map(
