@@ -8,11 +8,11 @@ const AppRoutes = () => (
     {/* public router */}
     <Route path='/' element={<Login />}></Route>
     {/* protected router */}
-    <Route element={<RequireAuth allowedRoles={[ROLES.Admin]} />}>
+    <Route element={<RequireAuth allowedRole={ROLES.Admin} />}>
       <Route path='/admin' element={<AdminLayout />} />
     </Route>
 
-    <Route element={<RequireAuth allowedRoles={[ROLES.Lecturer]} />}>
+    <Route element={<RequireAuth allowedRole={ROLES.Lecturer} />}>
       <Route path='/lecturer' element={<AdminLayout />} />
     </Route>
   </Routes>

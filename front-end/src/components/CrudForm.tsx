@@ -220,6 +220,7 @@ const CrudForm = ({
                                   className='dropdown-custom px-2 py-3 text-base'
                                   {...register(isPrimaryKey ? "id" : label, {
                                     required: true,
+                                    valueAsNumber: type === "number",
                                   })}
                                   onChange={(e) => {
                                     setValue(
