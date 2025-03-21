@@ -135,12 +135,12 @@ const LoginForm: React.FC = () => {
 
       <form onSubmit={handleSubmit} className='space-y-8 my-[10px]'>
         <InputField
-          type='email'
+          type='text'
           id='email'
           name='email'
           value={formData.email}
           onChange={handleChange}
-          placeholder='example@email.com'
+          placeholder=''
           ref={refs.user}
         />
 
