@@ -362,27 +362,27 @@
     {
       "id": "01014017",
       "Password": "123",
-      "Role Id": "2001"
+      "Role Id": 2001
     },
     {
       "id": "01001010",
       "Password": "123",
-      "Role Id": "2003"
+      "Role Id": 2003
     },
     {
       "id": "01001051",
       "Password": "123",
-      "Role Id": "2002"
+      "Role Id": 2002
     },
     {
       "id": "01001048",
       "Password": "123",
-      "Role Id": "2002"
+      "Role Id": 2002
     },
     {
       "id": "01001019",
       "Password": "123",
-      "Role Id": "2003"
+      "Role Id": 2003
     }
   ]
 }
