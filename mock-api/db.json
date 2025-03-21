@@ -84,17 +84,278 @@
   "curriculums": [
     {
       "id": "7480201",
-      "Curriculum Name": "Công nghệ thông tin",
-      "Curriculum Type": 1,
-      "Curriculum Level": 1,
-      "Department Id": "10"
-    },
-    {
-      "id": "12345",
-      "Curriculum Name": "Information Teachnology",
+      "Curriculum Name": "Information Technology",
       "Curriculum Type": "1",
       "Curriculum Level": "1",
       "Department Id": "5"
+    },
+    {
+      "id": "7480202",
+      "Curriculum Name": "Computer Science",
+      "Curriculum Type": "1",
+      "Curriculum Level": "1",
+      "Department Id": "5"
+    },
+    {
+      "id": "7480203",
+      "Curriculum Name": "Web Development",
+      "Curriculum Type": "1",
+      "Curriculum Level": "2",
+      "Department Id": "5"
+    },
+    {
+      "id": "7480204",
+      "Curriculum Name": "Network Security",
+      "Curriculum Type": "1",
+      "Curriculum Level": "1",
+      "Department Id": "5"
+    },
+    {
+      "id": "7480205",
+      "Curriculum Name": "Data Science",
+      "Curriculum Type": "1",
+      "Curriculum Level": "2",
+      "Department Id": "5"
+    },
+    {
+      "id": "7480206",
+      "Curriculum Name": "Software Engineering",
+      "Curriculum Type": "1",
+      "Curriculum Level": "1",
+      "Department Id": "5"
+    }
+  ],
+  "subjects": [
+    {
+      "id": "0693",
+      "Subject Name": "Web Developer",
+      "Practical Credits": 3,
+      "Theoretical Credits": 2,
+      "Curriculum Id": [
+        "7480201",
+        "7480203"
+      ]
+    },
+    {
+      "id": "0694",
+      "Subject Name": "Machine Learning",
+      "Practical Credits": 4,
+      "Theoretical Credits": 3,
+      "Curriculum Id": [
+        "7480205",
+        "7480206"
+      ]
+    },
+    {
+      "id": "0695",
+      "Subject Name": "Cybersecurity",
+      "Practical Credits": 3,
+      "Theoretical Credits": 2,
+      "Curriculum Id": [
+        "7480201",
+        "7480204"
+      ]
+    },
+    {
+      "id": "0696",
+      "Subject Name": "Database Management",
+      "Practical Credits": 2,
+      "Theoretical Credits": 1,
+      "Curriculum Id": [
+        "7480202"
+      ]
+    },
+    {
+      "id": "0697",
+      "Subject Name": "Cloud Computing",
+      "Practical Credits": 3,
+      "Theoretical Credits": 2,
+      "Curriculum Id": [
+        "7480205"
+      ]
+    },
+    {
+      "id": "0698",
+      "Subject Name": "Software Engineering",
+      "Practical Credits": 4,
+      "Theoretical Credits": 3,
+      "Curriculum Id": [
+        "7480206"
+      ]
+    },
+    {
+      "id": "0699",
+      "Subject Name": "Artificial Intelligence",
+      "Practical Credits": 4,
+      "Theoretical Credits": 3,
+      "Curriculum Id": [
+        "7480205",
+        "7480206"
+      ]
+    },
+    {
+      "id": "0700",
+      "Subject Name": "Mobile App Development",
+      "Practical Credits": 3,
+      "Theoretical Credits": 2,
+      "Curriculum Id": [
+        "7480203"
+      ]
+    },
+    {
+      "id": "0701",
+      "Subject Name": "Network Administration",
+      "Practical Credits": 2,
+      "Theoretical Credits": 1,
+      "Curriculum Id": [
+        "7480202"
+      ]
+    },
+    {
+      "id": "0702",
+      "Subject Name": "Human-Computer Interaction",
+      "Practical Credits": 2,
+      "Theoretical Credits": 1,
+      "Curriculum Id": [
+        "7480203"
+      ]
+    },
+    {
+      "id": "0703",
+      "Subject Name": "Data Visualization",
+      "Practical Credits": 3,
+      "Theoretical Credits": 2,
+      "Curriculum Id": [
+        "7480204"
+      ]
+    },
+    {
+      "id": "0704",
+      "Subject Name": "Digital Marketing",
+      "Practical Credits": 2,
+      "Theoretical Credits": 1,
+      "Curriculum Id": [
+        "7480201"
+      ]
+    },
+    {
+      "id": "0705",
+      "Subject Name": "Game Development",
+      "Practical Credits": 4,
+      "Theoretical Credits": 3,
+      "Curriculum Id": [
+        "7480206"
+      ]
+    },
+    {
+      "id": "0706",
+      "Subject Name": "UI/UX Design",
+      "Practical Credits": 3,
+      "Theoretical Credits": 2,
+      "Curriculum Id": [
+        "7480203"
+      ]
+    },
+    {
+      "id": "0707",
+      "Subject Name": "Blockchain Technology",
+      "Practical Credits": 3,
+      "Theoretical Credits": 2,
+      "Curriculum Id": [
+        "7480205"
+      ]
+    },
+    {
+      "id": "0708",
+      "Subject Name": "Robotics",
+      "Practical Credits": 4,
+      "Theoretical Credits": 3,
+      "Curriculum Id": [
+        "7480206"
+      ]
+    },
+    {
+      "id": "0709",
+      "Subject Name": "E-commerce",
+      "Practical Credits": 2,
+      "Theoretical Credits": 1,
+      "Curriculum Id": [
+        "7480201"
+      ]
+    },
+    {
+      "id": "0710",
+      "Subject Name": "SEO Strategies",
+      "Practical Credits": 2,
+      "Theoretical Credits": 1,
+      "Curriculum Id": [
+        "7480201"
+      ]
+    },
+    {
+      "id": "0711",
+      "Subject Name": "Business Analytics",
+      "Practical Credits": 3,
+      "Theoretical Credits": 2,
+      "Curriculum Id": [
+        "7480205"
+      ]
+    },
+    {
+      "id": "0712",
+      "Subject Name": "Data Mining",
+      "Practical Credits": 3,
+      "Theoretical Credits": 2,
+      "Curriculum Id": [
+        "7480204"
+      ]
+    }
+  ],
+  "lecturers": [
+    {
+      "id": "01014017",
+      "First Name": "Nguyễn Thanh",
+      "Last Name": "Long",
+      "Email": "",
+      "Phone": "",
+      "Curriculum Id": "7480203",
+      "Degree": "1"
+    },
+    {
+      "id": "01001010",
+      "First Name": "Huỳnh Thị Châu",
+      "Last Name": "Lan",
+      "Email": "",
+      "Phone": "",
+      "Curriculum Id": "7480206",
+      "Degree": "2"
+    },
+    {
+      "id": "01001051",
+      "First Name": "Đinh Thị",
+      "Last Name": "Tâm",
+      "Email": "",
+      "Phone": "",
+      "Curriculum Id": "7480206",
+      "Degree": "2"
+    },
+    {
+      "id": "01001048",
+      "First Name": "Phùng Thế",
+      "Last Name": "Bảo",
+      "Email": "",
+      "Phone": "",
+      "Curriculum Id": "7480205",
+      "Degree": "1"
+    },
+    {
+      "id": "01001019",
+      "First Name": "Trần Văn",
+      "Last Name": "Thọ",
+      "Email": "",
+      "Phone": "",
+      "Curriculum Id": "7480206",
+      "Degree": "2"
     }
   ]
 }
