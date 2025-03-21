@@ -1,7 +1,6 @@
 import React from "react";
 import { InputFieldProps } from "../types/types";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const InputField: React.FC<InputFieldProps> = ({
   type,
@@ -40,9 +39,9 @@ const InputField: React.FC<InputFieldProps> = ({
           className='absolute inset-y-0 right-0 flex items-center px-4 text-gray-500 hover:text-gray-700 transition-colors duration-200'
           aria-label='Toggle password visibility'>
           {showPasswordIcon ? (
-            <FontAwesomeIcon icon={faEyeSlash} className='ms-2' />
+            <FaEyeSlash className='ms-2' />
           ) : (
-            <FontAwesomeIcon icon={faEye} className='ms-2' />
+            <FaEye className='ms-2' />
           )}
         </button>
       )}
