@@ -1,7 +1,7 @@
 export interface AuthData {
   user: string;
   pwd: string;
-  roles?: number[];
+  role?: number;
 }
 
 export interface AuthContextType {
@@ -10,7 +10,7 @@ export interface AuthContextType {
 }
 
 export interface AccountData {
-  email: string;
+  id: string;
   password: string;
   remember: boolean;
 }
