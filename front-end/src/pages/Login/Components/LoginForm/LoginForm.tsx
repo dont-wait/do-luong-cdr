@@ -86,6 +86,7 @@ const LoginForm: React.FC = () => {
             <Form.Control
               type='text'
               id='lecturer_id'
+              autoComplete='username'
               className='p-3'
               {...register("id", { required: "Lecturer ID is required" })}
             />
@@ -101,6 +102,7 @@ const LoginForm: React.FC = () => {
                 type={showPassword ? "text" : "password"}
                 id='password'
                 className='p-3 pr-10'
+                autoComplete='current-password'
                 {...register("password", { required: "Password is required" })}
                 placeholder='••••••••'
               />
