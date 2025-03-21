@@ -15,4 +15,9 @@ export class LecturerController {
   async getAllLecturer() {
     return this.lecturerService.getAllLecturer();
   }
+
+  @Get(':id')
+  async getLecturerById(@Param('id') id: string) {
+    return this.lecturerService.getLecturerById(id);
+  }
 }

@@ -56,4 +56,12 @@ export class LecturerService {
     public async getAllLecturer() {
         return this.prisma.lecturer.findMany();
     }
+
+    public async getLecturerById(lecturer_id: string) {
+        return this.prisma.lecturer.findUnique({
+            where: {
+                lecturer_id
+            }
+        })
+    }
 }
