@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Sidebar, Content } from "../components/AdminComponent";
+import { Sidebar, Content } from "../Components";
 import "./AdminLayout.css";
 
 const AdminLayout = () => {
@@ -9,13 +9,13 @@ const AdminLayout = () => {
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
 
   return (
-    <div className={`flex h-screen overflow-hidden`}>
+    <div className='flex h-screen overflow-hidden'>
       <Sidebar
         isOpen={isSidebarOpen}
         toggleSidebar={toggleSidebar}
         setActiveSection={setActiveSection}
       />
-      <Content activeSection={activeSection} toggleSidebar={toggleSidebar} />
+      <Content activeSection={activeSection} />
     </div>
   );
 };

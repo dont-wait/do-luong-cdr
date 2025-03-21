@@ -1,19 +1,27 @@
-import { JSX, useState } from "react";
-import { Navbar, Dashboard, Department, Modal } from "../AdminComponent";
-import ErrorBoundary from "../ErrorBoundary";
-import "./Content.css";
+import { JSX } from "react";
+import {
+  Navbar,
+  Dashboard,
+  Department,
+  Curriculum,
+  Subject,
+  Lecturer,
+  UserAccount,
+} from "../index";
+import ErrorBoundary from "../../../../components/ErrorBoundary";
 
 interface ContentProps {
   activeSection: string;
-  toggleSidebar: () => void;
 }
 
-const Content = ({ activeSection, toggleSidebar }: ContentProps) => {
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-
+const Content = ({ activeSection }: ContentProps) => {
   const sections: { [key: string]: JSX.Element } = {
     dashboard: <Dashboard />,
-    departments: <Department openModal={() => setIsModalOpen(true)} />,
+    department: <Department />,
+    curriculum: <Curriculum />,
+    subject: <Subject />,
+    lecturer: <Lecturer />,
+    userAccount: <UserAccount />,
   };
 
   const renderSection = () => {
@@ -28,21 +36,10 @@ const Content = ({ activeSection, toggleSidebar }: ContentProps) => {
 
   return (
     <div className='flex-1 md:ml-64 relative'>
-      <Navbar toggleSidebar={toggleSidebar} activeSection={activeSection} />
-      <main className='p-4 md:p-6 h-[calc(100vh-64px)] overflow-y-auto'>
+      <Navbar activeSection={activeSection} />
+      <main className='h-[calc(100vh-80px)] overflow-y-auto'>
         <ErrorBoundary>{renderSection()}</ErrorBoundary>
       </main>
-
-      {isModalOpen && (
-        <Modal
-          title='Add Department'
-          onClose={() => setIsModalOpen(false)}
-          onSave={() => {
-            console.log("Department saved");
-            setIsModalOpen(false);
-          }}
-        />
-      )}
     </div>
   );
 };

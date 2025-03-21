@@ -1,12 +1,11 @@
-import React from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faTachometerAlt,
-  faBuilding,
-  faGraduationCap,
-  faTimes,
-} from "@fortawesome/free-solid-svg-icons";
-
+  FaBuilding,
+  FaGraduationCap,
+  // FaBook,
+  FaBusinessTime,
+} from "react-icons/fa";
+import { MdOutlineDashboard, MdClass, MdAccountTree } from "react-icons/md";
+import { FaUserGraduate } from "react-icons/fa6";
 interface SidebarProps {
   isOpen: boolean;
   toggleSidebar: () => void;
@@ -19,10 +18,36 @@ const Sidebar: React.FC<SidebarProps> = ({
   setActiveSection,
 }) => {
   const navItems = [
-    { section: "dashboard", icon: faTachometerAlt, label: "Dashboard" },
-    { section: "departments", icon: faBuilding, label: "Departments" },
-    { section: "programs", icon: faGraduationCap, label: "Training Programs" },
-    // Add more items here
+    {
+      section: "dashboard",
+      icon: <MdOutlineDashboard className='sidebar-item' />,
+      label: "Dashboard",
+    },
+    {
+      section: "department",
+      icon: <FaBuilding className='sidebar-item' />,
+      label: "Department",
+    },
+    {
+      section: "curriculum",
+      icon: <FaGraduationCap className='sidebar-item' />,
+      label: "Curriculum",
+    },
+    {
+      section: "subject",
+      icon: <MdClass className='sidebar-item' />,
+      label: "Subject",
+    },
+    {
+      section: "lecturer",
+      icon: <FaUserGraduate className='sidebar-item' />,
+      label: "Lecturer",
+    },
+    {
+      section: "userAccount",
+      icon: <MdAccountTree className='sidebar-item' />,
+      label: "UserAccount",
+    },
   ];
 
   return (
@@ -37,7 +62,7 @@ const Sidebar: React.FC<SidebarProps> = ({
         <button
           className='p-2.5 rounded-lg bg-gray-200 dark:bg-gray-700 md:hidden'
           onClick={toggleSidebar}>
-          <FontAwesomeIcon icon={faTimes} />
+          <FaBusinessTime />
         </button>
       </div>
       <div className='py-4 overflow-y-auto h-full'>
@@ -50,10 +75,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                 if (window.innerWidth < 768) toggleSidebar();
               }}
               className='nav-btn flex items-center w-full px-4 py-3 text-left rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700'>
-              <FontAwesomeIcon
-                icon={item.icon}
-                className='w-5 text-center mr-3 text-gray-500 dark:text-gray-400'
-              />
+              {item.icon}
               <span>{item.label}</span>
             </button>
           ))}

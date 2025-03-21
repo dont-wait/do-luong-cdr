@@ -9,7 +9,7 @@ export interface AuthContextType {
   setAuth: (auth: AuthData | null) => void;
 }
 
-export interface FormData {
+export interface AccountData {
   email: string;
   password: string;
   remember: boolean;
@@ -43,42 +43,29 @@ export interface Toast {
   type: "error" | "success";
 }
 
-export interface FieldConfig {
-  name: string;
+export interface FormattedCell {
+  isHeading?: boolean;
+  value: string | number | null;
+  rowspan?: number;
+  colspan?: number;
+}
+
+export interface MergedCell {
+  s: { r: number; c: number };
+  e: { r: number; c: number };
+}
+
+export interface Obj {
+  [key: string]: string;
+}
+
+export interface CrudFromField {
   label: string;
-  type: "text" | "textarea" | "select" | "number";
-  required?: boolean;
-  readOnly?: boolean;
-  hidden?: boolean;
-  list?: boolean;
-  width?: string;
-  options?: string[];
-}
-
-export interface EntityConfig {
-  name: string;
-  fields: FieldConfig[];
-  filterField?: string;
-}
-
-export interface AppState {
-  currentEntityType: string;
-  data: { [key: string]: Array<Record<string, unknown>> };
-  currentItem: Record<string, unknown> | null;
-  currentFilter: string;
-  currentSearch: string;
-  currentPage: number;
-  itemsPerPage: number;
-  isEditing: boolean;
-  showModal: boolean;
-  showDeleteModal: boolean;
-}
-
-export interface ExcelData {
-  headers: string[];
-  data: Array<Array<string | number | boolean>>;
-  mergedCells: Array<{
-    s: { r: number; c: number };
-    e: { r: number; c: number };
-  }>;
+  type: string;
+  isPrimaryKey?: boolean;
+  isRequired?: boolean;
+  isDropBox?: boolean;
+  dataDrop?: Obj[];
+  dropLabel?: string;
+  isMutiple?: boolean;
 }
