@@ -7,6 +7,26 @@ import { fetchData } from "../../../../utils/helps";
 
 const Curriculum = () => {
   const [data, setData] = useState<Obj[]>([]);
+  const levels: Obj[] = [
+    {
+      id: "1",
+      level: "Higher Education",
+    },
+    {
+      id: "2",
+      level: "Postgraduate Education",
+    },
+  ];
+  const types: Obj[] = [
+    {
+      id: "1",
+      type: "Formal Curriculum",
+    },
+    {
+      id: "2",
+      type: "Informal Curriculum",
+    },
+  ];
 
   useEffect(() => {
     const fetchCurriculums = async () => {
@@ -24,8 +44,24 @@ const Curriculum = () => {
   const inputFields: CrudFromField[] = [
     new CrudFormClass("Curriculum Id", "text", true, true),
     new CrudFormClass("Curriculum Name", "text", true),
-    new CrudFormClass("Curriculum Type", "number", true),
-    new CrudFormClass("Curriculum Level", "number", true),
+    new CrudFormClass(
+      "Curriculum Type",
+      "number",
+      true,
+      false,
+      true,
+      types,
+      "type"
+    ),
+    new CrudFormClass(
+      "Curriculum Level",
+      "number",
+      true,
+      false,
+      true,
+      levels,
+      "level"
+    ),
     new CrudFormClass(
       "Department Id",
       "text",

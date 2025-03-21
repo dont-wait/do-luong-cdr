@@ -88,6 +88,13 @@
       "Curriculum Type": 1,
       "Curriculum Level": 1,
       "Department Id": "10"
+    },
+    {
+      "id": "12345",
+      "Curriculum Name": "Information Teachnology",
+      "Curriculum Type": "1",
+      "Curriculum Level": "1",
+      "Department Id": "5"
     }
   ]
 }

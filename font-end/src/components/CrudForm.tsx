@@ -177,22 +177,13 @@ const CrudForm = ({
 
                       {isDropBox ? (
                         <Row>
-                          <Col md={6}>
-                            <Form.Control
-                              type='text'
-                              placeholder={`Input Filter For ${label}`}
-                              value={filterText}
-                              onChange={(e) => setFilterText(e.target.value)}
-                              className='filter-input px-2 py-3 mb-2'
-                            />
-                          </Col>
-
-                          <Col md={6}>
+                          <Col>
                             <Form.Select
                               className='dropdown-custom px-2 py-3 text-base'
                               {...register(label, {
                                 required: true,
-                              })}>
+                              })}
+                              onChange={() => setFilterText("")}>
                               {filterHandle(dataDrop, dropLabel)?.map(
                                 (item) => (
                                   <option key={item.id} value={item.id}>
@@ -225,6 +216,24 @@ const CrudForm = ({
                   </Col>
                 )
               )}
+
+              <Col md={6}>
+                <Form.Group>
+                  <Form.Label
+                    className='font-bold text-2xl my-4'
+                    style={{ display: "flex", alignItems: "center" }}>
+                    <MdOutlineInsertChartOutlined className='text-3xl' />
+                    Filter
+                  </Form.Label>
+                  <Form.Control
+                    type='text'
+                    placeholder={`Input Filter`}
+                    value={filterText}
+                    onChange={(e) => setFilterText(e.target.value)}
+                    className='filter-input px-2 py-3 mb-3'
+                  />
+                </Form.Group>
+              </Col>
             </Row>
 
             <div className='flex space-x-2'>
