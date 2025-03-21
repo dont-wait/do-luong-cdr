@@ -58,7 +58,7 @@ const CrudForm = ({
 
   // CREATE
   const createHandle = useCallback(
-    async (info: { [key: string]: string }) => {
+    async (info: Obj) => {
       try {
         const res = await axios.post(url, info);
         setLoading(true);
