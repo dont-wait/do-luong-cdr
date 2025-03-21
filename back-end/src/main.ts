@@ -18,7 +18,14 @@ async function bootstrap() {
   app.setGlobalPrefix(process.env.GLOBAL_PREFIX!);
   app.useGlobalInterceptors(new HttpResponseInterceptor());
   app.useGlobalFilters(new HttpExceptionFilter);
-  app.enableCors();
+  app.enableCors(
+    {
+      origin: "*", 
+      methods: ["GET", "POST", "PUT", "DELETE"],
+      allowedHeaders: "Content-Type, Authorization",
+      credentials: true
+    }
+  );
 
   const config = new DocumentBuilder()
     .setTitle('API DOCUMENTS')

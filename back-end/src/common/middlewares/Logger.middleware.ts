@@ -51,9 +51,9 @@ export class RequestLoggerMiddleware implements NestMiddleware {
 
             /// Remove headers that may expose sensitive information
             res.header('X-Powered-By', "CDR-HUIT");
-            res.removeHeader("Access-Control-Allow-Origin");
-            res.removeHeader("Access-Control-Allow-Credentials");
-            res.removeHeader("Access-Control-Allow-Methods");
+            // res.removeHeader("Access-Control-Allow-Origin");
+            // res.removeHeader("Access-Control-Allow-Credentials");
+            // res.removeHeader("Access-Control-Allow-Methods");
             res.set("ETag", "HUIT with luv");
 
 
