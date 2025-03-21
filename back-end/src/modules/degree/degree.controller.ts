@@ -23,7 +23,7 @@ export class DegreeController {
 
   @Get(':id')
   findOneDegree(@Param('id') id: string) {
-    return this.degreeService.findOneDegree(+id);
+    return this.degreeService.getDegreeById(+id);
   }
 
   @Patch(':id')

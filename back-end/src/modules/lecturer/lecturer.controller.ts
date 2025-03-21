@@ -2,8 +2,17 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { LecturerService } from './Lecturer.service';
 import { CreateLecturerDto } from './dto/create-lecturer.dto';
 
-@Controller('lecturer')
+@Controller('lecturers')
 export class LecturerController {
   constructor(private readonly lecturerService: LecturerService) {}
 
+  @Post()
+  async createLecturer(@Body() createLecturerDto: CreateLecturerDto) {
+    return this.lecturerService.createLecturer(createLecturerDto);
+  }
+
+  @Get()
+  async getAllLecturer() {
+    return this.lecturerService.getAllLecturer();
+  }
 }

@@ -18,7 +18,7 @@ export class DegreeService {
     return this.prisma.degree.findMany();
   }
 
-  async findOneDegree(id: number) {
+  async getDegreeById(id: number) {
     return this.prisma.degree.findUnique({
       where: { degree_id: id },
     });
