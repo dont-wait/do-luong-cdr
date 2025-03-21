@@ -4,13 +4,6 @@ import { CrudFormClass } from "../../../../class/CrudFormClass";
 import { useState, useEffect } from "react";
 import { fetchData } from "../../../../utils/helps";
 
-// first_name;
-// last_name;
-// email;
-// phone;
-// academic_id;
-// degreeId;
-
 const Lecturer = () => {
   const [data, setData] = useState<Obj[]>([]);
 

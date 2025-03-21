@@ -80,7 +80,7 @@ const CrudForm = ({
       try {
         setLoading(true);
         console.log(url + `/${info.id}`);
-        const res = await axios.put(url + `/${info.id}`, info);
+        const res = await axios.patch(url + `/${info.id}`, info);
         setData((prev) =>
           prev.map((obj) => (obj.id === res.data.id ? res.data : obj))
         );
@@ -228,6 +228,7 @@ const CrudForm = ({
                                     );
                                     setFilterText("");
                                   }}>
+                                  <option value='-1'>insert {label}</option>
                                   {filterHandle(dataDrop, dropLabel)?.map(
                                     (item) => (
                                       <option key={item.id} value={item.id}>
