@@ -1,10 +1,16 @@
-import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import { getModules } from "./utils/reflectModules";
+import { RequestLoggerMiddleware } from './common/middlewares/Logger.middleware';
+
+const dynamicModules = getModules().map(m => require(m.path)[m.name]);
 
 @Module({
-  imports: [],
-  controllers: [AppController],
-  providers: [AppService],
+  imports: [...dynamicModules],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+      consumer
+        .apply(RequestLoggerMiddleware)
+        .forRoutes("*");
+  }
+}
