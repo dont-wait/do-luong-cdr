@@ -374,5 +374,23 @@
       "id": "2",
       "type": "Informal Curriculum"
     }
+  ],
+  "degrees": [
+    {
+      "id": "1",
+      "degree": "Doctoral Degree"
+    },
+    {
+      "id": "2",
+      "degree": "Master Degree"
+    },
+    {
+      "id": "3",
+      "degree": "Pre-professional Degree"
+    },
+    {
+      "id": "4",
+      "degree": "Professional Degree"
+    }
   ]
 }

@@ -5,38 +5,25 @@ import { useState, useEffect } from "react";
 import { fetchData } from "../../../../utils/helps";
 
 const Lecturer = () => {
-  const [data, setData] = useState<Obj[]>([]);
-
-  const degrees: Obj[] = [
-    {
-      id: "1",
-      degree: "Doctoral Degree",
-    },
-    {
-      id: "2",
-      degree: "Master Degree",
-    },
-    {
-      id: "3",
-      degree: "Pre-professional Degree",
-    },
-    {
-      id: "4",
-      degree: "Professional Degree",
-    },
-  ];
+  const [curriculum, setCurriculum] = useState<Obj[]>([]);
+  const [degrees, setDegrees] = useState<Obj[]>([]);
 
   useEffect(() => {
-    const fetchCurriculums = async () => {
+    const fetchHanle = async () => {
       try {
-        const res = await fetchData("/curriculums");
-        if (res.status >= 200 && res.status < 300) setData(res.data);
+        const curriculum = await fetchData("/curriculums");
+        if (curriculum.status >= 200 && curriculum.status < 300)
+          setCurriculum(curriculum.data);
+
+        const degrees = await fetchData("/degrees");
+        if (degrees.status >= 200 && degrees.status < 300)
+          setDegrees(degrees.data);
       } catch {
         console.error("Error fetching");
       }
     };
 
-    fetchCurriculums();
+    fetchHanle();
   }, []);
 
   const inputFields: CrudFromField[] = [
@@ -51,7 +38,7 @@ const Lecturer = () => {
       true,
       false,
       true,
-      data,
+      curriculum,
       "Curriculum Name"
     ),
     new CrudFormClass("Degree", "text", true, false, true, degrees, "degree"),
