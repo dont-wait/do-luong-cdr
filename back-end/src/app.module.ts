@@ -3,7 +3,6 @@ import { getModules } from "./utils/reflectModules";
 import { RequestLoggerMiddleware } from './common/middlewares/Logger.middleware';
 
 const dynamicModules = getModules().map(m => require(m.path)[m.name]);
-
 @Module({
   imports: [...dynamicModules],
 })
@@ -12,5 +11,7 @@ export class AppModule implements NestModule {
       consumer
         .apply(RequestLoggerMiddleware)
         .forRoutes("*");
-  }
+  
+      }
+
 }
