@@ -5,39 +5,28 @@ import { useState, useEffect } from "react";
 import { fetchData } from "../../../../utils/helps";
 
 const Curriculum = () => {
-  const [data, setData] = useState<Obj[]>([]);
-  const levels: Obj[] = [
-    {
-      id: "1",
-      level: "Higher Education",
-    },
-    {
-      id: "2",
-      level: "Postgraduate Education",
-    },
-  ];
-  const types: Obj[] = [
-    {
-      id: "1",
-      type: "Formal Curriculum",
-    },
-    {
-      id: "2",
-      type: "Informal Curriculum",
-    },
-  ];
+  const [department, setDepartment] = useState<Obj[]>([]);
+  const [levels, setLevels] = useState<Obj[]>([]);
+  const [types, setTypes] = useState<Obj[]>([]);
 
   useEffect(() => {
-    const fetchCurriculums = async () => {
+    const fetchHanle = async () => {
       try {
-        const res = await fetchData("/departments");
-        if (res.status >= 200 && res.status < 300) setData(res.data);
+        const department = await fetchData("/departments");
+        if (department.status >= 200 && department.status < 300)
+          setDepartment(department.data);
+        const levels = await fetchData("/levels");
+
+        if (levels.status >= 200 && levels.status < 300) setLevels(levels.data);
+        const types = await fetchData("/types");
+
+        if (types.status >= 200 && types.status < 300) setTypes(types.data);
       } catch {
         console.error("Error fetching curriculums:");
       }
     };
 
-    fetchCurriculums();
+    fetchHanle();
   }, []);
 
   const inputFields: CrudFromField[] = [
@@ -67,7 +56,7 @@ const Curriculum = () => {
       true,
       false,
       true,
-      data,
+      department,
       "Department"
     ),
   ];
