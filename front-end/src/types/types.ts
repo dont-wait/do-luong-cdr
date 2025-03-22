@@ -56,19 +56,24 @@ export interface MergedCell {
 }
 
 export interface Obj {
-  [key: string]: string;
+  [key: string]: string | number;
 }
 
 export interface CrudFromField {
   key: string;
   label: string;
   type: string;
-  isPrimaryKey?: boolean;
   isRequired?: boolean;
   isDropBox?: boolean;
   dataDrop?: Obj[];
   dropLabel?: string;
-  isMutiple?: boolean;
+  isMultiple?: boolean;
   filterLabel?: string;
   dataFilter?: { [key: string]: string | number }[];
+}
+
+export interface ErrorResponse {
+  details?: {
+    message: string;
+  };
 }
