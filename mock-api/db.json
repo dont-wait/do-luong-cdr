@@ -393,5 +393,41 @@
       "degree": "Professional Degree"
     }
   ],
-  "admins": []
+  "admins": [
+    {
+      "id": "001",
+      "First Name": "Jane",
+      "Last Name": "Smith",
+      "Phone": "0456781234",
+      "Email": "jane.smith@example.com"
+    },
+    {
+      "id": "002",
+      "First Name": "Michael",
+      "Last Name": "Johnson",
+      "Phone": "0412345678",
+      "Email": "michael.johnson@example.com"
+    },
+    {
+      "id": "003",
+      "First Name": "Emily",
+      "Last Name": "Davis",
+      "Phone": "0398765432",
+      "Email": "emily.davis@example.com"
+    },
+    {
+      "id": "004",
+      "First Name": "William",
+      "Last Name": "Brown",
+      "Phone": "0423456789",
+      "Email": "william.brown@example.com"
+    },
+    {
+      "id": "005",
+      "First Name": "Olivia",
+      "Last Name": "Wilson",
+      "Phone": "0387654321",
+      "Email": "olivia.wilson@example.com"
+    }
+  ]
 }
