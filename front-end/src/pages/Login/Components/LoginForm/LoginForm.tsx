@@ -1,15 +1,16 @@
 import { useRef, useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { AccountData } from "../../../../types/types";
+import { AccountData, AuthData } from "../../../../types/types";
 import useAuth from "../../../../hook/useAuth";
 import { useToast } from "../../../../hook/useToast";
 import { loginHanle } from "../../../../services/auth";
 import { Card, Form, Button, Spinner } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { fetchData } from "../../../../utils/helps";
 import "./LoginForm.css";
 
-const LOCAL_STORAGE_KEY = "userRoles";
+const LOCAL_STORAGE_KEY = "userId";
 
 const LoginForm: React.FC = () => {
   const navigate = useNavigate();
@@ -17,8 +18,14 @@ const LoginForm: React.FC = () => {
   const { setAuth } = useAuth();
   const { showToast } = useToast();
   const [loading, setLoading] = useState(false);
+  const [loginState, setLoginState] = useState<{
+    id: string;
+    password: string;
+    userRole: number;
+  }>();
   const [showPassword, setShowPassword] = useState(false);
   const from = location.state?.from?.pathname || "/";
+  const loginInfo = useRef(false);
   const {
     register,
     formState: { errors },
@@ -31,8 +38,47 @@ const LoginForm: React.FC = () => {
   };
 
   useEffect(() => {
+    const idStored = JSON.parse(
+      localStorage.getItem(LOCAL_STORAGE_KEY) ?? "null"
+    );
+    const authData: AuthData = {
+      user: "",
+      pwd: "",
+      role: undefined,
+    };
+    loginInfo.current = true;
+    if (!loginState) {
+      if (idStored) {
+        const fetchAPI = async () => {
+          const res = await fetchData(`/userAccounts/${idStored}`);
+          if (res.data) {
+            setLoginState({
+              id: res.data["id"],
+              password: res.data["Password"],
+              userRole: res.data["Role Id"],
+            });
+          } else loginInfo.current = false;
+        };
+
+        fetchAPI();
+      }
+    } else {
+      authData["user"] = loginState.id;
+      authData["pwd"] = loginState.password;
+      authData["role"] = loginState.userRole;
+    }
+
+    setAuth(authData);
+
+    const routes: Record<number, string> = {
+      2000: "/",
+      2001: "/admin",
+      2002: "/lecturer",
+    };
+
+    navigate(routes[authData.role ?? 2000] || from, { replace: true });
     refs.user.current?.focus();
-  }, [refs.user]);
+  }, [refs.user, from, navigate, loginState, setAuth, showToast]);
 
   const togglePasswordVisibility = () => {
     setShowPassword((prev) => !prev);
@@ -41,27 +87,19 @@ const LoginForm: React.FC = () => {
   const onSubmit = async (data: AccountData) => {
     try {
       setLoading(true);
-      const userRole = await loginHanle(data);
-      if (userRole) {
-        setAuth({ user: data.id, pwd: data.password, role: userRole });
-
-        if (data.remember) {
-          localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(userRole));
-        } else {
-          localStorage.removeItem(LOCAL_STORAGE_KEY);
-        }
-
-        showToast("Login successful!", "success");
-
-        const routes: Record<number, string> = {
-          2001: "/admin",
-          2002: "/lecturer",
-        };
-
-        navigate(routes[userRole] || from, { replace: true });
-      } else {
-        showToast("Incorrect ID or password!", "error");
+      const { id, role, password } = await loginHanle(data);
+      if (data.remember) {
+        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(id));
       }
+
+      setLoginState({
+        id: id,
+        password: password,
+        userRole: role,
+      });
+
+      if (loginInfo.current) showToast("Login successful!", "success");
+      else showToast("Incorrect ID or password!", "error");
     } catch {
       showToast("Incorrect ID or password!", "error");
       refs.error.current?.focus();

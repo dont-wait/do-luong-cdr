@@ -9,7 +9,11 @@ export const loginHanle = async ({ id, password }: AccountData) => {
     if (res?.data) {
       if (res.data["Password"] === password) {
         console.log("Login successful!");
-        return res.data["Role Id"];
+        return {
+          id: res.data["id"],
+          role: res.data["Role Id"],
+          password: res.data["Password"],
+        };
       }
     }
 
