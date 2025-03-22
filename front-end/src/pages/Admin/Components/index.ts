@@ -8,7 +8,6 @@ import Subject from "./Subject/Subject";
 import Lecturer from "./Lecturer/Lecturer";
 import UserAccount from "./UserAccount/UserAccount";
 import Admin from "./Admin/Admin";
-import CNHP from "./CNHP/CNHP";
 
 export {
   Navbar,
@@ -21,5 +20,4 @@ export {
   Lecturer,
   UserAccount,
   Admin,
-  CNHP,
 };
