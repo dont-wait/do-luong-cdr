@@ -8,27 +8,27 @@ import {
   LECTURES_API,
   DEGREE_API,
 } from "../../../../api/apiUrl";
+import { useToast } from "../../../../hook/useToast";
 
 const Lecturer = () => {
   const [curriculum, setCurriculum] = useState<Obj[]>([]);
   const [degree, setDegree] = useState<Obj[]>([]);
+  const { showToast } = useToast();
 
   useEffect(() => {
     const fetchHanle = async () => {
       try {
         const curriculums = await fetchData(CURRICULUM_API);
-        if (curriculums.data.statusCode === 200) {
-          setCurriculum(curriculums.data.data);
-        }
+        setCurriculum(curriculums.data.data);
         const degrees = await fetchData(DEGREE_API);
-        if (degrees.data.statusCode === 200) setDegree(degrees.data.data);
+        setDegree(degrees.data.data);
       } catch {
-        console.error("Error fetching");
+        showToast("Error fetching", "error");
       }
     };
 
     fetchHanle();
-  }, []);
+  }, [showToast]);
 
   const inputFields: CrudFromField[] = [
     CrudFormClass.create({
@@ -93,7 +93,9 @@ const Lecturer = () => {
       isVisible: true,
     }),
   ];
-  return <CrudForm inputFields={inputFields} url={LECTURES_API} />;
+  return (
+    <CrudForm inputFields={inputFields} url={LECTURES_API} isFilter={true} />
+  );
 };
 
 export default Lecturer;
