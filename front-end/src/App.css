@@ -84,12 +84,19 @@
 
 td,
 th {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  display: block;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   border: 1px solid #e3e3e3;
+  padding: 0 10px;
+  box-sizing: border-box;
 }
-
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
 .dropdown-custom {
   border: 1px solid #007bff;
   border-radius: 0.25rem;
