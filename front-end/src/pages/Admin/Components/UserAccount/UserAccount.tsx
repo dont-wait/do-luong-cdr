@@ -25,7 +25,7 @@ const UserAccount = () => {
   }, []);
 
   const inputFields: CrudFromField[] = [
-    new CrudFormClass("Lecturer Id", "text", true, true, true, lecturer, "id"),
+    new CrudFormClass("User Id", "text", true, true, true, lecturer, "id"),
     new CrudFormClass("Password", "text", true),
     new CrudFormClass("Role Id", "number", true, false, true, roles, "role"),
   ];
