@@ -1,27 +1,38 @@
 import { Obj } from "../types/types";
 
+interface CrudFormOptions {
+  label: string;
+  type: string;
+  isRequired?: boolean;
+  isPrimaryKey?: boolean;
+  isDropBox?: boolean;
+  dataDrop?: Obj[];
+  dropLabel?: string;
+  isMultiple?: boolean;
+}
+
 export class CrudFormClass {
-  constructor(
-    public label: string,
-    public type: string,
-    public isRequired?: boolean,
-    public isPrimaryKey?: boolean,
-    public isDropBox?: boolean,
-    public dataDrop?: Obj[],
-    public dropLabel?: string,
-    public isMutiple?: boolean,
-    public filterLabel?: string,
-    public dataFilter?: { [key: string]: string | number }[]
-  ) {
-    if (label) this.label = label;
-    if (type) this.type = type;
-    if (isRequired) this.isRequired = isRequired;
-    if (isPrimaryKey) this.isPrimaryKey = isPrimaryKey;
-    if (isDropBox) this.isDropBox = isDropBox;
-    if (dataDrop) this.dataDrop = dataDrop;
-    if (dropLabel) this.dropLabel = dropLabel;
-    if (isMutiple) this.isMutiple = isMutiple;
-    if (filterLabel) this.filterLabel = filterLabel;
-    if (dataFilter) this.dataFilter = dataFilter;
+  readonly label: string;
+  readonly type: string;
+  readonly isRequired: boolean;
+  readonly isPrimaryKey: boolean;
+  readonly isDropBox: boolean;
+  readonly dataDrop?: Obj[];
+  readonly dropLabel?: string;
+  readonly isMultiple: boolean;
+
+  constructor(options: CrudFormOptions) {
+    this.label = options.label;
+    this.type = options.type;
+    this.isRequired = options.isRequired ?? false;
+    this.isPrimaryKey = options.isPrimaryKey ?? false;
+    this.isDropBox = options.isDropBox ?? false;
+    this.dataDrop = options.dataDrop;
+    this.dropLabel = options.dropLabel;
+    this.isMultiple = options.isMultiple ?? false;
+  }
+
+  static create(options: CrudFormOptions): CrudFormClass {
+    return new CrudFormClass(options);
   }
 }
