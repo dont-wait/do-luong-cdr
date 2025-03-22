@@ -74,6 +74,7 @@ const CrudForm = ({
   // Create or Update Data
   const handleFormSubmit = async (info: Obj) => {
     setLoading(true);
+    console.log(info);
     try {
       if (editMode) {
         const label = inputFields.map((field) => field.key)[0];
@@ -194,7 +195,9 @@ const CrudForm = ({
                               <option value='-1'>Select {label}</option>
                               {filterData(dataDrop ?? [], dropLabel ?? "").map(
                                 (item, j) => (
-                                  <option key={j} value={item[key]}>
+                                  <option
+                                    key={j}
+                                    value={key === dropLabel ? j : item[key]}>
                                     {item[dropLabel ?? ""]}
                                   </option>
                                 )
