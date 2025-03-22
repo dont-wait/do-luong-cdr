@@ -42,7 +42,7 @@
 }
 
 .btn {
-  width: min(50%, 15vw);
+  width: min(50%, 20vw);
   padding: 10px;
   display: flex;
   justify-content: center;
@@ -84,13 +84,15 @@
 
 td,
 th {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow-y: auto;
+  display: block;
+  overflow: hidden;
+  text-align: center;
+  white-space: nowrap;
+  text-overflow: ellipsis;
   border: 1px solid #e3e3e3;
   box-sizing: border-box;
 }
+
 table {
   width: 100%;
   border-collapse: collapse;
