@@ -174,7 +174,7 @@ const CrudFormList = ({
                       </td>
                     ))}
                     <td className='flex justify-center flex-2'>
-                      <div className='flex space-x-2'>
+                      <div className='flex space-x-2 justify-center'>
                         <Button
                           variant='outline-primary'
                           size='sm'

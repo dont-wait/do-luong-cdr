@@ -84,13 +84,11 @@
 
 td,
 th {
-  display: block;
-  text-align: center;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow-y: auto;
   border: 1px solid #e3e3e3;
-  padding: 0 10px;
   box-sizing: border-box;
 }
 table {
