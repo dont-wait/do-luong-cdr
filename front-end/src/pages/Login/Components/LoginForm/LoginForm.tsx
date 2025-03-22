@@ -1,6 +1,7 @@
 import { useRef, useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { AccountData, AuthData } from "../../../../types/types";
+import { USER_ID } from "../../../../types/local";
 import useAuth from "../../../../hook/useAuth";
 import { useToast } from "../../../../hook/useToast";
 import { loginHanle } from "../../../../services/auth";
@@ -10,11 +11,8 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { fetchData } from "../../../../utils/helps";
 import "./LoginForm.css";
 
-const LOCAL_STORAGE_KEY = "userId";
-
 const LoginForm: React.FC = () => {
   const navigate = useNavigate();
-  const location = useLocation();
   const { setAuth } = useAuth();
   const { showToast } = useToast();
   const [loading, setLoading] = useState(false);
@@ -24,7 +22,6 @@ const LoginForm: React.FC = () => {
     userRole: number;
   }>();
   const [showPassword, setShowPassword] = useState(false);
-  const from = location.state?.from?.pathname || "/";
   const loginInfo = useRef(false);
   const {
     register,
@@ -38,9 +35,8 @@ const LoginForm: React.FC = () => {
   };
 
   useEffect(() => {
-    const idStored = JSON.parse(
-      localStorage.getItem(LOCAL_STORAGE_KEY) ?? "null"
-    );
+    console.log("login");
+    const idStored = JSON.parse(localStorage.getItem(USER_ID) ?? "null");
     const authData: AuthData = {
       user: "",
       pwd: "",
@@ -76,9 +72,9 @@ const LoginForm: React.FC = () => {
       2002: "/lecturer",
     };
 
-    navigate(routes[authData.role ?? 2000] || from, { replace: true });
+    navigate(routes[authData.role ?? 2000], { replace: true });
     refs.user.current?.focus();
-  }, [refs.user, from, navigate, loginState, setAuth, showToast]);
+  }, [refs.user, navigate, loginState, setAuth, showToast]);
 
   const togglePasswordVisibility = () => {
     setShowPassword((prev) => !prev);
@@ -89,7 +85,7 @@ const LoginForm: React.FC = () => {
       setLoading(true);
       const { id, role, password } = await loginHanle(data);
       if (data.remember) {
-        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(id));
+        localStorage.setItem(USER_ID, JSON.stringify(id));
       }
 
       setLoginState({
