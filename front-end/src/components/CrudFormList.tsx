@@ -29,8 +29,6 @@ const CrudFormList = ({
 }) => {
   const { label, data, colLabels } = listProps;
 
-  console.log(data);
-
   // state
   const [itemsPerPage, setItemsPerPage] = useState(5);
   const [currentPage, setCurrentPage] = useState(1);
