@@ -6,6 +6,4 @@ import { Certificate } from 'crypto';
 @Injectable()
 export class SubjectService {
   constructor(private readonly prisma: PrismaService) {}
-
-  
 }
