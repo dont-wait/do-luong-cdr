@@ -91,7 +91,9 @@ const Curriculum = () => {
       dropLabel: "department_name",
     }),
   ];
-  return <CrudForm inputFields={inputFields} url={CURRICULUM_API} />;
+  return (
+    <CrudForm inputFields={inputFields} url={CURRICULUM_API} isFilter={true} />
+  );
 };
 
 export default Curriculum;

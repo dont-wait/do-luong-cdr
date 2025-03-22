@@ -19,9 +19,11 @@ import { isAxiosError } from "axios";
 const CrudForm = ({
   inputFields,
   url,
+  isFilter,
 }: {
   inputFields: CrudFromField[];
   url: string;
+  isFilter?: boolean;
 }) => {
   const [filterText, setFilterText] = useState("");
   const [editMode, setEditMode] = useState(false);
@@ -228,21 +230,23 @@ const CrudForm = ({
                 )
               )}
 
-              <Col md={6}>
-                <Form.Group>
-                  <Form.Label className='font-bold text-2xl my-4 d-flex align-items-center'>
-                    <MdOutlineInsertChartOutlined className='text-3xl me-2' />
-                    Filter
-                  </Form.Label>
-                  <Form.Control
-                    type='text'
-                    placeholder='Enter filter text'
-                    value={filterText}
-                    onChange={(e) => setFilterText(e.target.value)}
-                    className='filter-input px-2 py-3 mb-3'
-                  />
-                </Form.Group>
-              </Col>
+              {isFilter && (
+                <Col md={6}>
+                  <Form.Group>
+                    <Form.Label className='font-bold text-2xl my-4 d-flex align-items-center'>
+                      <MdOutlineInsertChartOutlined className='text-3xl me-2' />
+                      Filter
+                    </Form.Label>
+                    <Form.Control
+                      type='text'
+                      placeholder='Enter filter text'
+                      value={filterText}
+                      onChange={(e) => setFilterText(e.target.value)}
+                      className='filter-input px-2 py-3 mb-3'
+                    />
+                  </Form.Group>
+                </Col>
+              )}
             </Row>
 
             <div className='d-flex gap-2'>
