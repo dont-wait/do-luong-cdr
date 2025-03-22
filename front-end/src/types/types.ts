@@ -68,8 +68,6 @@ export interface CrudFromField {
   dataDrop?: Obj[];
   dropLabel?: string;
   isMultiple?: boolean;
-  filterLabel?: string;
-  dataFilter?: { [key: string]: string | number }[];
 }
 
 export interface ErrorResponse {

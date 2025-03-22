@@ -12,8 +12,10 @@ const UserAccount = () => {
     const fetchHanle = async () => {
       try {
         const lecturer = await fetchData("/lecturers");
+        console.log(lecturer);
         if (lecturer.status >= 200 && lecturer.status < 300)
           setLecturer(lecturer.data);
+
         const roles = await fetchData("/roles");
         if (roles.status >= 200 && roles.status < 300) setRoles(roles.data);
       } catch {

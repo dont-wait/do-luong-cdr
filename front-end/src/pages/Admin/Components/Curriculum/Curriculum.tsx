@@ -12,7 +12,7 @@ const Curriculum = () => {
   useEffect(() => {
     const fetchHanle = async () => {
       try {
-        const department = await fetchData("/departments");
+        const department = await fetchData("/academics");
         if (department.status >= 200 && department.status < 300)
           setDepartment(department.data);
         const levels = await fetchData("/levels");

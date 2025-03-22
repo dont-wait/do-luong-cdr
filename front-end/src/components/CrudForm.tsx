@@ -14,6 +14,7 @@ import CrudFormList from "./CrudFormList";
 import { CrudFromField } from "../types/types";
 import { Obj } from "../types/types";
 import axios from "../api/axios";
+import { AxiosError } from "axios";
 import { useToast } from "../hook/useToast";
 
 const CrudForm = ({
@@ -43,7 +44,8 @@ const CrudForm = ({
     try {
       setLoading(true);
       const response = await axios.get(url);
-      setData(response.data);
+      if (response.data.statusCode === 200) setData(response.data.data);
+      else throw new Error("Get Fail");
     } catch {
       showToast("Get Method Fail!", "error");
     } finally {
@@ -51,22 +53,40 @@ const CrudForm = ({
     }
   }, [url, showToast]);
 
-  // Fetch departments on component mount
   useEffect(() => {
     getHandle();
   }, [getHandle]);
 
+  interface ErrorResponse {
+    details?: {
+      message: string;
+    };
+  }
+
+  function isAxiosError(error: unknown): error is AxiosError {
+    return (error as AxiosError).isAxiosError !== undefined;
+  }
+
   // CREATE
   const createHandle = useCallback(
     async (info: Obj) => {
+      console.log(info);
+      setLoading(true);
       try {
         const res = await axios.post(url, info);
-        setLoading(true);
         setData((prev) => [...prev, res.data]);
         reset();
         showToast("Create Success!", "success");
-      } catch {
-        showToast("Create Fail!", "error");
+      } catch (err: unknown) {
+        if (isAxiosError(err)) {
+          const errorMessage =
+            (err.response?.data as ErrorResponse)?.details?.message ||
+            err.message;
+          console.log(errorMessage);
+          showToast(errorMessage, "error");
+        } else {
+          showToast("An unknown error occurred", "error");
+        }
       } finally {
         setLoading(false);
       }
@@ -77,9 +97,8 @@ const CrudForm = ({
   // UPDATE
   const updateHandle = useCallback(
     async (info: Obj) => {
+      setLoading(true);
       try {
-        setLoading(true);
-        console.log(url + `/${info.id}`);
         const res = await axios.patch(url + `/${info.id}`, info);
         setData((prev) =>
           prev.map((obj) => (obj.id === res.data.id ? res.data : obj))
@@ -100,8 +119,8 @@ const CrudForm = ({
   const deleteHandle = useCallback(
     async (id: string) => {
       if (!window.confirm("Are you sure you want to delete this item?")) return;
+      setLoading(true);
       try {
-        setLoading(true);
         await axios.delete(`${url}/${id}`);
         setData((prev) => prev.filter((obj) => obj.id !== id));
         showToast("Delete Success!", "success");
@@ -117,7 +136,7 @@ const CrudForm = ({
   const onEditMode = (info: Obj) => {
     setEditMode(true);
     inputFields.forEach((field) => {
-      const label = field["isPrimaryKey"] ? "id" : field["label"];
+      const label = field["key"];
       setValue(label, info[label]);
     });
     formRef?.current?.scrollIntoView({ behavior: "smooth" });
@@ -143,9 +162,7 @@ const CrudForm = ({
   const listProps = {
     label: "Information",
     data,
-    colLabels: inputFields.map((field) =>
-      field["isPrimaryKey"] ? "id" : field["label"]
-    ),
+    colLabels: inputFields.map((field) => field["key"]),
   };
 
   return (
@@ -157,14 +174,14 @@ const CrudForm = ({
               {inputFields.map(
                 (
                   {
+                    key,
                     label,
                     type,
-                    isPrimaryKey,
                     isRequired,
                     isDropBox,
                     dataDrop,
                     dropLabel,
-                    isMutiple,
+                    isMultiple,
                   },
                   idx
                 ) => (
@@ -181,7 +198,7 @@ const CrudForm = ({
                         <Row>
                           <Col>
                             <Form.Group>
-                              {isMutiple ? (
+                              {isMultiple ? (
                                 <div
                                   style={{
                                     maxHeight: "110px",
@@ -190,14 +207,14 @@ const CrudForm = ({
                                     padding: "5px",
                                   }}>
                                   {filterHandle(dataDrop, dropLabel)?.map(
-                                    (item) => (
+                                    (item, j) => (
                                       <Form.Check
-                                        key={item.id}
+                                        key={j}
                                         type='checkbox'
                                         label={item[`${dropLabel}`]}
                                         value={item.id}
                                         checked={selectedValues.includes(
-                                          item.id
+                                          JSON.stringify(item.id)
                                         )}
                                         onChange={(e) => {
                                           const value = e.target.value;
@@ -218,21 +235,18 @@ const CrudForm = ({
                               ) : (
                                 <Form.Select
                                   className='dropdown-custom px-2 py-3 text-base'
-                                  {...register(isPrimaryKey ? "id" : label, {
+                                  {...register(key, {
                                     required: true,
                                     valueAsNumber: type === "number",
                                   })}
                                   onChange={(e) => {
-                                    setValue(
-                                      isPrimaryKey ? "id" : label,
-                                      e.target.value
-                                    );
+                                    setValue(key, e.target.value);
                                     setFilterText("");
                                   }}>
                                   <option value='-1'>insert {label}</option>
                                   {filterHandle(dataDrop, dropLabel)?.map(
-                                    (item) => (
-                                      <option key={item.id} value={item.id}>
+                                    (item, j) => (
+                                      <option key={j} value={item[key]}>
                                         {item[`${dropLabel}`]}
                                       </option>
                                     )
@@ -248,14 +262,14 @@ const CrudForm = ({
                           type={type}
                           placeholder={`Input ${label}`}
                           className='px-2 py-3 text-base'
-                          {...register(isPrimaryKey ? "id" : label, {
+                          {...register(key, {
                             required: isRequired,
                             valueAsNumber: type === "number",
                           })}
                         />
                       )}
 
-                      {errors[isPrimaryKey ? "id" : label] && (
+                      {errors[key] && (
                         <p className='text-danger p-1 font-medium'>
                           {label} is required!
                         </p>
