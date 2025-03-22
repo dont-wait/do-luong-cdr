@@ -60,6 +60,7 @@ export interface Obj {
 }
 
 export interface CrudFromField {
+  key: string;
   label: string;
   type: string;
   isPrimaryKey?: boolean;
