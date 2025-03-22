@@ -3,36 +3,29 @@ import CrudForm from "../../../../components/CrudForm";
 import { CrudFromField, Obj } from "../../../../types/types";
 import { useState, useEffect } from "react";
 import { fetchData } from "../../../../utils/helps";
-import { ROLES } from "../../../../types/roles";
 
 const UserAccount = () => {
-  const [data, setData] = useState<Obj[]>([]);
-  const roles: Obj[] = [
-    {
-      id: ROLES.Admin.toString(),
-      role: "Admin",
-    },
-    { id: ROLES.Lecturer.toString(), role: "Lecturer" },
-    {
-      id: ROLES.CNHP.toString(),
-      role: "CNHP",
-    },
-  ];
+  const [lecturer, setLecturer] = useState<Obj[]>([]);
+  const [roles, setRoles] = useState<Obj[]>([]);
+
   useEffect(() => {
-    const fetchCurriculums = async () => {
+    const fetchHanle = async () => {
       try {
-        const res = await fetchData("/lecturers");
-        if (res.status >= 200 && res.status < 300) setData(res.data);
+        const lecturer = await fetchData("/lecturers");
+        if (lecturer.status >= 200 && lecturer.status < 300)
+          setLecturer(lecturer.data);
+        const roles = await fetchData("/roles");
+        if (roles.status >= 200 && roles.status < 300) setRoles(roles.data);
       } catch {
         console.error("Error fetching curriculums:");
       }
     };
 
-    fetchCurriculums();
+    fetchHanle();
   }, []);
 
   const inputFields: CrudFromField[] = [
-    new CrudFormClass("Lecturer Id", "text", true, true, true, data, "id"),
+    new CrudFormClass("Lecturer Id", "text", true, true, true, lecturer, "id"),
     new CrudFormClass("Password", "text", true),
     new CrudFormClass("Role Id", "number", true, false, true, roles, "role"),
   ];
