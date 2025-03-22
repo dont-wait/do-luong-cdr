@@ -1,1 +1,1 @@
-export const LOCAL_STORAGE_KEY = "userId";
+export const USER_ID = "userId";
