@@ -9,7 +9,9 @@ export class CrudFormClass {
     public isDropBox?: boolean,
     public dataDrop?: Obj[],
     public dropLabel?: string,
-    public isMutiple?: boolean
+    public isMutiple?: boolean,
+    public filterLabel?: string,
+    public dataFilter?: { [key: string]: string | number }[]
   ) {
     if (label) this.label = label;
     if (type) this.type = type;
@@ -19,5 +21,7 @@ export class CrudFormClass {
     if (dataDrop) this.dataDrop = dataDrop;
     if (dropLabel) this.dropLabel = dropLabel;
     if (isMutiple) this.isMutiple = isMutiple;
+    if (filterLabel) this.filterLabel = filterLabel;
+    if (dataFilter) this.dataFilter = dataFilter;
   }
 }
