@@ -44,14 +44,14 @@ const Sidebar: React.FC<SidebarProps> = ({
       label: "Lecturer",
     },
     {
-      section: "userAccount",
-      icon: <MdAccountTree className='sidebar-item' />,
-      label: "UserAccount",
-    },
-    {
       section: "admin",
       icon: <MdOutlineAdminPanelSettings className='sidebar-item' />,
       label: "Admin",
+    },
+    {
+      section: "userAccount",
+      icon: <MdAccountTree className='sidebar-item' />,
+      label: "UserAccount",
     },
   ];
 
