@@ -11,11 +11,10 @@ import {
 import { MdOutlineInsertChartOutlined } from "react-icons/md";
 import { useForm } from "react-hook-form";
 import CrudFormList from "./CrudFormList";
-import { CrudFromField } from "../types/types";
-import { Obj } from "../types/types";
-import axios from "../api/axios";
-import { AxiosError } from "axios";
+import { CrudFromField, ErrorResponse, Obj } from "../types/types";
 import { useToast } from "../hook/useToast";
+import axios from "../api/axios";
+import { isAxiosError } from "axios";
 
 const CrudForm = ({
   inputFields,
@@ -24,13 +23,14 @@ const CrudForm = ({
   inputFields: CrudFromField[];
   url: string;
 }) => {
-  const [filterText, setFilterText] = useState<string>("");
-  const [editMode, setEditMode] = useState<boolean>(false);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [filterText, setFilterText] = useState("");
+  const [editMode, setEditMode] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [data, setData] = useState<Obj[]>([]);
-  const formRef = useRef<HTMLFormElement>(null);
   const [selectedValues, setSelectedValues] = useState<string[]>([]);
+  const formRef = useRef<HTMLFormElement>(null);
   const { showToast } = useToast();
+
   const {
     register,
     setValue,
@@ -39,137 +39,96 @@ const CrudForm = ({
     reset,
   } = useForm();
 
-  // GET
-  const getHandle = useCallback(async () => {
+  // Fetch data
+  const fetchData = useCallback(async () => {
+    setLoading(true);
     try {
-      setLoading(true);
       const response = await axios.get(url);
       if (response.data.statusCode === 200) setData(response.data.data);
-      else throw new Error("Get Fail");
+      else throw new Error("Failed to fetch data.");
     } catch {
-      showToast("Get Method Fail!", "error");
+      showToast("Failed to fetch data!", "error");
     } finally {
       setLoading(false);
     }
   }, [url, showToast]);
 
   useEffect(() => {
-    getHandle();
-  }, [getHandle]);
+    fetchData();
+  }, [fetchData]);
 
-  interface ErrorResponse {
-    details?: {
-      message: string;
-    };
-  }
+  // Handle API Errors
+  const handleApiError = (err: unknown, defaultMessage: string) => {
+    if (isAxiosError(err)) {
+      const errorMessage =
+        (err.response?.data as ErrorResponse)?.details?.message || err.message;
+      if (Array.isArray(errorMessage))
+        errorMessage.forEach((msg) => showToast(msg, "error"));
+      else showToast(errorMessage, "error");
+    } else {
+      showToast(defaultMessage, "error");
+    }
+  };
 
-  function isAxiosError(error: unknown): error is AxiosError {
-    return (error as AxiosError).isAxiosError !== undefined;
-  }
-
-  // CREATE
-  const createHandle = useCallback(
-    async (info: Obj) => {
-      console.log(info);
-      setLoading(true);
-      try {
-        const res = await axios.post(url, info);
-        setData((prev) => [...prev, res.data]);
-        reset();
-        showToast("Create Success!", "success");
-      } catch (err: unknown) {
-        if (isAxiosError(err)) {
-          const errorMessage =
-            (err.response?.data as ErrorResponse)?.details?.message ||
-            err.message;
-          console.log(errorMessage);
-          showToast(errorMessage, "error");
-        } else {
-          showToast("An unknown error occurred", "error");
-        }
-      } finally {
-        setLoading(false);
-      }
-    },
-    [reset, url, showToast]
-  );
-
-  // UPDATE
-  const updateHandle = useCallback(
-    async (info: Obj) => {
-      setLoading(true);
-      try {
-        const res = await axios.patch(url + `/${info.id}`, info);
+  // Create or Update Data
+  const handleFormSubmit = async (info: Obj) => {
+    setLoading(true);
+    try {
+      if (editMode) {
+        const res = await axios.patch(`${url}/${info.id}`, info);
         setData((prev) =>
           prev.map((obj) => (obj.id === res.data.id ? res.data : obj))
         );
-        reset();
-        setEditMode(false);
-        showToast("Update Success!", "success");
-      } catch {
-        showToast("Update Fail!", "error");
-      } finally {
-        setLoading(false);
+        showToast("Update successful!", "success");
+      } else {
+        const res = await axios.post(url, info);
+        setData((prev) => [...prev, res.data]);
+        showToast("Create successful!", "success");
       }
-    },
-    [reset, url, showToast]
-  );
+      reset();
+      setEditMode(false);
+    } catch (err) {
+      handleApiError(err, editMode ? "Update failed!" : "Creation failed!");
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  // DELETE
-  const deleteHandle = useCallback(
-    async (id: string) => {
-      if (!window.confirm("Are you sure you want to delete this item?")) return;
-      setLoading(true);
-      try {
-        await axios.delete(`${url}/${id}`);
-        setData((prev) => prev.filter((obj) => obj.id !== id));
-        showToast("Delete Success!", "success");
-      } catch {
-        showToast("Delete Fail!", "error");
-      } finally {
-        setLoading(false);
-      }
-    },
-    [url, showToast]
-  );
+  // Delete Data
+  const deleteHandle = async (id: string) => {
+    if (!window.confirm("Are you sure you want to delete this item?")) return;
+    setLoading(true);
+    try {
+      await axios.delete(`${url}/${id}`);
+      setData((prev) => prev.filter((obj) => obj.id !== id));
+      showToast("Delete successful!", "success");
+    } catch {
+      showToast("Delete failed!", "error");
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  // Enter Edit Mode
   const onEditMode = (info: Obj) => {
     setEditMode(true);
-    inputFields.forEach((field) => {
-      const label = field["key"];
-      setValue(label, info[label]);
-    });
+    inputFields.forEach((field) => setValue(field.key, info[field.key]));
     formRef?.current?.scrollIntoView({ behavior: "smooth" });
   };
 
-  const onSubmit = editMode ? updateHandle : createHandle;
-
-  // Filter based on search term
-  const filterHandle = (data: Obj[] | undefined, label: string | undefined) => {
-    const res = data?.filter((dept: Obj) => {
-      const filterTextLowercase = filterText.toLowerCase();
-      return (
-        dept[label ?? "id"] &&
-        JSON.stringify(dept[label ?? "id"])
-          .toLowerCase()
-          .includes(filterTextLowercase)
-      );
-    });
-    return res;
-  };
-
-  // props
-  const listProps = {
-    label: "Information",
-    data,
-    colLabels: inputFields.map((field) => field["key"]),
-  };
+  // Filter Data
+  const filterData = (data: Obj[], label: string) =>
+    data.filter((item) =>
+      JSON.stringify(item[label] ?? "")
+        .toLowerCase()
+        .includes(filterText.toLowerCase())
+    );
 
   return (
     <Container>
       <Card className='mb-5 shadow-sm my-4'>
         <Card.Body>
-          <Form onSubmit={handleSubmit(onSubmit)} ref={formRef}>
+          <Form onSubmit={handleSubmit(handleFormSubmit)} ref={formRef}>
             <Row className='mb-3'>
               {inputFields.map(
                 (
@@ -187,80 +146,61 @@ const CrudForm = ({
                 ) => (
                   <Col md={6} key={idx}>
                     <Form.Group className='mb-3'>
-                      <Form.Label
-                        className='font-bold text-2xl my-4'
-                        style={{ display: "flex", alignItems: "center" }}>
-                        <MdOutlineInsertChartOutlined className='text-3xl' />
+                      <Form.Label className='font-bold text-2xl my-4 d-flex align-items-center'>
+                        <MdOutlineInsertChartOutlined className='text-3xl me-2' />
                         {label}
                       </Form.Label>
 
                       {isDropBox ? (
-                        <Row>
-                          <Col>
-                            <Form.Group>
-                              {isMultiple ? (
-                                <div
-                                  style={{
-                                    maxHeight: "110px",
-                                    overflowY: "auto",
-                                    border: "1px solid #ccc",
-                                    padding: "5px",
-                                  }}>
-                                  {filterHandle(dataDrop, dropLabel)?.map(
-                                    (item, j) => (
-                                      <Form.Check
-                                        key={j}
-                                        type='checkbox'
-                                        label={item[`${dropLabel}`]}
-                                        value={item.id}
-                                        checked={selectedValues.includes(
-                                          JSON.stringify(item.id)
-                                        )}
-                                        onChange={(e) => {
-                                          const value = e.target.value;
-                                          const updatedValues =
-                                            selectedValues.includes(value)
-                                              ? selectedValues.filter(
-                                                  (v) => v !== value
-                                                )
-                                              : [...selectedValues, value];
-
-                                          setSelectedValues(updatedValues);
-                                          setValue(label, updatedValues);
-                                        }}
-                                      />
-                                    )
-                                  )}
-                                </div>
-                              ) : (
-                                <Form.Select
-                                  className='dropdown-custom px-2 py-3 text-base'
-                                  {...register(key, {
-                                    required: true,
-                                    valueAsNumber: type === "number",
-                                  })}
-                                  onChange={(e) => {
-                                    setValue(key, e.target.value);
-                                    setFilterText("");
-                                  }}>
-                                  <option value='-1'>insert {label}</option>
-                                  {filterHandle(dataDrop, dropLabel)?.map(
-                                    (item, j) => (
-                                      <option key={j} value={item[key]}>
-                                        {item[`${dropLabel}`]}
-                                      </option>
-                                    )
-                                  )}
-                                </Form.Select>
+                        <Form.Group>
+                          {isMultiple ? (
+                            <div className='multi-select-box'>
+                              {filterData(dataDrop ?? [], dropLabel ?? "").map(
+                                (item, j) => (
+                                  <Form.Check
+                                    key={j}
+                                    type='checkbox'
+                                    label={item[dropLabel ?? ""]}
+                                    value={item.id}
+                                    checked={selectedValues.includes(
+                                      String(item.id)
+                                    )}
+                                    onChange={(e) => {
+                                      const value = e.target.value;
+                                      setSelectedValues((prev) =>
+                                        prev.includes(value)
+                                          ? prev.filter((v) => v !== value)
+                                          : [...prev, value]
+                                      );
+                                      setValue(label, selectedValues);
+                                    }}
+                                  />
+                                )
                               )}
-                            </Form.Group>
-                          </Col>
-                        </Row>
+                            </div>
+                          ) : (
+                            <Form.Select
+                              className='dropdown-custom px-2 py-3 text-base'
+                              {...register(key, {
+                                required: isRequired,
+                                valueAsNumber: type === "number",
+                              })}>
+                              <option value='-1'>Select {label}</option>
+                              {filterData(dataDrop ?? [], dropLabel ?? "").map(
+                                (item, j) => (
+                                  <option key={j} value={item[key]}>
+                                    {item[dropLabel ?? ""]}
+                                  </option>
+                                )
+                              )}
+                            </Form.Select>
+                          )}
+                        </Form.Group>
                       ) : (
                         <Form.Control
                           readOnly={editMode && idx === 0}
                           type={type}
-                          placeholder={`Input ${label}`}
+                          placeholder={`Enter ${label}`}
                           className='px-2 py-3 text-base'
                           {...register(key, {
                             required: isRequired,
@@ -281,15 +221,13 @@ const CrudForm = ({
 
               <Col md={6}>
                 <Form.Group>
-                  <Form.Label
-                    className='font-bold text-2xl my-4'
-                    style={{ display: "flex", alignItems: "center" }}>
-                    <MdOutlineInsertChartOutlined className='text-3xl' />
+                  <Form.Label className='font-bold text-2xl my-4 d-flex align-items-center'>
+                    <MdOutlineInsertChartOutlined className='text-3xl me-2' />
                     Filter
                   </Form.Label>
                   <Form.Control
                     type='text'
-                    placeholder={`Input Filter`}
+                    placeholder='Enter filter text'
                     value={filterText}
                     onChange={(e) => setFilterText(e.target.value)}
                     className='filter-input px-2 py-3 mb-3'
@@ -298,24 +236,18 @@ const CrudForm = ({
               </Col>
             </Row>
 
-            <div className='flex space-x-2'>
-              <Button type='submit' className='btn-custom-primary btn'>
+            <div className='d-flex gap-2'>
+              <Button type='submit' className='btn-custom-primary'>
                 {editMode ? "Update" : "Submit"}
               </Button>
-
               {editMode && (
                 <Button
                   variant='outline-secondary'
-                  className='btn'
                   onClick={() => setEditMode(false)}>
                   Cancel
                 </Button>
               )}
-
-              <Button
-                variant='outline-secondary'
-                className='btn'
-                onClick={() => reset()}>
+              <Button variant='outline-secondary' onClick={() => reset()}>
                 Reset
               </Button>
             </div>
@@ -324,15 +256,20 @@ const CrudForm = ({
       </Card>
 
       <CrudFormList
-        listProps={listProps}
+        listProps={{
+          label: "Information",
+          data,
+          colLabels: inputFields
+            .filter((field) => field.key && field.isVisible)
+            .map((field) => field.key),
+        }}
         onEditMode={onEditMode}
         deleteHandle={deleteHandle}
       />
 
-      {/* Loading Spinner */}
       {loading && (
         <div className='spinner-overlay'>
-          <div className='bg-white dark:bg-gray-800 p-4 rounded-lg shadow flex items-center space-x-3'>
+          <div className='bg-white dark:bg-gray-800 p-4 rounded-lg shadow d-flex align-items-center'>
             <Spinner animation='border' role='status' variant='primary' />
             <span>Processing...</span>
           </div>

@@ -68,6 +68,7 @@ export interface CrudFromField {
   dataDrop?: Obj[];
   dropLabel?: string;
   isMultiple?: boolean;
+  isVisible?: boolean;
 }
 
 export interface ErrorResponse {
