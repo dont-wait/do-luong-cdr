@@ -42,6 +42,7 @@ const CrudForm = ({
   // Fetch data
   const fetchData = useCallback(async () => {
     setLoading(true);
+    console.log("get");
     try {
       const response = await axios.get(url);
       if (response.data.statusCode === 200) setData(response.data.data);
@@ -75,14 +76,15 @@ const CrudForm = ({
     setLoading(true);
     try {
       if (editMode) {
-        const res = await axios.patch(`${url}/${info.id}`, info);
+        const label = inputFields.map((field) => field.key)[0];
+        const res = await axios.patch(`${url}/${info[label]}`, info);
         setData((prev) =>
           prev.map((obj) => (obj.id === res.data.id ? res.data : obj))
         );
         showToast("Update successful!", "success");
       } else {
         const res = await axios.post(url, info);
-        setData((prev) => [...prev, res.data]);
+        setData((prev) => [...prev, res.data.data]);
         showToast("Create successful!", "success");
       }
       reset();
@@ -99,8 +101,12 @@ const CrudForm = ({
     if (!window.confirm("Are you sure you want to delete this item?")) return;
     setLoading(true);
     try {
-      await axios.delete(`${url}/${id}`);
-      setData((prev) => prev.filter((obj) => obj.id !== id));
+      const res = await axios.delete(`${url}/${id}`);
+      setData((prev) =>
+        prev.filter((obj) => {
+          return JSON.stringify(obj) != JSON.stringify(res.data.data);
+        })
+      );
       showToast("Delete successful!", "success");
     } catch {
       showToast("Delete failed!", "error");

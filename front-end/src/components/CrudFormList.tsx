@@ -186,7 +186,7 @@ const CrudFormList = ({
                           variant='outline-danger'
                           size='sm'
                           onClick={() => {
-                            deleteHandle(dept.id);
+                            deleteHandle(dept[`${colLabels[0]}`]?.toString());
                             if (currentItems.length === 1 && currentPage > 1) {
                               setCurrentPage(currentPage - 1);
                             }
