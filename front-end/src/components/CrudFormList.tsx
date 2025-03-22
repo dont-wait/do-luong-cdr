@@ -29,13 +29,15 @@ const CrudFormList = ({
 }) => {
   const { label, data, colLabels } = listProps;
 
+  console.log(data);
+
   // state
   const [itemsPerPage, setItemsPerPage] = useState(5);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
 
   // Filter based on search term
-  const filtered = data.filter((dept) => {
+  const filtered = data?.filter((dept) => {
     const searchLower = searchTerm.toLowerCase();
     return colLabels.some((colLabel) => {
       return (
