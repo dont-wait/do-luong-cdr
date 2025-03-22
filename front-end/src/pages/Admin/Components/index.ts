@@ -7,6 +7,7 @@ import Curriculum from "./Curriculum/Curriculum";
 import Subject from "./Subject/Subject";
 import Lecturer from "./Lecturer/Lecturer";
 import UserAccount from "./UserAccount/UserAccount";
+import Admin from "./Admin/Admin";
 
 export {
   Navbar,
@@ -18,4 +19,5 @@ export {
   Subject,
   Lecturer,
   UserAccount,
+  Admin,
 };

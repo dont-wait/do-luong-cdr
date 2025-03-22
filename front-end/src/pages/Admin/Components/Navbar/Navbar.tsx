@@ -10,6 +10,7 @@ const Navbar: React.FC<HeaderProps> = ({ activeSection }) => {
     subject: "Subject",
     lecturer: "Lecturer",
     userAccount: "User Account",
+    admin: "Admin",
     // Add more mappings
   };
 
