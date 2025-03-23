@@ -2,11 +2,12 @@ import { CrudFormClass } from "../../../../class/CrudFormClass";
 import CrudForm from "../../../../components/CrudForm";
 import { CrudFromField } from "../../../../types/types";
 import { ADMIN_API } from "../../../../api/apiUrl";
+import { PK } from "../../../../api/primaryKey";
 
 const Admin = () => {
   const inputFields: CrudFromField[] = [
     CrudFormClass.create({
-      key: "admin_id",
+      key: PK.ADMIN_API,
       label: "Admin Id",
       type: "text",
       isRequired: true,

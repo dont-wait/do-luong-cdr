@@ -354,5 +354,15 @@
       "lecturer_id": "01014035",
       "academic_id": ["7480201", "7480220"]
     }
+  ],
+  "admin": [
+    {
+      "admin_id": "AD001",
+      "first_name": "John",
+      "last_name": "Doe",
+      "phone": "1234567891",
+      "email": "john.smith@gmail.com",
+      "password": "12345"
+    }
   ]
 }

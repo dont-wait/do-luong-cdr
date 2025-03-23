@@ -4,4 +4,5 @@ export const PK = {
   LECTURES_API: "lecturer_id",
   DEGREE_API: "degree_id",
   SUBJECT_API: "subject_id",
+  ADMIN_API: "admin_id",
 };
