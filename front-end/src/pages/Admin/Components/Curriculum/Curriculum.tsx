@@ -82,7 +82,7 @@ const Curriculum = () => {
       dropLabel: "academic_type",
     }),
     CrudFormClass.create({
-      key: "department_id",
+      key: PK.DEPARTMENT_API,
       label: "Department Id",
       type: "text",
       isRequired: true,

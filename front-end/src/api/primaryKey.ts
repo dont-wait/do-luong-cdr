@@ -1,8 +1,8 @@
 export const PK = {
-  DEPARTMENT_API: "department_id",
-  ACADEMIC_API: "academic_id",
-  LECTURES_API: "lecturer_id",
-  DEGREE_API: "degree_id",
-  SUBJECT_API: "subject_id",
-  ADMIN_API: "admin_id",
+  DEPARTMENT_API: "id",
+  ACADEMIC_API: "id",
+  LECTURES_API: "id",
+  DEGREE_API: "id",
+  SUBJECT_API: "id",
+  ADMIN_API: "id",
 };

@@ -1,124 +1,124 @@
 {
   "departments": [
     {
-      "department_id": "DP001",
+      "id": "DP001",
       "department_name": "Human Resources"
     },
     {
-      "department_id": "DP002",
+      "id": "DP002",
       "department_name": "Finance"
     },
     {
-      "department_id": "DP003",
+      "id": "DP003",
       "department_name": "Marketing"
     },
     {
-      "department_id": "DP004",
+      "id": "DP004",
       "department_name": "Sales"
     },
     {
-      "department_id": "DP005",
+      "id": "DP005",
       "department_name": "IT"
     },
     {
-      "department_id": "DP006",
+      "id": "DP006",
       "department_name": "Customer Service"
     },
     {
-      "department_id": "DP007",
+      "id": "DP007",
       "department_name": "Operations"
     },
     {
-      "department_id": "DP008",
+      "id": "DP008",
       "department_name": "Legal"
     },
     {
-      "department_id": "DP009",
+      "id": "DP009",
       "department_name": "Research and Development"
     },
     {
-      "department_id": "DP010",
+      "id": "DP010",
       "department_name": "Product Management"
     },
     {
-      "department_id": "DP011",
+      "id": "DP011",
       "department_name": "Supply Chain"
     },
     {
-      "department_id": "DP012",
+      "id": "DP012",
       "department_name": "Quality Assurance"
     },
     {
-      "department_id": "DP013",
+      "id": "DP013",
       "department_name": "Business Development"
     },
     {
-      "department_id": "DP014",
+      "id": "DP014",
       "department_name": "Public Relations"
     },
     {
-      "department_id": "DP015",
+      "id": "DP015",
       "department_name": "Training and Development"
     },
     {
-      "department_id": "DP016",
+      "id": "DP016",
       "department_name": "Compliance"
     },
     {
-      "department_id": "DP017",
+      "id": "DP017",
       "department_name": "Accounting"
     },
     {
-      "department_id": "DP018",
+      "id": "DP018",
       "department_name": "Facilities"
     },
     {
-      "department_id": "DP019",
+      "id": "DP019",
       "department_name": "Information Security"
     },
     {
-      "department_id": "DP020",
+      "id": "DP020",
       "department_name": "Data Analysis"
     }
   ],
   "academics": [
     {
-      "academic_id": "7480201",
+      "id": "7480201",
       "academic_name": "Information Technology",
       "academic_type": 1,
       "academic_level": 1,
       "department_id": "DP001"
     },
     {
-      "academic_id": "7480202",
+      "id": "7480202",
       "academic_name": "Computer Science",
       "academic_type": 1,
       "academic_level": 1,
       "department_id": "DP002"
     },
     {
-      "academic_id": "7480203",
+      "id": "7480203",
       "academic_name": "Web Development",
       "academic_type": 1,
       "academic_level": 2,
       "department_id": "DP003"
     },
     {
-      "academic_id": "7480204",
+      "id": "7480204",
       "academic_name": "Network Security",
       "academic_type": 1,
       "academic_level": 1,
       "department_id": "DP004"
     },
     {
-      "academic_id": "7480205",
+      "id": "7480205",
       "academic_name": "Data Science",
       "academic_type": 1,
       "academic_level": 2,
       "department_id": "DP005"
     },
     {
-      "academic_id": "7480206",
+      "id": "7480206",
       "academic_name": "Software Engineering",
       "academic_type": 1,
       "academic_level": 1,
@@ -127,7 +127,7 @@
   ],
   "lecturers": [
     {
-      "lecturer_id": "01014018",
+      "id": "01014018",
       "first_name": "Jane",
       "last_name": "Doe",
       "email": "jane.doe@gmail.com",
@@ -136,7 +136,7 @@
       "degree_id": 1
     },
     {
-      "lecturer_id": "01014019",
+      "id": "01014019",
       "first_name": "John",
       "last_name": "Smith",
       "email": "john.smith@gmail.com",
@@ -145,7 +145,7 @@
       "degree_id": 2
     },
     {
-      "lecturer_id": "01014020",
+      "id": "01014020",
       "first_name": "Alice",
       "last_name": "Jones",
       "email": "alice.jones@gmail.com",
@@ -154,7 +154,7 @@
       "degree_id": 3
     },
     {
-      "lecturer_id": "01014021",
+      "id": "01014021",
       "first_name": "Bob",
       "last_name": "Brown",
       "email": "bob.brown@gmail.com",
@@ -163,7 +163,7 @@
       "degree_id": 4
     },
     {
-      "lecturer_id": "01014022",
+      "id": "01014022",
       "first_name": "Carol",
       "last_name": "White",
       "email": "carol.white@gmail.com",
@@ -174,190 +174,244 @@
   ],
   "degree": [
     {
-      "degree_id": "1",
+      "id": "1",
       "degree_name": "Doctoral Degree"
     },
     {
-      "degree_id": "2",
+      "id": "2",
       "degree_name": "Master Degree"
     },
     {
-      "degree_id": "3",
+      "id": "3",
       "degree_name": "Pre-professional Degree"
     },
     {
-      "degree_id": "4",
+      "id": "4",
       "degree_name": "Professional Degree"
     }
   ],
   "academic-subject": [],
   "subjects": [
     {
-      "subject_id": "0693",
+      "id": "0693",
       "subject_name": "Web Developer",
       "practical_credits": 3,
       "theoretical_credits": 2,
       "description": "",
       "lecturer_id": "01014018",
-      "academic_id": ["7480201", "7480203"]
+      "academic_id": [
+        "7480201",
+        "7480203"
+      ]
     },
     {
-      "subject_id": "0694",
+      "id": "0694",
       "subject_name": "Data Science",
       "practical_credits": 3,
       "theoretical_credits": 2,
       "description": "",
       "lecturer_id": "01014019",
-      "academic_id": ["7480201", "7480204"]
+      "academic_id": [
+        "7480201",
+        "7480204"
+      ]
     },
     {
-      "subject_id": "0695",
+      "id": "0695",
       "subject_name": "Cybersecurity",
       "practical_credits": 3,
       "theoretical_credits": 2,
       "description": "",
       "lecturer_id": "01014020",
-      "academic_id": ["7480201", "7480205"]
+      "academic_id": [
+        "7480201",
+        "7480205"
+      ]
     },
     {
-      "subject_id": "0696",
+      "id": "0696",
       "subject_name": "Machine Learning",
       "practical_credits": 3,
       "theoretical_credits": 2,
       "description": "",
       "lecturer_id": "01014021",
-      "academic_id": ["7480201", "7480206"]
+      "academic_id": [
+        "7480201",
+        "7480206"
+      ]
     },
     {
-      "subject_id": "0697",
+      "id": "0697",
       "subject_name": "Mobile App Development",
       "practical_credits": 3,
       "theoretical_credits": 2,
       "description": "",
       "lecturer_id": "01014022",
-      "academic_id": ["7480201", "7480207"]
+      "academic_id": [
+        "7480201",
+        "7480207"
+      ]
     },
     {
-      "subject_id": "0698",
+      "id": "0698",
       "subject_name": "Cloud Computing",
       "practical_credits": 3,
       "theoretical_credits": 2,
       "description": "",
       "lecturer_id": "01014023",
-      "academic_id": ["7480201", "7480208"]
+      "academic_id": [
+        "7480201",
+        "7480208"
+      ]
     },
     {
-      "subject_id": "0699",
+      "id": "0699",
       "subject_name": "Artificial Intelligence",
       "practical_credits": 3,
       "theoretical_credits": 2,
       "description": "",
       "lecturer_id": "01014024",
-      "academic_id": ["7480201", "7480209"]
+      "academic_id": [
+        "7480201",
+        "7480209"
+      ]
     },
     {
-      "subject_id": "0700",
+      "id": "0700",
       "subject_name": "Web Security",
       "practical_credits": 3,
       "theoretical_credits": 2,
       "description": "",
       "lecturer_id": "01014025",
-      "academic_id": ["7480201", "7480210"]
+      "academic_id": [
+        "7480201",
+        "7480210"
+      ]
     },
     {
-      "subject_id": "0701",
+      "id": "0701",
       "subject_name": "Database Management",
       "practical_credits": 3,
       "theoretical_credits": 2,
       "description": "",
       "lecturer_id": "01014026",
-      "academic_id": ["7480201", "7480211"]
+      "academic_id": [
+        "7480201",
+        "7480211"
+      ]
     },
     {
-      "subject_id": "0702",
+      "id": "0702",
       "subject_name": "UI/UX Design",
       "practical_credits": 3,
       "theoretical_credits": 2,
       "description": "",
       "lecturer_id": "01014027",
-      "academic_id": ["7480201", "7480212"]
+      "academic_id": [
+        "7480201",
+        "7480212"
+      ]
     },
     {
-      "subject_id": "0703",
+      "id": "0703",
       "subject_name": "Game Development",
       "practical_credits": 3,
       "theoretical_credits": 2,
       "description": "",
       "lecturer_id": "01014028",
-      "academic_id": ["7480201", "7480213"]
+      "academic_id": [
+        "7480201",
+        "7480213"
+      ]
     },
     {
-      "subject_id": "0704",
+      "id": "0704",
       "subject_name": "Networking Fundamentals",
       "practical_credits": 3,
       "theoretical_credits": 2,
       "description": "",
       "lecturer_id": "01014029",
-      "academic_id": ["7480201", "7480214"]
+      "academic_id": [
+        "7480201",
+        "7480214"
+      ]
     },
     {
-      "subject_id": "0705",
+      "id": "0705",
       "subject_name": "Software Engineering",
       "practical_credits": 3,
       "theoretical_credits": 2,
       "description": "",
       "lecturer_id": "01014030",
-      "academic_id": ["7480201", "7480215"]
+      "academic_id": [
+        "7480201",
+        "7480215"
+      ]
     },
     {
-      "subject_id": "0706",
+      "id": "0706",
       "subject_name": "DevOps Practices",
       "practical_credits": 3,
       "theoretical_credits": 2,
       "description": "",
       "lecturer_id": "01014031",
-      "academic_id": ["7480201", "7480216"]
+      "academic_id": [
+        "7480201",
+        "7480216"
+      ]
     },
     {
-      "subject_id": "0707",
+      "id": "0707",
       "subject_name": "Digital Marketing",
       "practical_credits": 3,
       "theoretical_credits": 2,
       "description": "",
       "lecturer_id": "01014032",
-      "academic_id": ["7480201", "7480217"]
+      "academic_id": [
+        "7480201",
+        "7480217"
+      ]
     },
     {
-      "subject_id": "0708",
+      "id": "0708",
       "subject_name": "Project Management",
       "practical_credits": 3,
       "theoretical_credits": 2,
       "description": "",
       "lecturer_id": "01014033",
-      "academic_id": ["7480201", "7480218"]
+      "academic_id": [
+        "7480201",
+        "7480218"
+      ]
     },
     {
-      "subject_id": "0709",
+      "id": "0709",
       "subject_name": "Blockchain Technology",
       "practical_credits": 3,
       "theoretical_credits": 2,
       "description": "",
       "lecturer_id": "01014034",
-      "academic_id": ["7480201", "7480219"]
+      "academic_id": [
+        "7480201",
+        "7480219"
+      ]
     },
     {
-      "subject_id": "0710",
+      "id": "0710",
       "subject_name": "Ethical Hacking",
       "practical_credits": 3,
       "theoretical_credits": 2,
       "description": "",
       "lecturer_id": "01014035",
-      "academic_id": ["7480201", "7480220"]
+      "academic_id": [
+        "7480201",
+        "7480220"
+      ]
     }
   ],
   "admin": [
     {
-      "admin_id": "AD001",
+      "id": "AD001",
       "first_name": "John",
       "last_name": "Doe",
       "phone": "1234567891",

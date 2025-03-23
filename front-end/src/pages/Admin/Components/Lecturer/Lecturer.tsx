@@ -74,7 +74,7 @@ const Lecturer = () => {
       isRequired: true,
     }),
     CrudFormClass.create({
-      key: "academic_id",
+      key: PK.ACADEMIC_API,
       label: "Curriculum Id",
       type: "text",
       isRequired: true,
@@ -84,7 +84,7 @@ const Lecturer = () => {
       isVisible: true,
     }),
     CrudFormClass.create({
-      key: "degree_id",
+      key: PK.DEGREE_API,
       label: "Degree Name",
       type: "number",
       isRequired: true,
