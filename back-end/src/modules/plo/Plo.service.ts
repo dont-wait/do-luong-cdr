@@ -1,26 +1,57 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreatePloDto } from './dto/create-plo.dto';
-import { UpdatePloDto } from './dto/update-plo.dto';
+import { PrismaService } from '../prisma/Prisma.service';
+import { AcademicService } from '../academic/Academic.service';
 
 @Injectable()
 export class PloService {
-  create(createPloDto: CreatePloDto) {
-    return 'This action adds a new plo';
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly academic: AcademicService
+  ){}
+
+  async createPlo(data: CreatePloDto | CreatePloDto[]) {
+    if (Array.isArray(data)) {
+        for (const p of data) {
+            if (!p.academic_id || !await this.academic.getAcademicById(p.academic_id)) {
+                throw new BadRequestException("Academic ID không hợp lệ");
+            }
+        }
+
+        return this.prisma.plo.createMany({
+            data: data.map(p => ({
+                ...p
+            }))
+        });
+    }
+    else{
+      const {academic_id} = data;
+
+      if(!academic_id || !await this.academic.getAcademicById(academic_id)) {
+        throw new BadRequestException("Academic ID không hợp lệ");
+      }
+      return this.prisma.plo.create({data})
+    }
   }
 
-  findAll() {
-    return `This action returns all plo`;
+
+
+  async findManyPlos(){
+    return this.prisma.plo.findMany();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} plo`;
+  async getPloById(id: string){
+    return this.prisma.plo.findUnique({where: {id}})
   }
 
-  update(id: number, updatePloDto: UpdatePloDto) {
-    return `This action updates a #${id} plo`;
+  async updatePlo(id: string, data: CreatePloDto){
+    return this.prisma.plo.update({
+      where: {id},
+      data
+    })
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} plo`;
+  async removePlo(id: string){
+    return this.prisma.plo.delete({where: {id}})
   }
 }
