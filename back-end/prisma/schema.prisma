@@ -44,7 +44,7 @@ model Academic_subject {
 }
 
 model Plo {
-  id      String    @id @default(dbgenerated("uuid()"))
+  id      String    @id @default(uuid())
   plo_name    String @db.Char(10)
   plo_content String @db.VarChar(255)
 
@@ -90,7 +90,7 @@ model Subject {
 }
 
 model Clo {
-  id        String    @id @default(dbgenerated("uuid()"))
+  id        String    @id @default(uuid())
   clo_name      String @db.Char(10)
   clo_content   String @db.VarChar(255)
   clo_parent_id Int?
@@ -104,7 +104,7 @@ model Clo {
 
 
 model Exam {
-  id   String      @id @default(dbgenerated("uuid()"))
+  id   String      @id @default(uuid())
   exam_name String   @db.VarChar(255)
   date_exam      DateTime? @default(now())
 
@@ -114,7 +114,7 @@ model Exam {
 }
 
 model Question {
-  id String    @id @default(dbgenerated("uuid()"))
+  id String    @id @default(uuid())
   question_name    String @db.VarChar(255)
   answer      String @db.VarChar(255)
   max_score        Float
@@ -128,7 +128,7 @@ model Question {
 }
 
 model Result {
-  id Int   @id @default(dbgenerated("uuid()"))
+  id String   @id @default(uuid())
   score     Float?
 
   student_id String
