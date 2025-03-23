@@ -36,19 +36,4 @@ export class AdminController {
   getAdminById(@Param('id') id: string) {
     return this.adminService.getAdminById(id);
   }
-
-  @Patch(':id')
-  @ApiOperation({ summary: 'Update admin by ID' })
-  @ApiParam({ name: 'id', description: 'Admin ID' })
-  @ApiBody({ type: UpdateAdminDto })
-  updateAdmin(@Param('id') id: string, @Body() updateAdminDto: UpdateAdminDto) {
-    return this.adminService.updateAdmin(id, updateAdminDto);
-  }
-
-  @Delete(':id')
-  @ApiOperation({ summary: 'Delete admin by ID' })
-  @ApiParam({ name: 'id', description: 'Admin ID' })
-  deleteAdmin(@Param('id') id: string) {
-    return this.adminService.deleteAdmin(id);
-  }
 }
