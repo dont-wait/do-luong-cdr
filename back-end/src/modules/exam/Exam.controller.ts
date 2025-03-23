@@ -16,14 +16,6 @@ export class ExamController {
     return this.examService.createExam(data);
   }
 
-  @Post("createMany")
-  @ApiOperation({ summary: 'Create multiple exams' })
-  @ApiResponse({ status: 201, description: 'Exams have been created successfully' })
-  @ApiResponse({ status: 400, description: 'Bad Request' })
-  createManyExam(@Body() data: CreateExamDto[]) {
-    return this.examService.createManyExam(data);
-  }
-
   @Get()
   @ApiOperation({ summary: 'Get all exams' })
   @ApiOkResponse({ description: 'List of all exams retrieved successfully' })
