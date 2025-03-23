@@ -9,6 +9,7 @@ export class CrudFormClass {
   readonly dropLabel?: string;
   readonly isMultiple: boolean;
   readonly isVisible: boolean;
+  readonly defaultValue: string | number;
 
   constructor(options: CrudFromField) {
     this.key = options.key;
@@ -20,6 +21,7 @@ export class CrudFormClass {
     this.dropLabel = options.dropLabel;
     this.isMultiple = options.isMultiple ?? false;
     this.isVisible = options.isVisible ?? false;
+    this.defaultValue = options.defaultValue ?? "";
   }
 
   static create(options: CrudFromField): CrudFormClass {

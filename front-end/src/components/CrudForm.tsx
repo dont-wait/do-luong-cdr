@@ -11,10 +11,10 @@ import {
 import { MdOutlineInsertChartOutlined } from "react-icons/md";
 import { useForm } from "react-hook-form";
 import CrudFormList from "./CrudFormList";
-import { CrudFromField, ErrorResponse, Obj } from "../types/types";
+import { CrudFromField } from "../types/types";
+import { Obj } from "../types/types";
+import axios from "../api/axios";
 import { useToast } from "../hook/useToast";
-import { isAxiosError } from "axios";
-import { getData, postData, updateData, deleteData } from "../utils/helps";
 
 const CrudForm = ({
   inputFields,
@@ -23,16 +23,15 @@ const CrudForm = ({
 }: {
   inputFields: CrudFromField[];
   url: string;
-  isFilter?: boolean;
+  isFilter: boolean;
 }) => {
-  const [filterText, setFilterText] = useState("");
-  const [editMode, setEditMode] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [filterText, setFilterText] = useState<string>("");
+  const [editMode, setEditMode] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
   const [data, setData] = useState<Obj[]>([]);
-  const [selectedValues, setSelectedValues] = useState<string[]>([]);
   const formRef = useRef<HTMLFormElement>(null);
+  const [selectedValues, setSelectedValues] = useState<string[]>([]);
   const { showToast } = useToast();
-
   const {
     register,
     setValue,
@@ -41,102 +40,112 @@ const CrudForm = ({
     reset,
   } = useForm();
 
-  // Fetch data
-  const fetchData = useCallback(async () => {
-    setLoading(true);
+  // GET
+  const getHandle = useCallback(async () => {
     try {
-      const response = await getData(url);
-      setData(response);
+      setLoading(true);
+      const response = await axios.get(url);
+      setData(response.data);
     } catch {
-      showToast("Failed to fetch data!", "error");
+      showToast("Get Method Fail!", "error");
     } finally {
       setLoading(false);
     }
   }, [url, showToast]);
 
+  // Fetch departments on component mount
   useEffect(() => {
-    fetchData();
-  }, [fetchData]);
+    getHandle();
+  }, [getHandle]);
 
-  // Handle API Errors
-  const handleApiError = (err: unknown, defaultMessage: string) => {
-    if (isAxiosError(err)) {
-      const errorMessage =
-        (err.response?.data as ErrorResponse)?.details?.message || err.message;
-      if (Array.isArray(errorMessage))
-        errorMessage.forEach((msg) => showToast(msg, "error"));
-      else showToast(errorMessage, "error");
-    } else {
-      showToast(defaultMessage, "error");
-    }
-  };
-
-  // Create or Update Data
-  const handleFormSubmit = async (info: Obj) => {
-    setLoading(true);
-    try {
-      if (editMode) {
-        const label = inputFields.map((field) => field.key)[0];
-        const res = await updateData(`${url}/${info[label]}`, info);
-        setData((prev) =>
-          prev.map((obj) =>
-            JSON.stringify(obj) === JSON.stringify(res) ? res : obj
-          )
-        );
-        showToast("Update successful!", "success");
-      } else {
-        const res = await postData(url, info);
-        setData((prev) => [...prev, res]);
-        showToast("Create successful!", "success");
+  // CREATE
+  const createHandle = useCallback(
+    async (info: { [key: string]: string }) => {
+      try {
+        const res = await axios.post(url, info);
+        setLoading(true);
+        setData((prev) => [...prev, res.data]);
+        reset();
+        showToast("Create Success!", "success");
+      } catch {
+        showToast("Create Fail!", "error");
+      } finally {
+        setLoading(false);
       }
-      reset();
-      setEditMode(false);
-    } catch (err) {
-      handleApiError(err, editMode ? "Update failed!" : "Creation failed!");
-    } finally {
-      setLoading(false);
-    }
-  };
+    },
+    [reset, url, showToast]
+  );
 
-  // Delete Data
-  const deleteHandle = async (id: string) => {
-    if (!window.confirm("Are you sure you want to delete this item?")) return;
-    setLoading(true);
-    try {
-      const res = await deleteData(`${url}/${id}`);
-      setData((prev) =>
-        prev.filter((obj) => {
-          return JSON.stringify(obj) != JSON.stringify(res);
-        })
-      );
-      showToast("Delete successful!", "success");
-    } catch {
-      showToast("Delete failed!", "error");
-    } finally {
-      setLoading(false);
-    }
-  };
+  // UPDATE
+  const updateHandle = useCallback(
+    async (info: Obj) => {
+      try {
+        setLoading(true);
+        console.log(url + `/${info.id}`);
+        const res = await axios.put(url + `/${info.id}`, info);
+        setData((prev) =>
+          prev.map((obj) => (obj.id === res.data.id ? res.data : obj))
+        );
+        reset();
+        setEditMode(false);
+        showToast("Update Success!", "success");
+      } catch {
+        showToast("Update Fail!", "error");
+      } finally {
+        setLoading(false);
+      }
+    },
+    [reset, url, showToast]
+  );
 
-  // Enter Edit Mode
+  // DELETE
+  const deleteHandle = useCallback(
+    async (id: string) => {
+      if (!window.confirm("Are you sure you want to delete this item?")) return;
+      try {
+        setLoading(true);
+        await axios.delete(`${url}/${id}`);
+        setData((prev) => prev.filter((obj) => obj.id !== id));
+        showToast("Delete Success!", "success");
+      } catch {
+        showToast("Delete Fail!", "error");
+      } finally {
+        setLoading(false);
+      }
+    },
+    [url, showToast]
+  );
+
   const onEditMode = (info: Obj) => {
     setEditMode(true);
-    inputFields.forEach((field) => setValue(field.key, info[field.key]));
+    inputFields.forEach((field) => {
+      const label = field["key"];
+      setValue(label, info[label]);
+    });
     formRef?.current?.scrollIntoView({ behavior: "smooth" });
   };
 
-  // Filter Data
-  const filterData = (data: Obj[], label: string) =>
-    data.filter((item) =>
-      JSON.stringify(item[label] ?? "")
-        .toLowerCase()
-        .includes(filterText.toLowerCase())
-    );
+  const onSubmit = editMode ? updateHandle : createHandle;
+
+  // Filter based on search term
+  const filterHandle = (data: Obj[] | undefined, label: string | undefined) => {
+    const res = data?.filter((dept: Obj) => {
+      const filterTextLowercase = filterText.toLowerCase();
+      return (
+        dept[label ?? "id"] &&
+        JSON.stringify(dept[label ?? "id"])
+          .toLowerCase()
+          .includes(filterTextLowercase)
+      );
+    });
+    return res;
+  };
 
   return (
     <Container>
       <Card className='mb-5 shadow-sm my-4'>
         <Card.Body>
-          <Form onSubmit={handleSubmit(handleFormSubmit)} ref={formRef}>
+          <Form onSubmit={handleSubmit(onSubmit)} ref={formRef}>
             <Row className='mb-3'>
               {inputFields.map(
                 (
@@ -154,65 +163,76 @@ const CrudForm = ({
                 ) => (
                   <Col md={6} key={idx}>
                     <Form.Group className='mb-3'>
-                      <Form.Label className='font-bold text-2xl my-4 d-flex align-items-center'>
-                        <MdOutlineInsertChartOutlined className='text-3xl me-2' />
+                      <Form.Label
+                        className='font-bold text-2xl my-4'
+                        style={{ display: "flex", alignItems: "center" }}>
+                        <MdOutlineInsertChartOutlined className='text-3xl' />
                         {label}
                       </Form.Label>
 
                       {isDropBox ? (
-                        <Form.Group>
-                          {isMultiple ? (
-                            <div className='multi-select-box'>
-                              {filterData(dataDrop ?? [], dropLabel ?? "").map(
-                                (item, j) => (
-                                  <Form.Check
-                                    key={j}
-                                    type='checkbox'
-                                    label={item[dropLabel ?? ""]}
-                                    value={item[key]}
-                                    checked={selectedValues.includes(
-                                      String(item[key])
-                                    )}
-                                    onChange={(e) => {
-                                      const value = e.target.value;
-                                      setSelectedValues((prev) => {
-                                        const newValues = prev.includes(value)
-                                          ? prev.filter((v) => v !== value)
-                                          : [...prev, value];
+                        <Row>
+                          <Col>
+                            <Form.Group>
+                              {isMultiple ? (
+                                <div
+                                  style={{
+                                    maxHeight: "110px",
+                                    overflowY: "auto",
+                                    border: "1px solid #ccc",
+                                    padding: "5px",
+                                  }}>
+                                  {filterHandle(dataDrop, dropLabel)?.map(
+                                    (item) => (
+                                      <Form.Check
+                                        key={item.id}
+                                        type='checkbox'
+                                        label={item[`${dropLabel}`]}
+                                        value={item.id}
+                                        checked={selectedValues.includes(
+                                          JSON.stringify(item.id)
+                                        )}
+                                        onChange={(e) => {
+                                          const value = e.target.value;
+                                          const updatedValues =
+                                            selectedValues.includes(value)
+                                              ? selectedValues.filter(
+                                                  (v) => v !== value
+                                                ) // Bỏ chọn
+                                              : [...selectedValues, value];
 
-                                        setValue(key, newValues);
-                                        return newValues;
-                                      });
-                                    }}
-                                  />
-                                )
+                                          setSelectedValues(updatedValues);
+                                          setValue(label, updatedValues);
+                                        }}
+                                      />
+                                    )
+                                  )}
+                                </div>
+                              ) : (
+                                <Form.Select
+                                  className='dropdown-custom px-2 py-3 text-base'
+                                  {...register(label, { required: true })}
+                                  onChange={(e) => {
+                                    setValue(label, e.target.value);
+                                    setFilterText("");
+                                  }}>
+                                  {filterHandle(dataDrop, dropLabel)?.map(
+                                    (item) => (
+                                      <option key={item.id} value={item.id}>
+                                        {item[`${dropLabel}`]}
+                                      </option>
+                                    )
+                                  )}
+                                </Form.Select>
                               )}
-                            </div>
-                          ) : (
-                            <Form.Select
-                              className='dropdown-custom px-2 py-3 text-base'
-                              {...register(key, {
-                                required: isRequired,
-                                valueAsNumber: type === "number",
-                              })}>
-                              {filterData(dataDrop ?? [], dropLabel ?? "").map(
-                                (item, j) => (
-                                  <option
-                                    key={j}
-                                    selected={j === 0}
-                                    value={key === dropLabel ? j : item[key]}>
-                                    {item[dropLabel ?? ""]}
-                                  </option>
-                                )
-                              )}
-                            </Form.Select>
-                          )}
-                        </Form.Group>
+                            </Form.Group>
+                          </Col>
+                        </Row>
                       ) : (
                         <Form.Control
                           readOnly={editMode && idx === 0}
                           type={type}
-                          placeholder={`Enter ${label}`}
+                          placeholder={`Input ${label}`}
                           className='px-2 py-3 text-base'
                           {...register(key, {
                             required: isRequired,
@@ -234,13 +254,15 @@ const CrudForm = ({
               {isFilter && (
                 <Col md={6}>
                   <Form.Group>
-                    <Form.Label className='font-bold text-2xl my-4 d-flex align-items-center'>
-                      <MdOutlineInsertChartOutlined className='text-3xl me-2' />
+                    <Form.Label
+                      className='font-bold text-2xl my-4'
+                      style={{ display: "flex", alignItems: "center" }}>
+                      <MdOutlineInsertChartOutlined className='text-3xl' />
                       Filter
                     </Form.Label>
                     <Form.Control
                       type='text'
-                      placeholder='Enter filter text'
+                      placeholder={`Input Filter`}
                       value={filterText}
                       onChange={(e) => setFilterText(e.target.value)}
                       className='filter-input px-2 py-3 mb-3'
@@ -250,18 +272,24 @@ const CrudForm = ({
               )}
             </Row>
 
-            <div className='d-flex gap-2'>
-              <Button type='submit' className='btn-custom-primary'>
+            <div className='flex space-x-2'>
+              <Button type='submit' className='btn-custom-primary btn'>
                 {editMode ? "Update" : "Submit"}
               </Button>
+
               {editMode && (
                 <Button
                   variant='outline-secondary'
+                  className='btn'
                   onClick={() => setEditMode(false)}>
                   Cancel
                 </Button>
               )}
-              <Button variant='outline-secondary' onClick={() => reset()}>
+
+              <Button
+                variant='outline-secondary'
+                className='btn'
+                onClick={() => reset()}>
                 Reset
               </Button>
             </div>
@@ -284,9 +312,10 @@ const CrudForm = ({
         deleteHandle={deleteHandle}
       />
 
+      {/* Loading Spinner */}
       {loading && (
         <div className='spinner-overlay'>
-          <div className='bg-white dark:bg-gray-800 p-4 rounded-lg shadow d-flex align-items-center'>
+          <div className='bg-white dark:bg-gray-800 p-4 rounded-lg shadow flex items-center space-x-3'>
             <Spinner animation='border' role='status' variant='primary' />
             <span>Processing...</span>
           </div>

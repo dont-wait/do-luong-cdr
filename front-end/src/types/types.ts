@@ -69,6 +69,7 @@ export interface CrudFromField {
   dropLabel?: string;
   isMultiple?: boolean;
   isVisible?: boolean;
+  defaultValue?: string | number;
 }
 
 export interface ErrorResponse {
