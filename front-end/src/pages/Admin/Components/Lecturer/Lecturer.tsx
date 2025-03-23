@@ -34,7 +34,7 @@ const Lecturer = () => {
   const inputFields: CrudFromField[] = [
     CrudFormClass.create({
       key: PK.LECTURES_API,
-      label: "Lecturer Id",
+      label: "Lecturer ID",
       type: "text",
       isRequired: true,
       isVisible: true,
@@ -44,14 +44,14 @@ const Lecturer = () => {
       label: "First Name",
       type: "text",
       isRequired: true,
-      isVisible: true,
+      isVisible: false,
     }),
     CrudFormClass.create({
       key: "last_name",
       label: "Last Name",
       type: "text",
       isRequired: true,
-      isVisible: true,
+      isVisible: false,
     }),
     CrudFormClass.create({
       key: "email",
@@ -65,7 +65,7 @@ const Lecturer = () => {
       label: "Phone",
       type: "text",
       isRequired: false,
-      isVisible: true,
+      isVisible: false,
     }),
     CrudFormClass.create({
       key: "password",
@@ -75,7 +75,7 @@ const Lecturer = () => {
     }),
     CrudFormClass.create({
       key: PK.ACADEMIC_API,
-      label: "Curriculum Id",
+      label: "Curriculum ID",
       type: "text",
       isRequired: true,
       isDropBox: true,
@@ -91,6 +91,13 @@ const Lecturer = () => {
       isDropBox: true,
       dataDrop: degree,
       dropLabel: "degree_name",
+      isVisible: true,
+    }),
+    CrudFormClass.create({
+      key: "subject_manage_id",
+      label: "SubJect Manage ID",
+      type: "text",
+      isRequired: true,
       isVisible: true,
     }),
   ];

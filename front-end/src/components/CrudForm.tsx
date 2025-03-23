@@ -11,9 +11,8 @@ import {
 import { MdOutlineInsertChartOutlined } from "react-icons/md";
 import { useForm } from "react-hook-form";
 import CrudFormList from "./CrudFormList";
-import { CrudFromField } from "../types/types";
-import { Obj } from "../types/types";
-import axios from "../api/axios";
+import { CrudFromField, Obj } from "../types/types";
+import { getData, postData, updateData, deleteData } from "../utils/helps";
 import { useToast } from "../hook/useToast";
 
 const CrudForm = ({
@@ -44,8 +43,8 @@ const CrudForm = ({
   const getHandle = useCallback(async () => {
     try {
       setLoading(true);
-      const response = await axios.get(url);
-      setData(response.data);
+      const res = await getData(url);
+      setData(res);
     } catch {
       showToast("Get Method Fail!", "error");
     } finally {
@@ -62,9 +61,9 @@ const CrudForm = ({
   const createHandle = useCallback(
     async (info: { [key: string]: string }) => {
       try {
-        const res = await axios.post(url, info);
+        const res = await postData(url, info);
         setLoading(true);
-        setData((prev) => [...prev, res.data]);
+        setData((prev) => [...prev, res]);
         reset();
         showToast("Create Success!", "success");
       } catch {
@@ -81,11 +80,8 @@ const CrudForm = ({
     async (info: Obj) => {
       try {
         setLoading(true);
-        console.log(url + `/${info.id}`);
-        const res = await axios.put(url + `/${info.id}`, info);
-        setData((prev) =>
-          prev.map((obj) => (obj.id === res.data.id ? res.data : obj))
-        );
+        const res = await updateData(url + `/${info.id}`, info);
+        setData((prev) => prev.map((obj) => (obj.id === res.id ? res : obj)));
         reset();
         setEditMode(false);
         showToast("Update Success!", "success");
@@ -104,8 +100,8 @@ const CrudForm = ({
       if (!window.confirm("Are you sure you want to delete this item?")) return;
       try {
         setLoading(true);
-        await axios.delete(`${url}/${id}`);
-        setData((prev) => prev.filter((obj) => obj.id !== id));
+        const res = await deleteData(`${url}/${id}`);
+        setData((prev) => prev.filter((obj) => obj.id !== res.id));
         showToast("Delete Success!", "success");
       } catch {
         showToast("Delete Fail!", "error");

@@ -133,7 +133,8 @@
       "email": "jane.doe@gmail.com",
       "phone": "1234567891",
       "academic_id": "7480201",
-      "degree_id": 1
+      "degree_id": 1,
+      "subject_manage_id": null
     },
     {
       "id": "01014019",
@@ -142,7 +143,8 @@
       "email": "john.smith@gmail.com",
       "phone": "1234567892",
       "academic_id": "7480202",
-      "degree_id": 2
+      "degree_id": 2,
+      "subject_manage_id": null
     },
     {
       "id": "01014020",
@@ -151,7 +153,8 @@
       "email": "alice.jones@gmail.com",
       "phone": "1234567893",
       "academic_id": "7480203",
-      "degree_id": 3
+      "degree_id": 3,
+      "subject_manage_id": null
     },
     {
       "id": "01014021",
@@ -160,7 +163,8 @@
       "email": "bob.brown@gmail.com",
       "phone": "1234567894",
       "academic_id": "7480204",
-      "degree_id": 4
+      "degree_id": 4,
+      "subject_manage_id": null
     },
     {
       "id": "01014022",
@@ -169,7 +173,8 @@
       "email": "carol.white@gmail.com",
       "phone": "1234567895",
       "academic_id": "7480205",
-      "degree_id": 1
+      "degree_id": 1,
+      "subject_manage_id": null
     }
   ],
   "degree": [
