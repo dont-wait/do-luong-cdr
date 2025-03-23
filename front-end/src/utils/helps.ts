@@ -68,6 +68,18 @@ export function handleFormatData(ws: XLSX.WorkSheet): {
     else data.push(rowData);
   }
 
+  const data_redundants = data.filter(
+    (row) => row.length !== data[data.length - 1].length
+  );
+
+  if (data_redundants) {
+    data_redundants.forEach((data_redundant) => {
+      header.push(data_redundant);
+      const redundantIdx = data.indexOf(data_redundant);
+      data.splice(redundantIdx, 1);
+    });
+  }
+
   return {
     header,
     data,

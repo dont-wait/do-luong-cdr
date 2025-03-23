@@ -40,9 +40,10 @@ const FileUpload = ({ files, setFiles }: FileUploadProps) => {
   };
 
   return (
-    <div className='max-w-md mx-auto p-4'>
+    <div className='mx-auto p-4 w-full'>
       <div
-        className={`border-2 border-dashed rounded-lg p-6 mb-4 transition-colors duration-200 
+        style={{ height: "400px" }}
+        className={`border-2 border-dashed rounded-lg p-6 mb-4 transition-colors duration-200 flex justify-center align-middle
                     ${
                       isDragging
                         ? "border-primary bg-primary/10"
@@ -52,7 +53,7 @@ const FileUpload = ({ files, setFiles }: FileUploadProps) => {
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}>
-        <div className='text-center'>
+        <div className='text-center w-full flex flex-col justify-center align-middle'>
           <svg
             className='w-12 h-12 mx-auto text-gray-400 dark:text-gray-600'
             fill='none'
