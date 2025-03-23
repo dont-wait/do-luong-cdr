@@ -2,7 +2,7 @@ import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { StudentService } from './Student.service';
 import { CreateStudentDto } from './dto/create-student.dto';
-import { } from "@prisma/client";
+import {} from '@prisma/client';
 
 @ApiTags('students')
 @Controller('students')
@@ -16,7 +16,7 @@ export class StudentController {
     return this.studentService.getAllStudents();
   }
 
-  @Get(":id")
+  @Get(':id')
   @ApiOperation({ summary: 'Get a student by id' })
   @ApiResponse({ status: 200, description: 'Return a student.' })
   @ApiResponse({ status: 404, description: 'Student not found.' })
@@ -26,7 +26,10 @@ export class StudentController {
 
   @Post()
   @ApiOperation({ summary: 'Create a new student' })
-  @ApiResponse({ status: 201, description: 'The student has been successfully created.' })
+  @ApiResponse({
+    status: 201,
+    description: 'The student has been successfully created.',
+  })
   @ApiResponse({ status: 400, description: 'Bad Request.' })
   public async createStudent(@Body() data: CreateStudentDto) {
     return await this.studentService.createStudent(data);

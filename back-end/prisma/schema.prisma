@@ -116,7 +116,6 @@ model Exam {
 model Question {
   id String    @id @default(uuid())
   question_name    String @db.VarChar(255)
-  answer      String @db.VarChar(255)
   max_score        Float
 
   exam_id String
