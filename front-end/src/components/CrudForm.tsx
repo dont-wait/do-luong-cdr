@@ -13,8 +13,8 @@ import { useForm } from "react-hook-form";
 import CrudFormList from "./CrudFormList";
 import { CrudFromField, ErrorResponse, Obj } from "../types/types";
 import { useToast } from "../hook/useToast";
-import axios from "../api/axios";
 import { isAxiosError } from "axios";
+import { getData, postData, updateData, deleteData } from "../utils/helps";
 
 const CrudForm = ({
   inputFields,
@@ -44,11 +44,9 @@ const CrudForm = ({
   // Fetch data
   const fetchData = useCallback(async () => {
     setLoading(true);
-    console.log("get");
     try {
-      const response = await axios.get(url);
-      if (response.data.statusCode === 200) setData(response.data.data);
-      else throw new Error("Failed to fetch data.");
+      const response = await getData(url);
+      setData(response);
     } catch {
       showToast("Failed to fetch data!", "error");
     } finally {
@@ -76,18 +74,19 @@ const CrudForm = ({
   // Create or Update Data
   const handleFormSubmit = async (info: Obj) => {
     setLoading(true);
-    console.log(info);
     try {
       if (editMode) {
         const label = inputFields.map((field) => field.key)[0];
-        const res = await axios.patch(`${url}/${info[label]}`, info);
+        const res = await updateData(`${url}/${info[label]}`, info);
         setData((prev) =>
-          prev.map((obj) => (obj.id === res.data.id ? res.data : obj))
+          prev.map((obj) =>
+            JSON.stringify(obj) === JSON.stringify(res) ? res : obj
+          )
         );
         showToast("Update successful!", "success");
       } else {
-        const res = await axios.post(url, info);
-        setData((prev) => [...prev, res.data.data]);
+        const res = await postData(url, info);
+        setData((prev) => [...prev, res]);
         showToast("Create successful!", "success");
       }
       reset();
@@ -104,10 +103,10 @@ const CrudForm = ({
     if (!window.confirm("Are you sure you want to delete this item?")) return;
     setLoading(true);
     try {
-      const res = await axios.delete(`${url}/${id}`);
+      const res = await deleteData(`${url}/${id}`);
       setData((prev) =>
         prev.filter((obj) => {
-          return JSON.stringify(obj) != JSON.stringify(res.data.data);
+          return JSON.stringify(obj) != JSON.stringify(res);
         })
       );
       showToast("Delete successful!", "success");
@@ -170,18 +169,20 @@ const CrudForm = ({
                                     key={j}
                                     type='checkbox'
                                     label={item[dropLabel ?? ""]}
-                                    value={item.id}
+                                    value={item[key]}
                                     checked={selectedValues.includes(
-                                      String(item.id)
+                                      String(item[key])
                                     )}
                                     onChange={(e) => {
                                       const value = e.target.value;
-                                      setSelectedValues((prev) =>
-                                        prev.includes(value)
+                                      setSelectedValues((prev) => {
+                                        const newValues = prev.includes(value)
                                           ? prev.filter((v) => v !== value)
-                                          : [...prev, value]
-                                      );
-                                      setValue(label, selectedValues);
+                                          : [...prev, value];
+
+                                        setValue(key, newValues);
+                                        return newValues;
+                                      });
                                     }}
                                   />
                                 )
@@ -194,11 +195,11 @@ const CrudForm = ({
                                 required: isRequired,
                                 valueAsNumber: type === "number",
                               })}>
-                              <option value='-1'>Select {label}</option>
                               {filterData(dataDrop ?? [], dropLabel ?? "").map(
                                 (item, j) => (
                                   <option
                                     key={j}
+                                    selected={j === 0}
                                     value={key === dropLabel ? j : item[key]}>
                                     {item[dropLabel ?? ""]}
                                   </option>
@@ -272,6 +273,9 @@ const CrudForm = ({
         listProps={{
           label: "Information",
           data,
+          dataLabels: inputFields
+            .filter((field) => field.label && field.isVisible)
+            .map((field) => field.label),
           colLabels: inputFields
             .filter((field) => field.key && field.isVisible)
             .map((field) => field.key),

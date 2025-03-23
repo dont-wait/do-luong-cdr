@@ -8,7 +8,7 @@ import { loginHanle } from "../../../../services/auth";
 import { Card, Form, Button, Spinner } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import { fetchData } from "../../../../utils/helps";
+import { getData } from "../../../../utils/helps";
 import "./LoginForm.css";
 
 const LoginForm: React.FC = () => {
@@ -46,7 +46,7 @@ const LoginForm: React.FC = () => {
     if (!loginState) {
       if (idStored) {
         const fetchAPI = async () => {
-          const res = await fetchData(`/userAccounts/${idStored}`);
+          const res = await getData(`/userAccounts/${idStored}`);
           if (res.data) {
             setLoginState({
               id: res.data["id"],

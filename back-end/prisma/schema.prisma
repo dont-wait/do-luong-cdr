@@ -115,8 +115,8 @@ model Exam_detail {
 }
 
 model Exam {
-  exam_id   Int      @id @default(autoincrement())
-  exam_name String   @db.VarChar(255)
+  exam_id   Int       @id @default(autoincrement())
+  exam_name String    @db.VarChar(255)
   date      DateTime? @default(now())
 
   class_id String
@@ -139,22 +139,22 @@ model Class {
 
 model Role {
   role_id   Int    @id @unique
-  role_name String @db.VarChar(50) @unique
+  role_name String @unique @db.VarChar(50)
 
   user_account User_account[]
 }
 
 model User_account {
-  user_account_id String @id @default(cuid()) 
-  password        String @db.VarChar(255)
-  admin_id    String? @unique
-  student_id  String? @unique
-  lecturer_id String? @unique
-  role_id Int
+  user_account_id String  @id @default(cuid())
+  password        String  @db.VarChar(255)
+  admin_id        String? @unique
+  student_id      String? @unique
+  lecturer_id     String? @unique
+  role_id         Int
 
-  role    Role @relation(fields: [role_id], references: [role_id])
-  admin    Admin?   @relation(fields: [admin_id], references: [admin_id])
-  student  Student? @relation(fields: [student_id], references: [student_id])
+  role     Role      @relation(fields: [role_id], references: [role_id])
+  admin    Admin?    @relation(fields: [admin_id], references: [admin_id])
+  student  Student?  @relation(fields: [student_id], references: [student_id])
   lecturer Lecturer? @relation(fields: [lecturer_id], references: [lecturer_id])
 }
 
@@ -170,8 +170,8 @@ model Lecturer {
   academic_id String
   academic    Academic @relation(fields: [academic_id], references: [academic_id])
 
-  subjects Subject[]
-  class    Class[]
+  subjects     Subject[]
+  class        Class[]
   user_account User_account?
 }
 
@@ -185,21 +185,21 @@ model Student {
   academic_id String
   academic    Academic @relation(fields: [academic_id], references: [academic_id])
 
-  Result Result[]
+  Result       Result[]
   user_account User_account?
 }
 
 model Admin {
-  admin_id   String @id @unique
-  first_name String @db.VarChar(255)
-  last_name  String @db.VarChar(255)
-  email      String @unique @db.VarChar(255)
-  phone      String @unique @db.Char(12)
+  admin_id     String        @id @unique
+  first_name   String        @db.VarChar(255)
+  last_name    String        @db.VarChar(255)
+  email        String        @unique @db.VarChar(255)
+  phone        String        @unique @db.Char(12)
   user_account User_account?
 }
 
 model Result {
-  result_id Int   @id @default(autoincrement())
+  result_id Int    @id @default(autoincrement())
   score     Float?
 
   student_id String

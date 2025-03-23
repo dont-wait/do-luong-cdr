@@ -15,6 +15,7 @@ import { MdOutlineTipsAndUpdates } from "react-icons/md";
 interface ListProps {
   label: string;
   data: Obj[];
+  dataLabels: string[];
   colLabels: string[];
 }
 
@@ -27,7 +28,7 @@ const CrudFormList = ({
   onEditMode: (info: Obj) => void;
   deleteHandle: (id: string) => void;
 }) => {
-  const { label, data, colLabels } = listProps;
+  const { label, data, colLabels, dataLabels } = listProps;
 
   // state
   const [itemsPerPage, setItemsPerPage] = useState(5);
@@ -152,7 +153,7 @@ const CrudFormList = ({
           <Table striped hover>
             <thead>
               <tr className='flex'>
-                {colLabels.map((colLabel, idx) => (
+                {dataLabels.map((colLabel, idx) => (
                   <td key={idx} className='text-center flex-1'>
                     {typeof colLabel === "string"
                       ? colLabel.toUpperCase()

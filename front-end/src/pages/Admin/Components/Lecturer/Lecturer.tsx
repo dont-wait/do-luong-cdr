@@ -2,12 +2,13 @@ import CrudForm from "../../../../components/CrudForm";
 import { CrudFromField, Obj } from "../../../../types/types";
 import { CrudFormClass } from "../../../../class/CrudFormClass";
 import { useState, useEffect } from "react";
-import { fetchData } from "../../../../utils/helps";
+import { getData } from "../../../../utils/helps";
 import {
   CURRICULUM_API,
   LECTURES_API,
   DEGREE_API,
 } from "../../../../api/apiUrl";
+import { PK } from "../../../../api/primaryKey";
 import { useToast } from "../../../../hook/useToast";
 
 const Lecturer = () => {
@@ -18,10 +19,10 @@ const Lecturer = () => {
   useEffect(() => {
     const fetchHanle = async () => {
       try {
-        const curriculums = await fetchData(CURRICULUM_API);
-        setCurriculum(curriculums.data.data);
-        const degrees = await fetchData(DEGREE_API);
-        setDegree(degrees.data.data);
+        const curriculums = await getData(CURRICULUM_API);
+        setCurriculum(curriculums);
+        const degrees = await getData(DEGREE_API);
+        setDegree(degrees);
       } catch {
         showToast("Error fetching", "error");
       }
@@ -32,7 +33,7 @@ const Lecturer = () => {
 
   const inputFields: CrudFromField[] = [
     CrudFormClass.create({
-      key: "lecturer_id",
+      key: PK.LECTURES_API,
       label: "Lecturer Id",
       type: "text",
       isRequired: true,

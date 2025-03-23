@@ -2,9 +2,10 @@ import CrudForm from "../../../../components/CrudForm";
 import { CrudFromField, Obj } from "../../../../types/types";
 import { CrudFormClass } from "../../../../class/CrudFormClass";
 import { useState, useEffect } from "react";
-import { fetchData } from "../../../../utils/helps";
+import { getData } from "../../../../utils/helps";
 import { useToast } from "../../../../hook/useToast";
 import { DEPARTMENT_API, CURRICULUM_API } from "../../../../api/apiUrl";
+import { PK } from "../../../../api/primaryKey";
 
 const levels = [
   {
@@ -35,8 +36,8 @@ const Curriculum = () => {
   useEffect(() => {
     const fetchHanle = async () => {
       try {
-        const department = await fetchData(DEPARTMENT_API);
-        setDepartment(department.data.data);
+        const department = await getData(DEPARTMENT_API);
+        setDepartment(department);
       } catch {
         showToast("Error fetching!", "error");
       }
@@ -47,7 +48,7 @@ const Curriculum = () => {
 
   const inputFields: CrudFromField[] = [
     CrudFormClass.create({
-      key: "academic_id",
+      key: PK.ACADEMIC_API,
       label: "Curriculum Id",
       type: "text",
       isRequired: true,
