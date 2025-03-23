@@ -97,7 +97,6 @@ Table Exam {
 Table Question {
   id String [pk]
   question_name String [not null]
-  answer String [not null]
   max_score Float [not null]
   exam_id String [not null]
   clo_id String [not null]
