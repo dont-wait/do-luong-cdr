@@ -21,7 +21,7 @@ export class DepartmentService {
   public async getDepartmentById(id: string){
     return this.prisma.department.findUnique(
       {
-        where: {department_id: id},
+        where: { id },
       }
     );
   }
@@ -29,7 +29,7 @@ export class DepartmentService {
   public async updateDepartment(id: string, data: CreateDepartmentDto){
     return this.prisma.department.update(
       {
-        where: {department_id: id},
+        where: { id },
         data
       }
     );
@@ -38,7 +38,7 @@ export class DepartmentService {
   public async deleteDepartment(id: string){
     return this.prisma.department.delete(
       {
-        where: {department_id: id},
+        where: { id },
       }
     )
   }

@@ -20,7 +20,7 @@ export class StudentService {
   public getStudent(id: string) {
     const student = this.prisma.student.findFirst({
       where: {
-        student_id: id
+        id
       }
     })
 
@@ -31,7 +31,7 @@ export class StudentService {
   }
 
   public async createStudent(data: CreateStudentDto) {
-    const { academic_id, student_id, password, ...rest } = data;
+    const { academic_id, id, password, ...rest } = data;
     const isExistAcademicId = await this.academic.getAcademicById(academic_id);
 
     if (!isExistAcademicId)
@@ -44,7 +44,7 @@ export class StudentService {
     
     try {
       const createUserAccountDto = {
-        student_id,
+        student_id: id,
         password,
         role_id: studentRole.role_id,
         admin_id: null, 
@@ -53,7 +53,7 @@ export class StudentService {
       
       await this.prisma.student.create({
         data: {
-          student_id,
+          id,
           academic_id,
           ...rest
         }
@@ -62,7 +62,7 @@ export class StudentService {
       await this.userAccount.createUserAccount(createUserAccountDto, password);
 
       return {
-        student_id,
+        id,
         academic_id,
         ...rest
       }

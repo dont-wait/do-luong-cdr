@@ -13,7 +13,7 @@ export class AdminService {
   ) {}
 
   public async createAdmin(data: CreateAdminDto) {
-    const { admin_id, password, ...rest } = data;
+    const { id, password, ...rest } = data;
 
     const adminRole = roles.find(r => r.role_name === "student");
 
@@ -22,7 +22,7 @@ export class AdminService {
     
     try {
       const createUserAccountDto = {
-        admin_id,
+        admin_id: id,
         password,
         role_id: adminRole.role_id,
         student_id: null, 
@@ -31,7 +31,7 @@ export class AdminService {
       
       await this.prisma.admin.create({
         data: {
-          admin_id,
+          id,
           ...rest
         }
       });
@@ -39,7 +39,7 @@ export class AdminService {
       await this.userAccount.createUserAccount(createUserAccountDto, password);
 
       return {
-        admin_id,
+        id,
         ...rest
       }
     } catch(err) {
@@ -54,7 +54,7 @@ export class AdminService {
   public async getAdminById(id: string) {
     const admin = await this.prisma.admin.findFirst({
       where: {
-        admin_id: id
+        id: id
       }
     })
 
@@ -62,13 +62,5 @@ export class AdminService {
       throw new NotFoundException("Không tìm thấy Admin ID này");
 
     return admin;
-  }
-
-  updateAdmin(id: number, updateAdminDto: UpdateAdminDto) {
-
-  }
-
-  deleteAdmin(id: number) {
-
   }
 }

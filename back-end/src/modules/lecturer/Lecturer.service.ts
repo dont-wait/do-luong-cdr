@@ -16,7 +16,7 @@ export class LecturerService {
     ) {}
     
     public async createLecturer(data: CreateLecturerDto) {
-        const { password, degree_id, academic_id, ...rest } = data;
+        const { password, degree_id, academic_id, id, ...rest } = data;
 
         if (!await this.academic.getAcademicById(academic_id)) 
             throw new BadRequestException(`Không tìm thấy Academic Id ${academic_id}`);
@@ -31,6 +31,7 @@ export class LecturerService {
 
         const userAccountData = {
             ...rest,
+            lecturer_id: id,
             student_id: null,
             admin_id: null,
             role_id: lecturerRole.role_id
@@ -39,6 +40,7 @@ export class LecturerService {
         await this.prisma.lecturer.create({
             data: {
                 ...rest,
+                id,
                 academic_id,
                 degree_id
             }
@@ -60,7 +62,7 @@ export class LecturerService {
     public async getLecturerById(lecturer_id: string) {
         return this.prisma.lecturer.findUnique({
             where: {
-                lecturer_id
+                id: lecturer_id
             }
         })
     }

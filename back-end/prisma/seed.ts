@@ -7,9 +7,9 @@ const prisma = new PrismaClient();
 async function main() {
   for (const role of roles) {
     await prisma.role.upsert({
-      where: { role_id: role.role_id },
+      where: { id: role.role_id },
       update: {},
-      create: { role_name: role.role_name, role_id: role.role_id },
+      create: { role_name: role.role_name, id: role.role_id },
     });
   }
 
@@ -20,10 +20,10 @@ async function main() {
 
   if (adminRole?.role_id) {
     await prisma.admin.upsert({
-      where: { admin_id: admin.admin_id },
+      where: { id: admin.admin_id },
       update: {},
       create: {
-        admin_id: admin.admin_id,
+        id: admin.admin_id,
         email: admin.email,
         first_name: admin.first_name,
         last_name: admin.last_name,
@@ -46,9 +46,9 @@ async function main() {
 
   for (const d of degree) {
     await prisma.degree.upsert({
-      where: { degree_id: d.degree_id },
+      where: { id: d.degree_id },
       update: {},
-      create: { degree_id: d.degree_id, degree_name: d.degree_name },
+      create: { id: d.degree_id, degree_name: d.degree_name },
     });
   }
 

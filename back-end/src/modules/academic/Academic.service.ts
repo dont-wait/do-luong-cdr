@@ -41,20 +41,20 @@ export class AcademicService {
 
   async getAcademicById(id: string){
     return this.prisma.academic.findUnique({
-      where: {academic_id: id}
+      where: { id }
     })
   }
 
   async updateAcademic(id: string, data: CreateAcademicDto){
     return this.prisma.academic.update({
-      where: {academic_id: id},
+      where: { id },
       data
     })
   }
 
   async removeAcademic(id: string){
     return this.prisma.academic.delete({
-      where: {academic_id: id},
+      where: { id },
     })
   }
 }

@@ -8,7 +8,7 @@ export class CreateDepartmentDto {
         description: 'The unique identifier of the department',
         example: 'CNTT'
     })
-    department_id: string;
+    id: string;
 
     @IsNotEmpty()
     @IsString()

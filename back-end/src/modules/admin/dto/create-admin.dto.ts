@@ -5,7 +5,7 @@ export class CreateAdminDto {
     @ApiProperty({ description: 'Admin ID', example: 'admin123' })
     @IsNotEmpty()
     @IsString()
-    admin_id: string; 
+    id: string; 
 
     @ApiProperty({ description: 'First name', example: 'Me' })
     @IsNotEmpty()

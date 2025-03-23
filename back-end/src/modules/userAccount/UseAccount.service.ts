@@ -18,7 +18,7 @@ export class UserAccountService {
     }
 
     const role = await this.prisma.role.findUnique({
-      where: { role_id }
+      where: { id: role_id }
     });
 
     if (!role) {
