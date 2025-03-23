@@ -1,37 +1,41 @@
 {
   "roles": [
     {
-      "id": 1,
-      "role": "admin"
+      "role_id": 2001,
+      "role_name": "admin"
     },
     {
-      "id": 2,
-      "role": "lecturer"
+      "role_id": 2002,
+      "role_name": "lecturer"
     },
     {
-      "id": 3,
-      "role": "student"
+      "role_id": 2003,
+      "role_name": "student"
     }
   ],
   "admin": {
-    "id": "ADM001",
-    "first_name": "System",
-    "last_name": "Administrator",
+    "admin_id": "AD001",
+    "first_name": "John",
+    "last_name": "Doe",
     "email": "admin@test.edu.vn",
     "phone": "0123456789"
   },
   "degree": [
     {
-      "id": 1,
-      "degree_name": "Thạc sĩ"
+      "degree_id": 1,
+      "degree_name": "Doctoral Degree"
     },
     {
-      "id": 2,
-      "degree_name": "Tiến sĩ"
+      "degree_id": 2,
+      "degree_name": "Master Degree"
     },
     {
-      "id": 3,
-      "degree_name": "Giáo sư"
+      "degree_id": 3,
+      "degree_name": "Pre-professional Degree"
+    },
+    {
+      "degree_id": 4,
+      "degree_name": "Professional Degree"
     }
   ]
 }
