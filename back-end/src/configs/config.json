@@ -2,15 +2,15 @@
   "roles": [
     {
       "id": 1,
-      "name": "admin"
+      "role": "admin"
     },
     {
       "id": 2,
-      "role_name": "lecturer"
+      "role": "lecturer"
     },
     {
       "id": 3,
-      "role_name": "student"
+      "role": "student"
     }
   ],
   "admin": {
