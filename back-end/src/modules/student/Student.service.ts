@@ -1,16 +1,21 @@
-import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateStudentDto } from './dto/create-student.dto';
 import { PrismaService } from '../prisma/Prisma.service';
 import { AcademicService } from '../academic/Academic.service';
 import { UserAccountService } from '../userAccount/UseAccount.service';
-import { roles } from "../../configs/config.json";
+import { roles } from '../../configs/config.json';
 
 @Injectable()
 export class StudentService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly academic: AcademicService,
-    private readonly userAccount: UserAccountService
+    private readonly userAccount: UserAccountService,
   ) {}
   
   public getAllStudents() {
@@ -20,9 +25,9 @@ export class StudentService {
   public getStudent(id: string) {
     const student = this.prisma.student.findFirst({
       where: {
-        id
-      }
-    })
+        id,
+      },
+    });
 
     if (!student)
       throw new NotFoundException("Không tìm thấy Student ID này");

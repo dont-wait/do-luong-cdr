@@ -9,7 +9,7 @@ export class DegreeService {
     return this.prisma.degree.create({ 
       data: {
         ...Data,
-        degree_id: +Data.degree_id
+        id: +Data.degree_id,
       }
      });
   }
@@ -20,20 +20,20 @@ export class DegreeService {
 
   async getDegreeById(id: number) {
     return this.prisma.degree.findUnique({
-      where: { degree_id: id },
+      where: { id: id },
     });
   }
 
   async updateDegree(id: number, Data: CreateDegreeDto) {
     return this.prisma.degree.update({
-      where: { degree_id: id },
+      where: { id: id },
       data: Data,
     });
   }
 
   async removeDegree(id: number) {
     return this.prisma.degree.delete({
-      where: { degree_id: id },
+      where: { id: id },
     });
   }
 

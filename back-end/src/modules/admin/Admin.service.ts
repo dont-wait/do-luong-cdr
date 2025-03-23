@@ -63,4 +63,41 @@ export class AdminService {
 
     return admin;
   }
+
+  public async updateAdmin(id: string, updateAdminDto: UpdateAdminDto) {
+    const admin = await this.prisma.admin.findUnique({
+      where: { id },
+    });
+
+    if (!admin) {
+      throw new NotFoundException(`Admin with ID ${id} not found`);
+    }
+
+    try {
+      return await this.prisma.admin.update({
+        where: { id },
+        data: updateAdminDto,
+      });
+    } catch (err) {
+      throw new InternalServerErrorException(err.message);
+    }
+  }
+
+  public async deleteAdmin(id: string) {
+    const admin = await this.prisma.admin.findUnique({
+      where: { id },
+    });
+
+    if (!admin) {
+      throw new NotFoundException(`Admin with ID ${id} not found`);
+    }
+
+    try {
+      return await this.prisma.admin.delete({
+        where: { id },
+      });
+    } catch (err) {
+      throw new InternalServerErrorException(err.message);
+    }
+  }
 }
