@@ -10,11 +10,14 @@ import {
   @Injectable()
   export class HttpResponseInterceptor implements NestInterceptor {
     intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
+      const request = context.switchToHttp().getRequest();
+      const statusCode = request.method === 'POST' ? 201 : 200;
+      
       return next
         .handle()
         .pipe(
         map((data) => ({
-          statusCode: 200,
+          statusCode,
           message: 'Success',
           data,
         })),
