@@ -1,37 +1,37 @@
 {
-    "roles": [
-        {
-            "role_id": 1,
-            "role_name": "admin"
-        },
-        {
-            "role_id": 2,
-            "role_name": "lecturer"
-        },
-        {
-            "role_id": 3,
-            "role_name": "student"
-        }
-    ],
-    "admin": {
-        "admin_id": "ADM001",
-        "first_name": "System",
-        "last_name": "Administrator",
-        "email": "admin@test.edu.vn",
-        "phone": "0123456789"
+  "roles": [
+    {
+      "id": 1,
+      "name": "admin"
     },
-    "degree": [
-        {
-            "degree_id": 1,
-            "degree_name": "Thạc sĩ"
-        },
-        {
-            "degree_id": 2,
-            "degree_name": "Tiến sĩ"
-        },
-        {
-            "degree_id": 3,
-            "degree_name": "Giáo sư"
-        }
-    ]
+    {
+      "id": 2,
+      "role_name": "lecturer"
+    },
+    {
+      "id": 3,
+      "role_name": "student"
+    }
+  ],
+  "admin": {
+    "id": "ADM001",
+    "first_name": "System",
+    "last_name": "Administrator",
+    "email": "admin@test.edu.vn",
+    "phone": "0123456789"
+  },
+  "degree": [
+    {
+      "id": 1,
+      "degree_name": "Thạc sĩ"
+    },
+    {
+      "id": 2,
+      "degree_name": "Tiến sĩ"
+    },
+    {
+      "id": 3,
+      "degree_name": "Giáo sư"
+    }
+  ]
 }
