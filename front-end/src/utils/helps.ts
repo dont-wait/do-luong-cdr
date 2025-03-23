@@ -86,6 +86,20 @@ export function handleFormatData(ws: XLSX.WorkSheet): {
   };
 }
 
+export const handleFormattoJSON = (
+  header: FormattedCell[][],
+  data: FormattedCell[][]
+) => {
+  const res = header.map((row) => {
+    return row.map((cell) => {
+      console.log(cell.value === null);
+      console.log(null);
+    });
+  });
+
+  console.log(data);
+};
+
 export const getData = async (url: string) => {
   try {
     const res = await axios.get(url);
