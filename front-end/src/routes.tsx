@@ -1,5 +1,5 @@
 import { Routes, Route } from "react-router-dom";
-import { Login, AdminLayout } from "./pages/pages";
+import { Login, AdminLayout, LecturerLayout } from "./pages/pages";
 import RequireAuth from "./components/RequireAuth";
 import { ROLES } from "./types/roles";
 
@@ -13,7 +13,7 @@ const AppRoutes = () => (
     </Route>
 
     <Route element={<RequireAuth allowedRole={ROLES.Lecturer} />}>
-      <Route path='/lecturer' element={<AdminLayout />} />
+      <Route path='/lecturer' element={<LecturerLayout />} />
     </Route>
   </Routes>
 );
