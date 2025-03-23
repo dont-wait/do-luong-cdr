@@ -1,14 +1,15 @@
 import { useRef, useState, useEffect } from "react";
+import { Card, Form, Button, Spinner } from "react-bootstrap";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import { AccountData, AuthData } from "../../../../types/types";
-import { USER_ID } from "../../../../types/local";
+import { useForm } from "react-hook-form";
 import useAuth from "../../../../hook/useAuth";
 import { useToast } from "../../../../hook/useToast";
 import { loginHanle } from "../../../../services/auth";
-import { Card, Form, Button, Spinner } from "react-bootstrap";
-import { useForm } from "react-hook-form";
-import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { getData } from "../../../../utils/helps";
+import { USER_ID, USER_ROLE } from "../../../../types/local";
+import { AccountData, AuthData } from "../../../../types/types";
+import { routes } from "../../../../types/roles";
 import "./LoginForm.css";
 
 const LoginForm: React.FC = () => {
@@ -47,11 +48,11 @@ const LoginForm: React.FC = () => {
       if (idStored) {
         const fetchAPI = async () => {
           const res = await getData(`/userAccounts/${idStored}`);
-          if (res.data) {
+          if (res) {
             setLoginState({
-              id: res.data["id"],
-              password: res.data["Password"],
-              userRole: res.data["Role Id"],
+              id: res["id"],
+              password: res["Password"],
+              userRole: res["Role Id"],
             });
           } else loginInfo.current = false;
         };
@@ -65,12 +66,6 @@ const LoginForm: React.FC = () => {
     }
 
     setAuth(authData);
-
-    const routes: Record<number, string> = {
-      2000: "/",
-      2001: "/admin",
-      2002: "/lecturer",
-    };
 
     navigate(routes[authData.role ?? 2000], { replace: true });
     refs.user.current?.focus();
@@ -86,6 +81,7 @@ const LoginForm: React.FC = () => {
       const { id, role, password } = await loginHanle(data);
       if (data.remember) {
         localStorage.setItem(USER_ID, JSON.stringify(id));
+        localStorage.setItem(USER_ROLE, JSON.stringify(role));
       }
 
       setLoginState({

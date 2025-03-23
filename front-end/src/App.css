@@ -82,8 +82,7 @@
   color: #666;
 }
 
-td,
-th {
+.cell {
   display: block;
   overflow: hidden;
   text-align: center;

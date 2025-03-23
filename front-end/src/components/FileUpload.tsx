@@ -40,7 +40,7 @@ const FileUpload = ({ files, setFiles }: FileUploadProps) => {
   };
 
   return (
-    <div className='max-w-md mx-auto'>
+    <div className='max-w-md mx-auto p-4'>
       <div
         className={`border-2 border-dashed rounded-lg p-6 mb-4 transition-colors duration-200 
                     ${

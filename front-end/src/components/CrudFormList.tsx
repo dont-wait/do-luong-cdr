@@ -154,13 +154,13 @@ const CrudFormList = ({
             <thead>
               <tr className='flex'>
                 {dataLabels.map((colLabel, idx) => (
-                  <td key={idx} className='text-center flex-1'>
+                  <td key={idx} className='cell text-center flex-1'>
                     {typeof colLabel === "string"
                       ? colLabel.toUpperCase()
                       : colLabel}
                   </td>
                 ))}
-                <th className='text-center flex-2'>ACTIONS</th>
+                <th className='cell text-center flex-2'>ACTIONS</th>
               </tr>
             </thead>
             <tbody className='flex flex-col'>
@@ -168,13 +168,15 @@ const CrudFormList = ({
                 currentItems.map((dept: Obj, idx) => (
                   <tr key={idx} className='flex'>
                     {colLabels.map((colLabel, j) => (
-                      <td key={j} className='text-center flex-1 roboto-300'>
+                      <td
+                        key={j}
+                        className='cell text-center flex-1 roboto-300'>
                         {Array.isArray(dept[colLabel])
                           ? dept[colLabel].join(", ")
                           : dept[colLabel]}
                       </td>
                     ))}
-                    <td className='flex justify-center flex-2'>
+                    <td className='cell flex justify-center flex-2'>
                       <div className='flex space-x-2 justify-center'>
                         <Button
                           variant='outline-primary'

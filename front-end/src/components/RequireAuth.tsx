@@ -1,12 +1,26 @@
 import { useLocation, Navigate, Outlet } from "react-router-dom";
-import { USER_ID } from "../types/local";
+import { USER_ROLE, USER_ID } from "../types/local";
+import { ROLES } from "../types/roles";
+import { Login, AdminLayout, LecturerLayout } from "../pages/pages";
 import useAuth from "../hook/useAuth";
 
 const RequireAuth = ({ allowedRole }: { allowedRole: number }) => {
   const { auth } = useAuth();
   const location = useLocation();
 
-  if (localStorage.getItem(USER_ID)) return <Outlet />;
+  if (localStorage.getItem(USER_ID)) {
+    const role = JSON.parse(localStorage.getItem(USER_ROLE) ?? "2000");
+    switch (role) {
+      case 2000:
+        return <Login />;
+      case ROLES.Admin:
+        return <AdminLayout />;
+      case ROLES.Lecturer:
+        return <LecturerLayout />;
+      default:
+        return <div>Not found Page</div>;
+    }
+  }
 
   return auth?.role === allowedRole ? (
     <Outlet />
