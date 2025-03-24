@@ -1,0 +1,196 @@
+department
+{
+	'department_id' : 'CNTT',
+	'department_name' : 'Khoa Công nghệ thông tin'
+}
+
+academic 
+{
+	'academic_id' : '7480201',
+	'academic_name' : 'Công nghệ thông tin',
+	'academic_level : 1,
+	academic_type : 1,
+	department_id : 'CNTT'
+}
+
+{
+  "plos": [
+    {
+      "plo_name": "PLO1",
+      "plo_content": "Áp dụng được các kiến thức cơ bản về khoa học và xã hội (bao gồm toán, công nghệ thông tin, lý luận chính trị, pháp luật, quản lý) vào trong hoạt động của ngành công nghệ thông tin.",
+      "academic_id": "7480201"
+    },
+    {
+      "plo_name": "PLO2",
+      "plo_content": "Phân tích và tổ chức được các kiến thức lý thuyết ngành, chuyên ngành sâu rộng và kiến thức thực tế vững chắc để lựa chọn hướng giải quyết các vấn đề trong lĩnh vực công nghệ thông tin.",
+      "academic_id": "7480201"
+    },
+    {
+      "plo_name": "PLO3",
+      "plo_content": "Thực hiện thuần thục kỹ năng nghề nghiệp bao gồm kỹ năng tư duy hệ thống để đưa ra giải pháp xử lý các vấn đề trong lĩnh vực công nghệ thông tin; Thực hiện thành thạo kỹ năng nghề nghiệp bao gồm kỹ năng tư duy hệ thống, phân tích, tổng hợp, đánh giá thông tin để đưa ra giai pháp xử lý các vấn đề trong lĩnh vực công nghệ thông tin",
+      "academic_id": "7480201"
+    },
+    {
+      "plo_name": "PLO4",
+      "plo_content": "Thực hiện thuần thục kỹ năng tự học, nghiên cứu và khám phá tri thức trong linh vực công nghệ thông tin",
+      "academic_id": "7480201"
+    },
+    {
+      "plo_name": "PLO5",
+      "plo_content": "Tuân thủ được và trách nhiệm nghề nghiệp (trung thực, chân thực, ý thức kỷ luật)",
+      "academic_id": "7480201"
+    },
+    {
+      "plo_name": "PLO6",
+      "plo_content": "Thực hiện được kỹ năng hợp tác, tổ chức và làm việc theo nhóm (nhóm học tập, nhóm nghiên cứu, nhóm câu lạc bộ & tổ chức sinh viên, ...)",
+      "academic_id": "7480201"
+    },
+    {
+      "plo_name": "PLO7",
+      "plo_content": "Thực hiện thành thạo kỹ năng truyền đạt và trao đổi thông tin bao gồm kỹ năng sử dụng ngôn ngữ phục vụ công việc chuyên môn",
+      "academic_id": "7480201"
+    },
+    {
+      "plo_name": "PLO8",
+      "plo_content": "Phân tích được các hồ và doạn nghiệp, từ điển hưóng, áp dụng kiến thức để dura ra kết luận chuyền môn, y tươg, giải pháp đáp ứng nhu cầu doạnh nghiep va xa hoi hào khôi nghiep trong linh vực công nghệ thông tin",
+      "academic_id": "7480201"
+    },
+    {
+      "plo_name": "PLO9",
+      "plo_content": "Thực hiện thuần thục viếc lập kế hoạch, điều phối, đánh giá và cải thiện hiệu quả hoạt động trong linh vực công nghệ thông tin",
+      "academic_id": "7480201"
+    }
+  ]
+}
+
+
+[
+  {
+    "plo_detail_name": "PLO1.1",
+    "plo_detail_content": "Áp dụng được các kiến thức cơ bản về toán, khoa học tự nhiên và công nghệ thông tin làm nền tảng cho việc tiếp thu, vận dụng các kiến thức cốt lõi của lĩnh vực công nghệ thông tin.",
+    "plo_id": ""
+  },
+  {
+    "plo_detail_name": "PLO1.2",
+    "plo_detail_content": "Áp dụng được các kiến thức về khoa học xã hội (lý luận chính trị) và và giáo dục quốc phòng - an ninh trong hoạt động thực tiễn.",
+    "plo_id": ""
+  },
+  {
+    "plo_detail_name": "PLO1.3",
+    "plo_detail_content": "Áp dụng các kiến thức cơ bản về công nghệ thông tin làm nền tảng cho việc tiếp thu, vận dụng các kiến thức cốt lõi của ngành an toàn thông tin",
+    "plo_id": ""
+  },
+  {
+    "plo_detail_name": "PLO2.1",
+    "plo_detail_content": "Phân tích và tổ chức được các kiến thức cơ sở ngành để nhận biết và lựa chọn hướng giải quyết các vấn đề trong lĩnh vực công nghệ thông tin. Tổng hợp được các kiến thức, nguyên lý cơ sở ngành để đưa ra phương án giải quyết các vấn đề trong lĩnh vực công nghệ thông tin.",
+    "plo_id": ""
+  },
+  {
+    "plo_detail_name": "PLO2.2",
+    "plo_detail_content": "Phân tích và tổ chức được các kiến thức chuyên ngành và kiến thức thực tế vững chắc để lựa chọn phương án giải quyết các vấn đề trong dự án công nghệ thông tin. Tổng hợp được các kiến thức, nguyên lý chuyên ngành và kiến thức thực tế vững chắc để đưa ra phương án giải quyết các vấn đề trong dự án công nghệ thông tin.",
+    "plo_id": ""
+  },
+  {
+    "plo_detail_name": "PLO3.1",
+    "plo_detail_content": "Thực hiện thành thạo kỹ năng phân tích, thiết kế hệ thống công nghệ thông tin. Thực hiện thành thạo kỹ năng phân tích, thiết kế, đánh giá hệ thống công nghệ thông tin.",
+    "plo_id": ""
+  },
+  {
+     "plo_detail_name": "PLO3.2",
+    "plo_detail_content": "Thực hiện thuần thục kỹ năng phát triển sản phẩm công nghệ thông tin. Thực hiện thành thọa kỹ năng phát triển sản phẩm công nghệ thông tin.",
+    "plo_id": ""
+  },
+  {
+    "plo_detail_name": "PLO7.1",
+    "plo_detail_content": "Sử dụng thành thạo kỹ năng truyền đạt và trao đổi thông tin trong lĩnh vực công nghệ thông tin",
+    "plo_id": ""
+  },
+  {
+    "plo_detail_name": "PLO7.2",
+    "plo_detail_content": "Sử dụng thành thạo kỹ năng sử dụng ngoại ngữ phục vụ công việc trong lĩnh vực công nghệ thông tin",
+    "plo_id": ""
+  }
+]
+
+
+
+[
+  {
+    "subject_id": "0101003473",
+    "subject_name": "Thực hành nhập môn lập trình",
+    "practical_credits": 2,
+    "theoretical_credits": 0,
+    "description": "Học phần “Thực hành Nhập môn lập trình” thuộc khối kiến thức cơ sở ngành, là học phần khởi đầu trong nhóm các học phần về phát triển phần mềm như Lập trình web, Công nghệ .NET, Lập trình di động, ... Học phần này trang bị cho người học các kỹ năng về lập trình căn bản; tư duy lập trình; định hướng phương pháp tư duy, phong cách lập trình; cách giải quyết bài toán giúp người học xây dựng thuật toán và cài đặt được các chương trình giải quyết các vấn đề thông dụng, đơn giản; Bên cạnh đó, học phần này cũng trang bị cho người học các kỹ năng phân tích bài toán từ đó đề xuất hướng giải quyết, kỹ năng tự học và ý thức việc tuân thủ các nguyên tắc an toàn trong quá trình làm việc tại phòng thực hành.",
+    "lecturer_id": "01001002"
+  }
+]
+
+clo
+[
+  {
+    "clo_name": "clo1",
+    "clo_content": "Sử dụng các kiến thức tư duy trong lập trình giải quyết bài toán đơn giản",
+    "clo_parent_id": null,
+    "subject_id": "0101003473"
+  },
+  {
+    "clo_name": "clo2",
+    "clo_content": "Giải thích được cơ chế hoạt động của file dạng văn bản",
+    "clo_parent_id": null,
+    "subject_id": "0101003473"
+  },
+  {
+    "clo_name": "clo3",
+    "clo_content": "",
+    "clo_parent_id": null,
+    "subject_id": "0101003473"
+  },
+  
+  {
+    "clo_name": "clo3.1",
+    "clo_content": "Áp dụng chính xác các kiểu dữ liệu, các cấu trúc điều kiện, hàm để lập trình giải các bài toán đơn giản, thông dụng.",
+    "clo_parent_id": "chỗ này chèn id của clo3 do clo_id là key tự sinh",
+    "subject_id": "0101003473"
+  },
+  {
+    "clo_name": "clo3.2",
+    "clo_content": "Đọc và ghi được dữ liệu dạng cấu trúc lên tập tin văn bản.",
+    "clo_parent_id": "",
+    "subject_id": "0101003473"
+  },
+  {
+    "clo_name": "clo3.3",
+    "clo_content": "Thực hiện thành thạo việc soạn thảo, kiểm tra lỗi, sửa lỗi, chạy thử một chương trình C/C++ trên môi trường MS Visual Studio.",
+    "clo_parent_id": "",
+    "subject_id": "0101003473"
+  }
+]
+
+plo_clo
+
+[
+  {
+    "plo_id": "nhập id của plo1",
+    "clo_id": "nhập id của clo1"
+  },
+  {
+    "plo_id": "nhập id của plo2",
+    "clo_id": "nhập id của clo2"
+  },
+  {
+    "plo_id": "nhập id của plo3",
+    "clo_id": "nhập id của clo3.1"
+  },
+  {
+    "plo_id": "nhập id của plo3",
+    "clo_id": "nhập id của clo3.2"
+  },
+  {
+    "plo_id": "nhập id của plo3",
+    "clo_id": "nhập id của clo3.3"
+  }
+]
+
+
+
+

@@ -5,7 +5,7 @@ export class CreateStudentDto {
   @ApiProperty({ description: 'Student ID', example: 'ST001' })
   @IsNotEmpty()
   @IsString()
-  student_id: string;
+  id: string;
 
   @ApiProperty({ description: 'First name of the student', example: 'Me' })
   @IsNotEmpty()

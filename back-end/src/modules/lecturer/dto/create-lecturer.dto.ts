@@ -5,7 +5,7 @@ export class CreateLecturerDto {
     @ApiProperty({ description: 'The lecturer ID', example: 'LEC001' })
     @IsString()
     @IsNotEmpty()
-    lecturer_id: string;
+    id: string;
 
     @ApiProperty({ description: 'First name of the lecturer', example: 'America' })
     @IsString()

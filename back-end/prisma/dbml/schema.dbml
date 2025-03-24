@@ -3,13 +3,13 @@
 //// ------------------------------------------------------
 
 Table Department {
-  department_id String [pk]
+  id String [pk]
   department_name String [not null]
   academics Academic [not null]
 }
 
 Table Academic {
-  academic_id String [pk]
+  id String [pk]
   academic_name String [not null]
   academic_level Int [not null]
   academic_type Int [not null]
@@ -23,7 +23,7 @@ Table Academic {
 
 Table Academic_subject {
   academic_id String [not null]
-  subject_id Int [not null]
+  subject_id String [not null]
   academic Academic [not null]
   subject Subject [not null]
 
@@ -33,7 +33,7 @@ Table Academic_subject {
 }
 
 Table Plo {
-  plo_id Int [pk, increment]
+  id String [pk]
   plo_name String [not null]
   plo_content String [not null]
   academic_id String [not null]
@@ -43,8 +43,8 @@ Table Plo {
 }
 
 Table Plo_clo {
-  plo_id Int [not null]
-  clo_id Int [not null]
+  plo_id String [not null]
+  clo_id String [not null]
   plo Plo [not null]
   clo Clo [not null]
 
@@ -54,15 +54,15 @@ Table Plo_clo {
 }
 
 Table Plo_detail {
-  plo_detail_id String [pk]
+  id String [pk]
   plo_detail_name String [not null]
   plo_content String [not null]
-  plo_id Int [not null]
+  plo_id String [not null]
   plo Plo [not null]
 }
 
 Table Subject {
-  subject_id Int [pk, increment]
+  id String [pk]
   subject_name String [not null]
   practical_credits Int [not null]
   theoretical_credits Int [not null]
@@ -75,40 +75,48 @@ Table Subject {
 }
 
 Table Clo {
-  clo_id Int [pk, increment]
+  id String [pk]
   clo_name String [not null]
   clo_content String [not null]
   clo_parent_id Int
-  subject_id Int [not null]
+  subject_id String [not null]
   subject Subject [not null]
-  exam_details Exam_detail [not null]
   plo_clo Plo_clo [not null]
-}
-
-Table Exam_detail {
-  clo_id Int [not null]
-  exam_id Int [not null]
-  exam Exam [not null]
-  clo Clo [not null]
-  result Result [not null]
-
-  indexes {
-    (exam_id, clo_id) [pk]
-  }
+  Question Question [not null]
 }
 
 Table Exam {
-  exam_id Int [pk, increment]
+  id String [pk]
   exam_name String [not null]
-  date DateTime [default: `now()`]
+  date_exam DateTime [default: `now()`]
   class_id String [not null]
   class Class [not null]
-  exam_detail Exam_detail [not null]
+  questions Question [not null]
+}
+
+Table Question {
+  id String [pk]
+  question_name String [not null]
+  max_score Float [not null]
+  exam_id String [not null]
+  clo_id String [not null]
+  clo Clo [not null]
+  exam Exam [not null]
+  Result Result [not null]
+}
+
+Table Result {
+  id String [pk]
+  score Float
+  student_id String [not null]
+  question_id String [not null]
+  question Question [not null]
+  student Student [not null]
 }
 
 Table Class {
-  class_id String [pk]
-  subject_id Int [not null]
+  id String [pk]
+  subject_id String [not null]
   subject Subject [not null]
   lecturer_id String [not null]
   lecturer Lecturer [not null]
@@ -116,13 +124,13 @@ Table Class {
 }
 
 Table Role {
-  role_id Int [pk]
+  id Int [pk]
   role_name String [unique, not null]
   user_account User_account [not null]
 }
 
 Table User_account {
-  user_account_id String [pk]
+  id String [pk]
   password String [not null]
   admin_id String [unique]
   student_id String [unique]
@@ -135,7 +143,7 @@ Table User_account {
 }
 
 Table Lecturer {
-  lecturer_id String [pk]
+  id String [pk]
   first_name String [not null]
   last_name String [not null]
   email String [unique, not null]
@@ -150,7 +158,7 @@ Table Lecturer {
 }
 
 Table Student {
-  student_id String [pk]
+  id String [pk]
   first_name String [not null]
   last_name String [not null]
   email String [unique, not null]
@@ -162,7 +170,7 @@ Table Student {
 }
 
 Table Admin {
-  admin_id String [pk]
+  id String [pk]
   first_name String [not null]
   last_name String [not null]
   email String [unique, not null]
@@ -170,64 +178,54 @@ Table Admin {
   user_account User_account
 }
 
-Table Result {
-  result_id Int [pk, increment]
-  score Float
-  student_id String [not null]
-  exam_id Int [not null]
-  clo_id Int [not null]
-  student Student [not null]
-  exam_detail Exam_detail [not null]
-}
-
 Table Degree {
-  degree_id Int [pk]
+  id Int [pk]
   degree_name String [not null]
   leturer Lecturer [not null]
 }
 
-Ref: Academic.department_id > Department.department_id
+Ref: Academic.department_id > Department.id
 
-Ref: Academic_subject.academic_id > Academic.academic_id
+Ref: Academic_subject.academic_id > Academic.id
 
-Ref: Academic_subject.subject_id > Subject.subject_id
+Ref: Academic_subject.subject_id > Subject.id
 
-Ref: Plo.academic_id > Academic.academic_id
+Ref: Plo.academic_id > Academic.id
 
-Ref: Plo_clo.plo_id > Plo.plo_id
+Ref: Plo_clo.plo_id > Plo.id
 
-Ref: Plo_clo.clo_id > Clo.clo_id
+Ref: Plo_clo.clo_id > Clo.id
 
-Ref: Plo_detail.plo_id > Plo.plo_id
+Ref: Plo_detail.plo_id > Plo.id
 
-Ref: Subject.lecturer_id > Lecturer.lecturer_id
+Ref: Subject.lecturer_id > Lecturer.id
 
-Ref: Clo.subject_id > Subject.subject_id
+Ref: Clo.subject_id > Subject.id
 
-Ref: Exam_detail.exam_id > Exam.exam_id
+Ref: Exam.class_id > Class.id
 
-Ref: Exam_detail.clo_id > Clo.clo_id
+Ref: Question.clo_id > Clo.id
 
-Ref: Exam.class_id > Class.class_id
+Ref: Question.exam_id > Exam.id
 
-Ref: Class.subject_id > Subject.subject_id
+Ref: Result.question_id > Question.id
 
-Ref: Class.lecturer_id > Lecturer.lecturer_id
+Ref: Result.student_id > Student.id
 
-Ref: User_account.role_id > Role.role_id
+Ref: Class.subject_id > Subject.id
 
-Ref: User_account.admin_id - Admin.admin_id
+Ref: Class.lecturer_id > Lecturer.id
 
-Ref: User_account.student_id - Student.student_id
+Ref: User_account.role_id > Role.id
 
-Ref: User_account.lecturer_id - Lecturer.lecturer_id
+Ref: User_account.admin_id - Admin.id
 
-Ref: Lecturer.degree_id > Degree.degree_id
+Ref: User_account.student_id - Student.id
 
-Ref: Lecturer.academic_id > Academic.academic_id
+Ref: User_account.lecturer_id - Lecturer.id
 
-Ref: Student.academic_id > Academic.academic_id
+Ref: Lecturer.degree_id > Degree.id
 
-Ref: Result.student_id > Student.student_id
+Ref: Lecturer.academic_id > Academic.id
 
-Ref: Result.(exam_id, clo_id) > Exam_detail.(exam_id, clo_id)
+Ref: Student.academic_id > Academic.id

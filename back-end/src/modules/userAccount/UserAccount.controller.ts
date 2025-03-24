@@ -21,7 +21,7 @@ export class UserAccountController {
   @ApiResponse({ status: 404, description: 'User account not found.' })
   @Get(':id')
   getUserAccountById(@Param('id') id: string) {
-    return this.userAccountService.getUserAccountById(+id);
+    return this.userAccountService.getUserAccountById(id);
   }
 
   @ApiOperation({ summary: 'Update user account' })

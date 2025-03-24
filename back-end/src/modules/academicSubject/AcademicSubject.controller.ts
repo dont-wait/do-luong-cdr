@@ -1,34 +1,15 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get } from '@nestjs/common';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AcademicSubjectService } from './AcademicSubject.service';
-import { CreateAcademicSubjectDto } from './dto/create-academic_subject.dto';
-import { UpdateAcademicSubjectDto } from './dto/update-academic_subject.dto';
 
+@ApiTags('academic-subject')
 @Controller('academic-subject')
 export class AcademicSubjectController {
   constructor(private readonly academicSubjectService: AcademicSubjectService) {}
 
-  @Post()
-  create(@Body() createAcademicSubjectDto: CreateAcademicSubjectDto) {
-    return this.academicSubjectService.create(createAcademicSubjectDto);
-  }
-
+  @ApiOperation({ summary: 'Get all academic subjects' })
   @Get()
-  findAll() {
-    return this.academicSubjectService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.academicSubjectService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateAcademicSubjectDto: UpdateAcademicSubjectDto) {
-    return this.academicSubjectService.update(+id, updateAcademicSubjectDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.academicSubjectService.remove(+id);
+  getAllAcademicSubject() {
+    return this.academicSubjectService.getAllAcademicSubject();
   }
 }
