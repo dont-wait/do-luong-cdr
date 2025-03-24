@@ -36,7 +36,6 @@ const LoginForm: React.FC = () => {
   };
 
   useEffect(() => {
-    console.log("login");
     const idStored = JSON.parse(localStorage.getItem(USER_ID) ?? "null");
     const authData: AuthData = {
       user: "",
