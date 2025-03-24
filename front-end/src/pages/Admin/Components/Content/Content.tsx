@@ -6,7 +6,7 @@ import {
   Curriculum,
   Subject,
   Lecturer,
-  UserAccount,
+  Admin,
 } from "../index";
 import ErrorBoundary from "../../../../components/ErrorBoundary";
 
@@ -21,7 +21,7 @@ const Content = ({ activeSection }: ContentProps) => {
     curriculum: <Curriculum />,
     subject: <Subject />,
     lecturer: <Lecturer />,
-    userAccount: <UserAccount />,
+    admin: <Admin />,
   };
 
   const renderSection = () => {

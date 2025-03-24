@@ -1,10 +1,9 @@
+import { FaBuilding, FaGraduationCap, FaBusinessTime } from "react-icons/fa";
 import {
-  FaBuilding,
-  FaGraduationCap,
-  // FaBook,
-  FaBusinessTime,
-} from "react-icons/fa";
-import { MdOutlineDashboard, MdClass, MdAccountTree } from "react-icons/md";
+  MdOutlineDashboard,
+  MdClass,
+  MdOutlineAdminPanelSettings,
+} from "react-icons/md";
 import { FaUserGraduate } from "react-icons/fa6";
 interface SidebarProps {
   isOpen: boolean;
@@ -44,9 +43,9 @@ const Sidebar: React.FC<SidebarProps> = ({
       label: "Lecturer",
     },
     {
-      section: "userAccount",
-      icon: <MdAccountTree className='sidebar-item' />,
-      label: "UserAccount",
+      section: "admin",
+      icon: <MdOutlineAdminPanelSettings className='sidebar-item' />,
+      label: "Admin",
     },
   ];
 

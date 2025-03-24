@@ -11,9 +11,9 @@ function App() {
   );
 }
 
-// const [file, setFile] = useState<File>();
-{
-  /* <FileUpload files={file} setFiles={setFile} />
-<Sheet files={file} /> */
-}
 export default App;
+
+// <>
+//   <FileUpload files={file} setFiles={setFile} />
+//   <Sheet files={file} />
+// </>;

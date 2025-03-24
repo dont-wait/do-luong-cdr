@@ -42,7 +42,7 @@
 }
 
 .btn {
-  width: min(50%, 15vw);
+  width: min(50%, 20vw);
   padding: 10px;
   display: flex;
   justify-content: center;
@@ -82,14 +82,20 @@
   color: #666;
 }
 
-td,
-th {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.cell {
+  display: block;
+  overflow: hidden;
+  text-align: center;
+  white-space: nowrap;
+  text-overflow: ellipsis;
   border: 1px solid #e3e3e3;
+  box-sizing: border-box;
 }
 
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
 .dropdown-custom {
   border: 1px solid #007bff;
   border-radius: 0.25rem;

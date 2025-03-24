@@ -1,6 +1,7 @@
 import * as XLSX from "xlsx";
-import { FormattedCell, MergedCell } from "../types/types";
+import { FormattedCell, MergedCell, Obj } from "../types/types";
 import axios from "../api/axios";
+import { STATE } from "../api/state";
 
 export function handleFormatData(ws: XLSX.WorkSheet): {
   header: FormattedCell[][];
@@ -67,16 +68,69 @@ export function handleFormatData(ws: XLSX.WorkSheet): {
     else data.push(rowData);
   }
 
+  const data_redundants = data.filter(
+    (row) => row.length !== data[data.length - 1].length
+  );
+
+  if (data_redundants) {
+    data_redundants.forEach((data_redundant) => {
+      header.push(data_redundant);
+      const redundantIdx = data.indexOf(data_redundant);
+      data.splice(redundantIdx, 1);
+    });
+  }
+
   return {
     header,
     data,
   };
 }
 
-export const fetchData = async (url: string) => {
+export const handleFormattoJSON = (
+  header: FormattedCell[][],
+  data: FormattedCell[][]
+) => {
+  const res = header.map((row) => {
+    return row.map((cell) => {
+      console.log(cell.value === null);
+      console.log(null);
+    });
+  });
+
+  console.log(data);
+};
+
+export const getData = async (url: string) => {
   try {
     const res = await axios.get(url);
-    return res;
+    return STATE === "TEST" ? res.data : res.data.data;
+  } catch {
+    throw new Error("fetch data fail!");
+  }
+};
+
+export const postData = async (url: string, info: Obj | Obj[]) => {
+  try {
+    const res = await axios.post(url, info);
+    return STATE === "TEST" ? res.data : res.data.data;
+  } catch {
+    throw new Error("fetch data fail!");
+  }
+};
+
+export const updateData = async (url: string, info: Obj | Obj[]) => {
+  try {
+    const res = await axios.put(url, info);
+    return STATE === "TEST" ? res.data : res.data.data;
+  } catch {
+    throw new Error("fetch data fail!");
+  }
+};
+
+export const deleteData = async (url: string) => {
+  try {
+    const res = await axios.delete(url);
+    return STATE === "TEST" ? res.data : res.data.data;
   } catch {
     throw new Error("fetch data fail!");
   }

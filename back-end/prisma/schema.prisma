@@ -183,8 +183,8 @@ model Lecturer {
   academic_id String
   academic    Academic @relation(fields: [academic_id], references: [id])
 
-  subjects Subject[]
-  class    Class[]
+  subjects     Subject[]
+  class        Class[]
   user_account User_account?
 }
 
@@ -198,7 +198,7 @@ model Student {
   academic_id String
   academic    Academic @relation(fields: [academic_id], references: [id])
 
-  Result Result[]
+  Result       Result[]
   user_account User_account?
 }
 

@@ -1,182 +1,183 @@
-// LoginForm.tsx
-import { useRef, useState, useEffect, FormEvent, ChangeEvent } from "react";
-import { Link, useNavigate, useLocation } from "react-router-dom";
-import { AccountData } from "../../../../types/types";
+import { useRef, useState, useEffect } from "react";
+import { Card, Form, Button, Spinner } from "react-bootstrap";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
 import useAuth from "../../../../hook/useAuth";
 import { useToast } from "../../../../hook/useToast";
-import InputField from "../../../../components/InputField";
-import Checkbox from "../../../../components/Checkbox";
 import { loginHanle } from "../../../../services/auth";
+import { getData } from "../../../../utils/helps";
+import { USER_ID, USER_ROLE } from "../../../../types/local";
+import { AccountData, AuthData } from "../../../../types/types";
+import { routes } from "../../../../types/roles";
 import "./LoginForm.css";
-
-const LOCAL_STORAGE_KEY = "userRoles";
 
 const LoginForm: React.FC = () => {
   const navigate = useNavigate();
-  const location = useLocation();
   const { setAuth } = useAuth();
   const { showToast } = useToast();
-  const from = location.state?.from?.pathname || "/";
+  const [loading, setLoading] = useState(false);
+  const [loginState, setLoginState] = useState<{
+    id: string;
+    password: string;
+    userRole: number;
+  }>();
+  const [showPassword, setShowPassword] = useState(false);
+  const loginInfo = useRef(false);
+  const {
+    register,
+    formState: { errors },
+    handleSubmit,
+  } = useForm<AccountData>();
 
   const refs = {
     user: useRef<HTMLInputElement>(null),
     error: useRef<HTMLParagraphElement>(null),
   };
 
-  const [loginState, setLoginState] = useState<{
-    formData: AccountData;
-    showPassword: boolean;
-    roles?: number[];
-  }>(() => {
-    const savedRoles = localStorage.getItem(LOCAL_STORAGE_KEY);
-    return {
-      formData: { email: "", password: "", remember: false },
-      showPassword: false,
-      roles: savedRoles ? JSON.parse(savedRoles) : undefined,
-    };
-  });
-
   useEffect(() => {
+    console.log("login");
+    const idStored = JSON.parse(localStorage.getItem(USER_ID) ?? "null");
+    const authData: AuthData = {
+      user: "",
+      pwd: "",
+      role: undefined,
+    };
+    loginInfo.current = true;
+    if (!loginState) {
+      if (idStored) {
+        const fetchAPI = async () => {
+          const res = await getData(`/userAccounts/${idStored}`);
+          if (res) {
+            setLoginState({
+              id: res["id"],
+              password: res["Password"],
+              userRole: res["Role Id"],
+            });
+          } else loginInfo.current = false;
+        };
+
+        fetchAPI();
+      }
+    } else {
+      authData["user"] = loginState.id;
+      authData["pwd"] = loginState.password;
+      authData["role"] = loginState.userRole;
+    }
+
+    setAuth(authData);
+
+    navigate(routes[authData.role ?? 2000], { replace: true });
     refs.user.current?.focus();
-  }, [refs.user]);
-
-  useEffect(() => {
-    const roles = loginState.roles;
-    if (!roles) return;
-
-    setAuth({
-      user: loginState.formData.email,
-      pwd: loginState.formData.password,
-      roles: roles,
-    });
-
-    const routes = {
-      2001: "/admin",
-      2002: "/lecturer",
-    };
-
-    const destination =
-      Object.entries(routes).find(([role]) =>
-        roles.includes(Number(role))
-      )?.[1] || from;
-
-    navigate(destination, { replace: true });
-  }, [
-    loginState.roles,
-    navigate,
-    from,
-    loginState.formData.email,
-    loginState.formData.password,
-    setAuth,
-  ]);
-
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const { name, value, type, checked } = e.target;
-    setLoginState((prev) => ({
-      ...prev,
-      formData: {
-        ...prev.formData,
-        [name]: type === "checkbox" ? checked : value,
-      },
-    }));
-  };
+  }, [refs.user, navigate, loginState, setAuth, showToast]);
 
   const togglePasswordVisibility = () => {
-    setLoginState((prev) => ({ ...prev, showPassword: !prev.showPassword }));
+    setShowPassword((prev) => !prev);
   };
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    const { email, password, remember } = loginState.formData;
-    if (!email || !password) {
-      showToast("Email and Password are required.", "error");
-      return;
-    }
-
+  const onSubmit = async (data: AccountData) => {
     try {
-      const response = await loginHanle();
-
-      if (response) {
-        const newRoles = [2001];
-
-        setLoginState({
-          formData: { email: "", password: "", remember: false },
-          showPassword: false,
-          roles: newRoles,
-        });
-
-        if (remember) {
-          localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(newRoles));
-        } else {
-          localStorage.removeItem(LOCAL_STORAGE_KEY);
-        }
-
-        showToast("Login successful!", "success");
-      } else {
-        showToast("Incorrect email or password!", "info");
+      setLoading(true);
+      const { id, role, password } = await loginHanle(data);
+      if (data.remember) {
+        localStorage.setItem(USER_ID, JSON.stringify(id));
+        localStorage.setItem(USER_ROLE, JSON.stringify(role));
       }
+
+      setLoginState({
+        id: id,
+        password: password,
+        userRole: role,
+      });
+
+      if (loginInfo.current) showToast("Login successful!", "success");
+      else showToast("Incorrect ID or password!", "error");
     } catch {
-      showToast("Server Not Found", "error");
+      showToast("Incorrect ID or password!", "error");
       refs.error.current?.focus();
+    } finally {
+      setLoading(false);
     }
   };
-
-  const { formData, showPassword } = loginState;
 
   return (
-    <div className='login-form backdrop-blur-lg bg-white/10 border border-white/20 rounded-2xl shadow-xl w-full max-w-md p-10 mx-6 my-10 sm:mx-0 sm:my-0'>
-      <div className='text-center'>
-        <h1 className='text-3xl font-bold text-gray-800'>Đăng nhập</h1>
-        <p className='text-gray-600 text-[16px] p-[5px]'>
-          Vui lòng đăng nhập để tiếp tục
-        </p>
-      </div>
-
-      <form onSubmit={handleSubmit} className='space-y-8 my-[10px]'>
-        <InputField
-          type='email'
-          id='email'
-          name='email'
-          value={formData.email}
-          onChange={handleChange}
-          placeholder='example@email.com'
-          ref={refs.user}
-        />
-
-        <InputField
-          type={showPassword ? "text" : "password"}
-          id='password'
-          name='password'
-          value={formData.password}
-          onChange={handleChange}
-          placeholder='••••••••'
-          showPasswordToggle={togglePasswordVisibility}
-          showPasswordIcon={showPassword ? false : true}
-        />
-
-        <div className='flex items-center justify-between mt-6'>
-          <Checkbox
-            id='remember'
-            name='remember'
-            checked={formData.remember}
-            onChange={handleChange}
-            label='Ghi nhớ đăng nhập'
-          />
-          <Link
-            to='/forgot-password'
-            className='text-sm font-medium text-blue-600 hover:text-blue-500'>
-            Quên mật khẩu?
-          </Link>
+    <>
+      <Card className='login-form backdrop-blur-lg bg-white/10 border border-white/20 rounded-2xl shadow-xl w-full max-w-md p-10 mx-6 my-10 sm:mx-0 sm:my-0'>
+        <div className='text-center'>
+          <h1 className='text-3xl font-bold text-gray-800'>Đăng nhập</h1>
+          <p className='text-gray-600 text-[16px] p-[5px]'>
+            Vui lòng đăng nhập để tiếp tục
+          </p>
         </div>
 
-        <button
-          type='submit'
-          className='submit-btn w-full py-4 px-6 bg-blue-600 hover:bg-blue-700 text-white font-semibold transition-all duration-200'>
-          Đăng nhập
-        </button>
-      </form>
-    </div>
+        <Form onSubmit={handleSubmit(onSubmit)} className='space-y-8 my-[10px]'>
+          <Form.Group>
+            <Form.Label>Lecturer ID</Form.Label>
+            <Form.Control
+              type='text'
+              id='lecturer_id'
+              autoComplete='username'
+              className='p-3'
+              {...register("id", { required: "Lecturer ID is required" })}
+            />
+            {errors.id && (
+              <p className='text-danger p-1 font-medium'>{errors.id.message}</p>
+            )}
+          </Form.Group>
+
+          <Form.Group>
+            <Form.Label>Password</Form.Label>
+            <div className='relative'>
+              <Form.Control
+                type={showPassword ? "text" : "password"}
+                id='password'
+                className='p-3 pr-10'
+                autoComplete='current-password'
+                {...register("password", { required: "Password is required" })}
+                placeholder='••••••••'
+              />
+              <span className='absolute inset-y-0 right-3 flex items-center cursor-pointer'>
+                {showPassword ? (
+                  <FaEye onClick={togglePasswordVisibility} />
+                ) : (
+                  <FaEyeSlash onClick={togglePasswordVisibility} />
+                )}
+              </span>
+            </div>
+            {errors.password && (
+              <p className='text-danger p-1 font-medium'>
+                {errors.password.message}
+              </p>
+            )}
+          </Form.Group>
+
+          {/* Bootstrap Form.Check for Remember Me */}
+          <Form.Group controlId='rememberMe' className='mt-3 w-full'>
+            <Form.Check
+              type='checkbox'
+              label='Ghi nhớ đăng nhập'
+              {...register("remember")}
+            />
+          </Form.Group>
+
+          <Button
+            style={{ width: "100%" }}
+            type='submit'
+            className='submit-btn py-3 px-6 bg-blue-600 hover:bg-blue-700 text-white font-semibold transition-all duration-200'>
+            Đăng nhập
+          </Button>
+        </Form>
+      </Card>
+
+      {loading && (
+        <div className='spinner-overlay'>
+          <div className='bg-white dark:bg-gray-800 p-4 rounded-lg shadow flex items-center space-x-3'>
+            <Spinner animation='border' role='status' variant='primary' />
+            <span>Processing...</span>
+          </div>
+        </div>
+      )}
+    </>
   );
 };
 

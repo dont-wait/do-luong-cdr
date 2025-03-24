@@ -11,17 +11,18 @@ import {
 import { MdOutlineInsertChartOutlined } from "react-icons/md";
 import { useForm } from "react-hook-form";
 import CrudFormList from "./CrudFormList";
-import { CrudFromField } from "../types/types";
-import { Obj } from "../types/types";
-import axios from "../api/axios";
+import { CrudFromField, Obj } from "../types/types";
+import { getData, postData, updateData, deleteData } from "../utils/helps";
 import { useToast } from "../hook/useToast";
 
 const CrudForm = ({
   inputFields,
   url,
+  isFilter,
 }: {
   inputFields: CrudFromField[];
   url: string;
+  isFilter: boolean;
 }) => {
   const [filterText, setFilterText] = useState<string>("");
   const [editMode, setEditMode] = useState<boolean>(false);
@@ -42,8 +43,8 @@ const CrudForm = ({
   const getHandle = useCallback(async () => {
     try {
       setLoading(true);
-      const response = await axios.get(url);
-      setData(response.data);
+      const res = await getData(url);
+      setData(res);
     } catch {
       showToast("Get Method Fail!", "error");
     } finally {
@@ -60,9 +61,9 @@ const CrudForm = ({
   const createHandle = useCallback(
     async (info: { [key: string]: string }) => {
       try {
-        const res = await axios.post(url, info);
+        const res = await postData(url, info);
         setLoading(true);
-        setData((prev) => [...prev, res.data]);
+        setData((prev) => [...prev, res]);
         reset();
         showToast("Create Success!", "success");
       } catch {
@@ -79,11 +80,8 @@ const CrudForm = ({
     async (info: Obj) => {
       try {
         setLoading(true);
-        console.log(url + `/${info.id}`);
-        const res = await axios.put(url + `/${info.id}`, info);
-        setData((prev) =>
-          prev.map((obj) => (obj.id === res.data.id ? res.data : obj))
-        );
+        const res = await updateData(url + `/${info.id}`, info);
+        setData((prev) => prev.map((obj) => (obj.id === res.id ? res : obj)));
         reset();
         setEditMode(false);
         showToast("Update Success!", "success");
@@ -102,8 +100,8 @@ const CrudForm = ({
       if (!window.confirm("Are you sure you want to delete this item?")) return;
       try {
         setLoading(true);
-        await axios.delete(`${url}/${id}`);
-        setData((prev) => prev.filter((obj) => obj.id !== id));
+        const res = await deleteData(`${url}/${id}`);
+        setData((prev) => prev.filter((obj) => obj.id !== res.id));
         showToast("Delete Success!", "success");
       } catch {
         showToast("Delete Fail!", "error");
@@ -117,7 +115,7 @@ const CrudForm = ({
   const onEditMode = (info: Obj) => {
     setEditMode(true);
     inputFields.forEach((field) => {
-      const label = field["isPrimaryKey"] ? "id" : field["label"];
+      const label = field["key"];
       setValue(label, info[label]);
     });
     formRef?.current?.scrollIntoView({ behavior: "smooth" });
@@ -139,15 +137,6 @@ const CrudForm = ({
     return res;
   };
 
-  // props
-  const listProps = {
-    label: "Information",
-    data,
-    colLabels: inputFields.map((field) =>
-      field["isPrimaryKey"] ? "id" : field["label"]
-    ),
-  };
-
   return (
     <Container>
       <Card className='mb-5 shadow-sm my-4'>
@@ -157,14 +146,14 @@ const CrudForm = ({
               {inputFields.map(
                 (
                   {
+                    key,
                     label,
                     type,
-                    isPrimaryKey,
                     isRequired,
                     isDropBox,
                     dataDrop,
                     dropLabel,
-                    isMutiple,
+                    isMultiple,
                   },
                   idx
                 ) => (
@@ -181,7 +170,7 @@ const CrudForm = ({
                         <Row>
                           <Col>
                             <Form.Group>
-                              {isMutiple ? (
+                              {isMultiple ? (
                                 <div
                                   style={{
                                     maxHeight: "110px",
@@ -197,7 +186,7 @@ const CrudForm = ({
                                         label={item[`${dropLabel}`]}
                                         value={item.id}
                                         checked={selectedValues.includes(
-                                          item.id
+                                          JSON.stringify(item.id)
                                         )}
                                         onChange={(e) => {
                                           const value = e.target.value;
@@ -241,14 +230,14 @@ const CrudForm = ({
                           type={type}
                           placeholder={`Input ${label}`}
                           className='px-2 py-3 text-base'
-                          {...register(isPrimaryKey ? "id" : label, {
+                          {...register(key, {
                             required: isRequired,
                             valueAsNumber: type === "number",
                           })}
                         />
                       )}
 
-                      {errors[isPrimaryKey ? "id" : label] && (
+                      {errors[key] && (
                         <p className='text-danger p-1 font-medium'>
                           {label} is required!
                         </p>
@@ -258,23 +247,25 @@ const CrudForm = ({
                 )
               )}
 
-              <Col md={6}>
-                <Form.Group>
-                  <Form.Label
-                    className='font-bold text-2xl my-4'
-                    style={{ display: "flex", alignItems: "center" }}>
-                    <MdOutlineInsertChartOutlined className='text-3xl' />
-                    Filter
-                  </Form.Label>
-                  <Form.Control
-                    type='text'
-                    placeholder={`Input Filter`}
-                    value={filterText}
-                    onChange={(e) => setFilterText(e.target.value)}
-                    className='filter-input px-2 py-3 mb-3'
-                  />
-                </Form.Group>
-              </Col>
+              {isFilter && (
+                <Col md={6}>
+                  <Form.Group>
+                    <Form.Label
+                      className='font-bold text-2xl my-4'
+                      style={{ display: "flex", alignItems: "center" }}>
+                      <MdOutlineInsertChartOutlined className='text-3xl' />
+                      Filter
+                    </Form.Label>
+                    <Form.Control
+                      type='text'
+                      placeholder={`Input Filter`}
+                      value={filterText}
+                      onChange={(e) => setFilterText(e.target.value)}
+                      className='filter-input px-2 py-3 mb-3'
+                    />
+                  </Form.Group>
+                </Col>
+              )}
             </Row>
 
             <div className='flex space-x-2'>
@@ -303,7 +294,16 @@ const CrudForm = ({
       </Card>
 
       <CrudFormList
-        listProps={listProps}
+        listProps={{
+          label: "Information",
+          data,
+          dataLabels: inputFields
+            .filter((field) => field.label && field.isVisible)
+            .map((field) => field.label),
+          colLabels: inputFields
+            .filter((field) => field.key && field.isVisible)
+            .map((field) => field.key),
+        }}
         onEditMode={onEditMode}
         deleteHandle={deleteHandle}
       />

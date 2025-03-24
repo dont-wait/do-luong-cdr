@@ -15,6 +15,7 @@ import { MdOutlineTipsAndUpdates } from "react-icons/md";
 interface ListProps {
   label: string;
   data: Obj[];
+  dataLabels: string[];
   colLabels: string[];
 }
 
@@ -27,7 +28,7 @@ const CrudFormList = ({
   onEditMode: (info: Obj) => void;
   deleteHandle: (id: string) => void;
 }) => {
-  const { label, data, colLabels } = listProps;
+  const { label, data, colLabels, dataLabels } = listProps;
 
   // state
   const [itemsPerPage, setItemsPerPage] = useState(5);
@@ -35,7 +36,7 @@ const CrudFormList = ({
   const [searchTerm, setSearchTerm] = useState("");
 
   // Filter based on search term
-  const filtered = data.filter((dept) => {
+  const filtered = data?.filter((dept) => {
     const searchLower = searchTerm.toLowerCase();
     return colLabels.some((colLabel) => {
       return (
@@ -152,14 +153,14 @@ const CrudFormList = ({
           <Table striped hover>
             <thead>
               <tr className='flex'>
-                {colLabels.map((colLabel, idx) => (
-                  <td key={idx} className='text-center flex-1'>
+                {dataLabels.map((colLabel, idx) => (
+                  <td key={idx} className='cell text-center flex-1'>
                     {typeof colLabel === "string"
                       ? colLabel.toUpperCase()
                       : colLabel}
                   </td>
                 ))}
-                <th className='text-center flex-2'>ACTIONS</th>
+                <th className='cell text-center flex-2'>ACTIONS</th>
               </tr>
             </thead>
             <tbody className='flex flex-col'>
@@ -167,14 +168,16 @@ const CrudFormList = ({
                 currentItems.map((dept: Obj, idx) => (
                   <tr key={idx} className='flex'>
                     {colLabels.map((colLabel, j) => (
-                      <td key={j} className='text-center flex-1 roboto-300'>
+                      <td
+                        key={j}
+                        className='cell text-center flex-1 roboto-300'>
                         {Array.isArray(dept[colLabel])
                           ? dept[colLabel].join(", ")
                           : dept[colLabel]}
                       </td>
                     ))}
-                    <td className='flex justify-center flex-2'>
-                      <div className='flex space-x-2'>
+                    <td className='cell flex justify-center flex-2'>
+                      <div className='flex space-x-2 justify-center'>
                         <Button
                           variant='outline-primary'
                           size='sm'
@@ -186,7 +189,7 @@ const CrudFormList = ({
                           variant='outline-danger'
                           size='sm'
                           onClick={() => {
-                            deleteHandle(dept.id);
+                            deleteHandle(dept[`${colLabels[0]}`]?.toString());
                             if (currentItems.length === 1 && currentPage > 1) {
                               setCurrentPage(currentPage - 1);
                             }

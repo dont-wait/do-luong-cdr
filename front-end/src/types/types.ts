@@ -1,7 +1,7 @@
 export interface AuthData {
   user: string;
   pwd: string;
-  roles?: number[];
+  role?: number;
 }
 
 export interface AuthContextType {
@@ -10,7 +10,7 @@ export interface AuthContextType {
 }
 
 export interface AccountData {
-  email: string;
+  id: string;
   password: string;
   remember: boolean;
 }
@@ -56,16 +56,24 @@ export interface MergedCell {
 }
 
 export interface Obj {
-  [key: string]: string;
+  [key: string]: string | number;
 }
 
 export interface CrudFromField {
+  key: string;
   label: string;
   type: string;
-  isPrimaryKey?: boolean;
   isRequired?: boolean;
   isDropBox?: boolean;
   dataDrop?: Obj[];
   dropLabel?: string;
-  isMutiple?: boolean;
+  isMultiple?: boolean;
+  isVisible?: boolean;
+  defaultValue?: string | number;
+}
+
+export interface ErrorResponse {
+  details?: {
+    message: string;
+  };
 }

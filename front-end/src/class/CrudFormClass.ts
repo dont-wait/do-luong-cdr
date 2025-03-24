@@ -1,23 +1,30 @@
-import { Obj } from "../types/types";
-
+import { Obj, CrudFromField } from "../types/types";
 export class CrudFormClass {
-  constructor(
-    public label: string,
-    public type: string,
-    public isRequired?: boolean,
-    public isPrimaryKey?: boolean,
-    public isDropBox?: boolean,
-    public dataDrop?: Obj[],
-    public dropLabel?: string,
-    public isMutiple?: boolean
-  ) {
-    if (label) this.label = label;
-    if (type) this.type = type;
-    if (isRequired) this.isRequired = isRequired;
-    if (isPrimaryKey) this.isPrimaryKey = isPrimaryKey;
-    if (isDropBox) this.isDropBox = isDropBox;
-    if (dataDrop) this.dataDrop = dataDrop;
-    if (dropLabel) this.dropLabel = dropLabel;
-    if (isMutiple) this.isMutiple = isMutiple;
+  readonly key: string;
+  readonly label: string;
+  readonly type: string;
+  readonly isRequired?: boolean;
+  readonly isDropBox?: boolean;
+  readonly dataDrop?: Obj[];
+  readonly dropLabel?: string;
+  readonly isMultiple: boolean;
+  readonly isVisible: boolean;
+  readonly defaultValue: string | number;
+
+  constructor(options: CrudFromField) {
+    this.key = options.key;
+    this.label = options.label;
+    this.type = options.type;
+    this.isRequired = options.isRequired ?? false;
+    this.isDropBox = options.isDropBox ?? false;
+    this.dataDrop = options.dataDrop;
+    this.dropLabel = options.dropLabel;
+    this.isMultiple = options.isMultiple ?? false;
+    this.isVisible = options.isVisible ?? false;
+    this.defaultValue = options.defaultValue ?? "";
+  }
+
+  static create(options: CrudFromField): CrudFormClass {
+    return new CrudFormClass(options);
   }
 }

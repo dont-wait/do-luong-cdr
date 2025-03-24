@@ -6,6 +6,6 @@ import { LecturerController } from './Lecturer.controller';
 @Module({
   controllers: [LecturerController],
   providers: [LecturerService],
-  exports: [LecturerService]
+  exports: [LecturerService],
 })
 export class LecturerModule {}
