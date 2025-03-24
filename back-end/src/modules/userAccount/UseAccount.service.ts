@@ -48,9 +48,31 @@ export class UserAccountService {
     
   }
 
-  getUserAccountById(id: number) {
+  public async getUserAccountById(id: string) {
+    const user = await this.prisma.user_account.findFirst({
+      where: { 
+        OR: [
+          { admin_id: id },
+          { lecturer_id: id },
+          { student_id: id }
+        ] 
+      },
+      include: { 
+        admin: true,
+        lecturer: true,
+        student: true, 
+        role: true,
+      }
+    });
+
+    if (!user) {
+      throw new BadRequestException(`Không tìm thấy user ID: ${id}`);
+    }
+
+    let userData;
     
   }
+
 
   updateUserAccount(id: number, updateUserAccountDto: UpdateUserAccountDto) {
     return `This action updates a #${id} userAccount`;
