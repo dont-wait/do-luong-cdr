@@ -13,6 +13,8 @@ const Sheet = ({ worksheet }: SheetProps) => {
     data: [] as FormattedCell[][],
   });
 
+  const [json, setJson] = useState<string | undefined>(undefined);
+
   useEffect(() => {
     if (worksheet) setData(handleFormatData(worksheet));
   }, [worksheet]);
@@ -116,11 +118,15 @@ const Sheet = ({ worksheet }: SheetProps) => {
         </button>
 
         <button
-          onClick={() => handleFormattoJSON(data.header, data.data)}
+          onClick={() =>
+            setJson(JSON.stringify(handleFormattoJSON(data.header, data.data)))
+          }
           className='mt-4 px-4 py-2 m-3 bg-blue-600 text-white rounded'>
           Convert To JSON
         </button>
       </div>
+
+      {json && <div>{json}</div>}
     </div>
   );
 };

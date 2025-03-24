@@ -86,16 +86,90 @@ export function handleFormatData(ws: XLSX.WorkSheet): {
   };
 }
 
+function parseTableData(
+  cell: FormattedCell,
+  header: FormattedCell[][]
+): unknown {
+  const keys: FormattedCell[] = [];
+  const label = cell.value;
+  const res: unknown = label ? {} : [];
+  const nOfRows = header.length;
+  const currCell = cell;
+  let currRowIdx = 0;
+  let nextRowIdx = 0 + (currCell.rowspan ?? 1);
+  const info: Record<string, any> = {};
+
+  while (currRowIdx + nextRowIdx < nOfRows) {
+    let currColIdx = currCell.colspan ?? 1;
+    let s;
+    if (!label) {
+      while (currColIdx) {
+        s = header[nextRowIdx].shift();
+        (res as string[]).push(
+          typeof s?.value === "string"
+            ? s?.value?.toString()
+            : JSON.stringify(s?.value)
+        );
+        currColIdx -= s?.colspan ?? 1;
+      }
+    } else {
+      if (currRowIdx === 0) {
+        while (currColIdx) {
+          s = header[nextRowIdx].shift();
+          if (s) keys.push(s);
+          if (s?.value) info[s?.value?.toString()] = [];
+          currColIdx -= s?.colspan ?? 1;
+        }
+      } else {
+        keys.forEach((key) => {
+          currColIdx = key.colspan ?? 1;
+          while (currColIdx) {
+            s = header[nextRowIdx].shift();
+            if (s?.value && key.value) {
+              info[key.value][Math.abs(currColIdx - (key.colspan ?? 1))] =
+                JSON.stringify(s?.value);
+            }
+            currColIdx -= s?.colspan ?? 1;
+          }
+        });
+      }
+
+      if (nextRowIdx === nOfRows - 2) {
+        keys.forEach((key) => {
+          currColIdx = key.colspan ?? 1;
+          while (currColIdx) {
+            s = header[nextRowIdx + 1].shift();
+            if (s?.value && key.value) {
+              info[key.value][Math.abs(currColIdx - (key.colspan ?? 1))] =
+                JSON.stringify(s?.value);
+            }
+            currColIdx -= s?.colspan ?? 1;
+          }
+        });
+      }
+
+      (res as Record<string, any>)[label] = info;
+    }
+
+    const tmp = nextRowIdx;
+    currRowIdx = tmp;
+    nextRowIdx = tmp + (s?.rowspan ?? 1);
+  }
+
+  return res;
+}
+
 export const handleFormattoJSON = (
   header: FormattedCell[][],
   data: FormattedCell[][]
 ) => {
-  const res = header.map((row) => {
-    return row.map((cell) => {
-      console.log(cell.value === null);
-      console.log(null);
-    });
-  });
+  if (header.length === 1) return header[0].map((cell) => cell.value);
+
+  const copyHeader = header.map((row) => [...row]);
+  const firstRow = copyHeader[0];
+  const headerJSON = firstRow.map((cell) => parseTableData(cell, copyHeader));
+  console.log(headerJSON);
+  return headerJSON;
 
   console.log(data);
 };
