@@ -15,15 +15,6 @@ export class UserAccountController {
     return this.userAccountService.getAllUserAccout();
   }
 
-  @ApiOperation({ summary: 'Get user account by ID' })
-  @ApiParam({ name: 'id', description: 'User account ID' })
-  @ApiResponse({ status: 200, description: 'Return the user account.' })
-  @ApiResponse({ status: 404, description: 'User account not found.' })
-  @Get(':id')
-  getUserAccountById(@Param('id') id: string) {
-    return this.userAccountService.getUserAccountById(id);
-  }
-
   @ApiOperation({ summary: 'Update user account' })
   @ApiParam({ name: 'id', description: 'User account ID' })
   @ApiResponse({ status: 200, description: 'User account has been updated.' })
