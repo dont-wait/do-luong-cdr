@@ -34,10 +34,10 @@ export class CloService {
   }
 
   async getCloById(id: string) {
-    return this.prisma.clo.getById(id);
+    return this.prisma.clo.findUnique({where: {id}})
   }
 
-  async updateClo(id: string, data: UpdateCloDto) {
+  async updateClo(id: string, data: CreateCloDto) {
     return this.prisma.clo.update({
       where: { id },
       data,
@@ -45,6 +45,6 @@ export class CloService {
   }
 
   async remove(id: string) {
-    
+    return this.prisma.clo.delete({where: {id}})
   }
 }
