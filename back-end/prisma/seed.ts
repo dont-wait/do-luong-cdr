@@ -1,5 +1,5 @@
-import { PrismaClient } from "@prisma/client";
-import { roles, admin, degree } from "../src/configs/config.json";
+import { PrismaClient } from '@prisma/client';
+import { roles, admin, degree } from '../src/configs/config.json';
 import * as bcrypt from 'bcrypt';
 
 const prisma = new PrismaClient();
@@ -13,10 +13,10 @@ async function main() {
     });
   }
 
-  console.log("Seeded role thành công");
+  console.log('Seeded role thành công');
 
   const adminPassword = await bcrypt.hash(process.env.ADMIN_PASS!, 10);
-  const adminRole = roles.find(r => r.role_name === "admin");
+  const adminRole = roles.find((r) => r.role_name === 'admin');
 
   if (adminRole?.role_id) {
     await prisma.admin.upsert({
@@ -27,10 +27,10 @@ async function main() {
         email: admin.email,
         first_name: admin.first_name,
         last_name: admin.last_name,
-        phone: admin.phone
-      }
-    })
-  
+        phone: admin.phone,
+      },
+    });
+
     await prisma.user_account.upsert({
       where: { admin_id: admin.admin_id },
       update: {},
@@ -38,10 +38,10 @@ async function main() {
         admin_id: admin.admin_id,
         role_id: adminRole.role_id,
         password: adminPassword,
-      }
-    })
+      },
+    });
 
-    console.log("Seeded admin account thành công");
+    console.log('Seeded admin account thành công');
   }
 
   for (const d of degree) {
@@ -52,7 +52,7 @@ async function main() {
     });
   }
 
-  console.log("Seeded degree thành công");
+  console.log('Seeded degree thành công');
 }
 
 main()
