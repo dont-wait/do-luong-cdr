@@ -184,6 +184,7 @@ export const getData = async (url: string) => {
 };
 
 export const postData = async (url: string, info: Obj | Obj[]) => {
+  console.log(info);
   try {
     const res = await axios.post(url, info);
     return STATE === "TEST" ? res.data : res.data.data;
