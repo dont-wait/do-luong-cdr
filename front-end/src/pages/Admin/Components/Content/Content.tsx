@@ -19,8 +19,8 @@ const Content = ({ activeSection }: ContentProps) => {
     dashboard: <Dashboard />,
     department: <Department />,
     curriculum: <Curriculum />,
-    subject: <Subject />,
     lecturer: <Lecturer />,
+    subject: <Subject />,
     admin: <Admin />,
   };
 

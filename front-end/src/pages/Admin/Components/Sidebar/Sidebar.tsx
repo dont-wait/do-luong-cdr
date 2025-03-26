@@ -33,14 +33,14 @@ const Sidebar: React.FC<SidebarProps> = ({
       label: "Curriculum",
     },
     {
-      section: "subject",
-      icon: <MdClass className='sidebar-item' />,
-      label: "Subject",
-    },
-    {
       section: "lecturer",
       icon: <FaUserGraduate className='sidebar-item' />,
       label: "Lecturer",
+    },
+    {
+      section: "subject",
+      icon: <MdClass className='sidebar-item' />,
+      label: "Subject",
     },
     {
       section: "admin",
