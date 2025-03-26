@@ -6,6 +6,7 @@ import { PrismaService } from '../prisma/Prisma.service';
 export class ExamService {
   constructor(private readonly prisma: PrismaService) {}
 
+
   async createExam(data: CreateExamDto | CreateExamDto[]) {
     if (Array.isArray(data)) {
       // Lấy tất cả class_id duy nhất
