@@ -3,9 +3,12 @@ import { CreateUserAccountDto } from './dto/create-user_account.dto';
 import { UpdateUserAccountDto } from './dto/update-user_account.dto';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from '../prisma/Prisma.service';
+import { roles } from "../../configs/config.json";
 
 @Injectable()
 export class UserAccountService {
+  private readonly roleName = roles.map(role => role.role_name);
+  
   constructor(
     private readonly prisma: PrismaService
   ) {}
@@ -48,7 +51,7 @@ export class UserAccountService {
     
   }
 
-  public async getUserAccountById(id: string) {
+  protected async getUserAccountById(id: string, password: string) {
     const user = await this.prisma.user_account.findFirst({
       where: { 
         OR: [
@@ -65,12 +68,15 @@ export class UserAccountService {
       }
     });
 
-    if (!user) {
+    if (!user) 
       throw new BadRequestException(`Không tìm thấy user ID: ${id}`);
-    }
-
-    let userData;
     
+
+    const isPasswordMatch = await bcrypt.compare(password, user.password);
+    if (!isPasswordMatch) 
+      throw new BadRequestException("Sai mật khẩu");
+
+    return user;
   }
 
 

@@ -78,7 +78,7 @@ Table Clo {
   id String [pk]
   clo_name String [not null]
   clo_content String [not null]
-  clo_parent_id Int
+  clo_parent_id String
   subject_id String [not null]
   subject Subject [not null]
   plo_clo Plo_clo [not null]

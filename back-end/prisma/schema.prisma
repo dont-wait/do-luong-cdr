@@ -93,7 +93,7 @@ model Clo {
   id        String    @id @default(uuid())
   clo_name      String @db.Char(10)
   clo_content   String @db.VarChar(255)
-  clo_parent_id Int?
+  clo_parent_id String?
 
   subject_id String
   subject    Subject @relation(fields: [subject_id], references: [id])

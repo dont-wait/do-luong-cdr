@@ -5,5 +5,6 @@ import { CloController } from './Clo.controller';
 @Module({
   controllers: [CloController],
   providers: [CloService],
+  exports: [CloService],
 })
 export class CloModule {}

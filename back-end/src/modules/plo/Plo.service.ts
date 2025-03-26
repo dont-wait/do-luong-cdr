@@ -17,12 +17,7 @@ export class PloService {
                 throw new BadRequestException("Academic ID không hợp lệ");
             }
         }
-
-        return this.prisma.plo.createMany({
-            data: data.map(p => ({
-                ...p
-            }))
-        });
+        return this.prisma.plo.createMany({data});
     }
     else{
       const {academic_id} = data;

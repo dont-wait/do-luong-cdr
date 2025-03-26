@@ -9,7 +9,7 @@ export class ExamService {
   async createExam(data: CreateExamDto | CreateExamDto[]) {
     if (Array.isArray(data)) {
       // Lấy tất cả class_id duy nhất
-      const classIds = [...new Set(data.map(d => d.class_id))];
+      const classIds = [...new Set(data.map((d) => d.class_id))];
 
       // Kiểm tra các class_id có tồn tại không
       const existingClasses = await this.prisma.class.findMany({
@@ -17,20 +17,26 @@ export class ExamService {
         select: { id: true },
       });
 
-      const existingClassIds = new Set(existingClasses.map(cls => cls.id));
-      const invalidClassIds = classIds.filter(id => !existingClassIds.has(id));
+      const existingClassIds = new Set(existingClasses.map((cls) => cls.id));
+      const invalidClassIds = classIds.filter(
+        (id) => !existingClassIds.has(id),
+      );
 
       if (invalidClassIds.length > 0) {
-        throw new BadRequestException(`Các class_id không hợp lệ: ${invalidClassIds.join(', ')}`);
+        throw new BadRequestException(
+          `class_id không hợp lệ: ${invalidClassIds.join(', ')}`,
+        );
       }
 
       return this.prisma.exam.createMany({ data });
-    } 
-    else {
+    } else {
       const { class_id } = data;
 
-      if (!class_id || !await this.prisma.class.findUnique({ where: { id: class_id } })) {
-        throw new BadRequestException("Class ID không hợp lệ");
+      if (
+        !class_id ||
+        !(await this.prisma.class.findUnique({ where: { id: class_id } }))
+      ) {
+        throw new BadRequestException('Class ID không hợp lệ');
       }
 
       return this.prisma.exam.create({ data });
