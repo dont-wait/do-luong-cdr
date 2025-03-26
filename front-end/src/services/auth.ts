@@ -11,9 +11,6 @@ export const loginHanle = async ({ id, password }: AccountData) => {
     //   role: ROLES.Admin,
     //   password: "123",
     // };
-
-    // navigate to CNHP
-
     // navigate to lecturer
     return {
       id: "01014017",
