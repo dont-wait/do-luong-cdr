@@ -82,8 +82,9 @@ model Subject {
   description         String? @db.VarChar(255)
 
   lecturer_id String
-  lecturer    Lecturer @relation(fields: [lecturer_id], references: [id])
+  lecturer_subject_manager_id String
 
+  lecturer    Lecturer @relation(fields: [lecturer_id], references: [id])
   academic_subject Academic_subject[]
   class            Class[]
   clo              Clo[]

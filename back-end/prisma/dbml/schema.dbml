@@ -68,6 +68,7 @@ Table Subject {
   theoretical_credits Int [not null]
   description String
   lecturer_id String [not null]
+  lecturer_subject_manager_id String [not null]
   lecturer Lecturer [not null]
   academic_subject Academic_subject [not null]
   class Class [not null]
