@@ -8,8 +8,8 @@ services:
       MYSQL_DATABASE: CDR-DB-MYSQL
     ports:
       - "3310:3306"
-    # volumes:
-    #   - ./shopapp_online.sql:/docker-entrypoint-initdb.d/shopapp_online.sql
+    volumes:
+      - ./CDR-DB-MYSQL.sql:/docker-entrypoint-initdb.d/CDR-DB-MYSQL.sql
     networks:
       - CDR-network
 

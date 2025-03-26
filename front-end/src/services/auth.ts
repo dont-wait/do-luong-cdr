@@ -6,11 +6,11 @@ export const loginHanle = async ({ id, password }: AccountData) => {
     // await new Promise((resolve) => setTimeout(resolve, 2000));
     console.log(id, password);
     // navigate to admin
-    // return {
-    //   id: "01014017",
-    //   role: ROLES.Admin,
-    //   password: "123",
-    // };
+    return {
+      id: "01014017",
+      role: ROLES.Admin,
+      password: "123",
+    };
     // navigate to lecturer
     return {
       id: "01014017",
