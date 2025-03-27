@@ -46,7 +46,7 @@ const Admin = () => {
       label: "Password",
       type: "text",
       isRequired: true,
-      isVisible: true,
+      isVisible: false,
     }),
   ];
   return <CrudForm inputFields={inputFields} url={ADMIN_API} />;
