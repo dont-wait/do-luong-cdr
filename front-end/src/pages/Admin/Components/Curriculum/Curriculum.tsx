@@ -10,22 +10,22 @@ import { PK } from "../../../../api/primaryKey";
 const levels = [
   {
     id: 1,
-    academic_level: "Higher Education",
+    academic_level: "Đại Học",
   },
   {
     id: 2,
-    academic_level: "Postgraduate Education",
+    academic_level: "Sau Đại Học",
   },
 ];
 
 const types = [
   {
     id: 1,
-    academic_type: "Formal Curriculum",
+    academic_type: "Chính Quy",
   },
   {
     id: 2,
-    academic_type: "Informal Curriculum",
+    academic_type: "Chất Lượng Cao",
   },
 ];
 
