@@ -63,6 +63,10 @@ export class LecturerService {
         return this.prisma.lecturer.findUnique({
             where: {
                 id: lecturer_id
+            },
+            include: {
+                subjects: true,
+                LecturerSubject: true,
             }
         })
     }

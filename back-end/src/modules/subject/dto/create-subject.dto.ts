@@ -26,10 +26,16 @@ export class CreateSubjectDto {
     @IsString()
     description: string | null;
 
-    @ApiProperty({ description: 'Lecturer ID', example: 'LEC001' })
+    @ApiProperty({ description: 'Lecturer ID', type: [String], example: 'LEC001' })
+    @IsString({ each: true })
+    @IsNotEmpty()
+    @IsArray()
+    lecturer_id: string[];
+
+    @ApiProperty({ description: 'Lecturer subject manager ID', example: 'LEC002' })
     @IsString()
     @IsNotEmpty()
-    lecturer_id: string;
+    lecturer_subject_manager_id: string;
 
     @ApiProperty({ description: 'Academic IDs', type: [String], example: ['AC001', 'AC002'] })
     @IsArray()

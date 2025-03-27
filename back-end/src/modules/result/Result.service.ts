@@ -1,26 +1,62 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { PrismaService } from '../prisma/Prisma.service';
 import { CreateResultDto } from './dto/create-result.dto';
-import { UpdateResultDto } from './dto/update-result.dto';
 
 @Injectable()
 export class ResultService {
-  create(createResultDto: CreateResultDto) {
-    return 'This action adds a new result';
+  constructor(private readonly prisma: PrismaService) {}
+
+  async createResult(data: CreateResultDto | CreateResultDto[]) {
+    if (Array.isArray(data)) {
+      for (const r of data) {
+        const studentExists = await this.prisma.student.findUnique({ where: { id: r.student_id } });
+        if (!studentExists) {
+          throw new BadRequestException(`Student ID ${r.student_id} not found`);
+        }
+
+        const questionExists = await this.prisma.question.findUnique({ where: { id: r.question_id } });
+        if (!questionExists) {
+          throw new BadRequestException(`Question ID ${r.question_id} not found`);
+        }
+      }
+
+      return this.prisma.result.createMany({
+        data: data,
+      });
+
+    } else {
+
+      const studentExists = await this.prisma.student.findUnique({ where: { id: data.student_id } });
+      if (!studentExists) {
+        throw new BadRequestException(`Student ID ${data.student_id} not found`);
+      }
+
+      const questionExists = await this.prisma.question.findUnique({ where: { id: data.question_id } });
+      if (!questionExists) {
+        throw new BadRequestException(`Question ID ${data.question_id} not found`);
+      }
+
+      return this.prisma.result.create({ data });
+    }
   }
 
-  findAll() {
-    return `This action returns all result`;
+  async getResultById(id: string) {
+    const result = await this.prisma.result.findUnique({ where: { id } });
+    return result;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} result`;
+  async findAllResult() {
+    return this.prisma.result.findMany();
   }
 
-  update(id: number, updateResultDto: UpdateResultDto) {
-    return `This action updates a #${id} result`;
+  async updateResult(id: string, newData: CreateResultDto) {
+    return await this.prisma.result.update({
+      where: { id },
+      data: newData,
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} result`;
+  async removeResult(id: string) {
+    return await this.prisma.result.delete({ where: { id } });
   }
 }

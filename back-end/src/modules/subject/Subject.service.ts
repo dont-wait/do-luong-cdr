@@ -1,7 +1,8 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateSubjectDto } from './dto/create-subject.dto';
 import { PrismaService } from '../prisma/Prisma.service';
 import { AcademicSubjectService } from '../academicSubject/AcademicSubject.service';
+import { LecturerService } from '../lecturer/Lecturer.service';
 
 @Injectable()
 export class SubjectService {
@@ -11,30 +12,56 @@ export class SubjectService {
   ) {}
 
   public async createSubject(createSubjectDto: CreateSubjectDto) {
-    const { academic_id, ...subject } = createSubjectDto;
-
-    const lecturer = await this.prisma.lecturer.findUnique({
-      where: { id: createSubjectDto.lecturer_id },
-    });
-
-    if (!lecturer) {
-      throw new BadRequestException(
-        `Lecturer with ID ${createSubjectDto.lecturer_id} not found`,
-      );
-    }
-
-    let subjectId = createSubjectDto.id;
-
-    let existingSubject = await this.prisma.subject.findUnique({
-      where: { id: subjectId },
-    });
-
-    if (!existingSubject) {
-      const newSubject = await this.prisma.subject.create({ data: subject });
-      subjectId = newSubject.id;
-    }
-
     try {
+      const { academic_id, lecturer_id, ...subject } = createSubjectDto;
+      let subjectId = createSubjectDto.id;
+    
+      const existingSubject = subjectId
+        ? await this.prisma.subject.findUnique({ where: { id: subjectId } })
+        : null;
+  
+      if (existingSubject) { // đã tôn tại subject, chỉ thêm vào
+        const validLecturers = await this.prisma.lecturer.findMany({
+          where: { id: { in: lecturer_id } },
+          select: { id: true },
+        });
+
+        const validLecturerIds = validLecturers.map(a => a.id);
+        const invalidLecturerIds = lecturer_id.filter(id => !validLecturerIds.includes(id));
+
+        if (invalidLecturerIds.length > 0) 
+          throw new BadRequestException(`Invalid lecturer IDs: ${invalidLecturerIds.join(', ')}`);
+        
+
+        await this.prisma.lecturerSubject.createMany({
+          data: lecturer_id.map(lecturerId => ({
+            lecturer_id: lecturerId,
+            subject_id: subjectId,
+          })),
+        });
+
+        return {
+          ...subject,
+          lecturer_id,
+          id: subjectId,
+          academic_id,
+        };
+      } 
+
+      const newSubject = await this.prisma.subject.create({
+        data: {
+          ...subject,
+          LecturerSubject: {
+            create: lecturer_id.map(lecturer_id => ({
+              lecturer: { connect: { id: lecturer_id } },
+            })),
+          },
+        },
+        include: { LecturerSubject: true },
+      });
+  
+      subjectId = newSubject.id;
+      
       for (const aId of academic_id) {
         const academic = await this.prisma.academic.findUnique({
           where: { id: aId },
@@ -51,6 +78,7 @@ export class SubjectService {
 
       return {
         ...subject,
+        lecturer_id,
         id: subjectId,
         academic_id,
       };
