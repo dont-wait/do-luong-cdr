@@ -81,13 +81,23 @@ model Subject {
   theoretical_credits Int
   description         String? @db.VarChar(255)
 
-  lecturer_id String
   lecturer_subject_manager_id String
 
-  lecturer    Lecturer @relation(fields: [lecturer_id], references: [id])
   academic_subject Academic_subject[]
   class            Class[]
   clo              Clo[]
+
+  LecturerSubject LecturerSubject[]
+}
+
+model LecturerSubject {
+  lecturer_id String
+  subject_id String
+
+  lecturer Lecturer @relation(fields: [lecturer_id], references: [id])
+  subject  Subject  @relation(fields: [subject_id], references: [id])
+
+  @@id([lecturer_id, subject_id])
 }
 
 model Clo {
@@ -187,6 +197,8 @@ model Lecturer {
   subjects     Subject[]
   class        Class[]
   user_account User_account?
+
+  LecturerSubject LecturerSubject[]
 }
 
 model Student {
