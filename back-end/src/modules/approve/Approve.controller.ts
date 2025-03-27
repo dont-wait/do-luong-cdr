@@ -1,6 +1,8 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Put, UsePipes } from '@nestjs/common';
 import { ApproveService } from './Approve.service';
 import { CreateApproveDto } from './dto/createApprove';
+import { UpdateApproveDto } from './dto/updateApprove';
+import { ApproveValidatePipe } from 'src/common/pipe/ApproveValidate.pipe';
 
 @Controller("approve")
 export class ApproveController {
@@ -9,6 +11,7 @@ export class ApproveController {
     ) {}
 
     @Post()
+    @UsePipes(ApproveValidatePipe)
     public async uploadApprove(@Body() data: CreateApproveDto) {
         return await this.approveService.sendApprove(data);
     }
@@ -16,5 +19,10 @@ export class ApproveController {
     @Get(":id")
     public async getApproveByReceiverId(@Param('id') id: string) {
         return await this.approveService.getApproveByReceiverId(id);
+    }
+
+    @Put()
+    public async updateApprove(@Body() data: UpdateApproveDto) {
+        return await this.approveService.updateApprove(data);
     }
 }

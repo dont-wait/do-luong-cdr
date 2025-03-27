@@ -1,40 +1,52 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Body, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/Prisma.service';
 import { CreateApproveDto } from './dto/createApprove';
-import { LecturerService } from '../lecturer/Lecturer.service';
+import { UpdateApproveDto } from './dto/updateApprove';
 
 @Injectable()
 export class ApproveService {
     constructor(
         private readonly prisma: PrismaService,
-        private readonly lecturer: LecturerService
     ) {}
 
     public async sendApprove(data: CreateApproveDto) {
-        const { sender_id, receiver_id, approveData } = data;
-
-        const [sender, receiver] = await Promise.all([
-            this.lecturer.getLecturerById(sender_id),
-            this.lecturer.getLecturerById(receiver_id)
-        ]);
-
-        const isSender_RecipientExist = !!(sender && receiver);
-
-        if (!isSender_RecipientExist) 
-            throw new BadRequestException(`Không tìm thấy sender_id ${sender_id} hoặc receiver_id ${receiver_id}`);
-        
-        return await this.prisma.approve.create({
-            data: {
-                sender_id,
-                receiver_id,
-                data: typeof approveData === "string" ? approveData : JSON.stringify(approveData)
+        try {
+            return await this.prisma.approve.create({
+                data: {
+                    sender_id: data.sender_id,
+                    receiver_id: data.receiver_id,
+                    subject_id: data.subject_id,
+                    data: typeof data.approveData === "string" ? data.approveData : JSON.stringify(data.approveData)
+                }
+            });
+        } catch (error) {
+            if (error instanceof NotFoundException || error instanceof BadRequestException) {
+                throw error;
             }
-        });
+            throw new BadRequestException("Không thể gửi approve");
+        }
     }
 
     public async getApproveByReceiverId(id: string) {
         return await this.prisma.approve.findMany({
             where: { receiver_id: id }
+        });
+    }
+
+    public async updateApprove(data: UpdateApproveDto) {
+        const { sender_id, receiver_id, approve } = data;
+
+        const existingApprove = await this.prisma.approve.findFirst({
+            where: { sender_id, receiver_id },
+        });
+
+        if (!existingApprove) {
+            throw new NotFoundException(`Không tìm thấy approve giữa sender ${sender_id} và receiver ${receiver_id}`);
+        }
+
+        return await this.prisma.approve.update({
+            where: { id: existingApprove.id },
+            data: { approve }
         });
     }
 }
