@@ -50,7 +50,7 @@ const Plo = () => {
       label: "Curriculum ID",
       type: "text",
       isRequired: true,
-      isVisible: false,
+      isVisible: true,
       isDropBox: true,
       dataDrop: curriculum,
       dropLabel: "academic_name",
