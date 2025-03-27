@@ -1,5 +1,15 @@
+import { IsNotEmpty, IsString, IsObject } from "class-validator";
+
 export class CreateApproveDto {
-    sender_id: string
-    receiver_id: string
-    data: Object
+    @IsString()
+    @IsNotEmpty()
+    sender_id: string;
+
+    @IsString()
+    @IsNotEmpty()
+    receiver_id: string;
+
+    @IsNotEmpty()
+    @IsObject()
+    approveData: object;
 }
