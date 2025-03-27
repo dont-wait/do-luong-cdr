@@ -1,23 +1,12 @@
 import { AccountData } from "../types/types";
 import { ROLES } from "../types/roles";
+import { LOGIN_API } from "../api/apiUrl";
+import { postData } from "../utils/helps";
 
 export const loginHanle = async ({ id, password }: AccountData) => {
-  try {
-    // await new Promise((resolve) => setTimeout(resolve, 2000));
-    console.log(id, password);
-    // navigate to admin
-    // return {
-    //   id: "01014017",
-    //   role: ROLES.Admin,
-    //   password: "123",
-    // };
-    // navigate to lecturer
-    return {
-      id: "01014017",
-      role: ROLES.Lecturer,
-      password: "123",
-    };
-  } catch {
-    throw new Error("Login Fail!");
-  }
+  const res = await postData(LOGIN_API, { id, password });
+  return {
+    id,
+    role: res["admin_id"] ? ROLES.Admin : ROLES.Lecturer,
+  };
 };

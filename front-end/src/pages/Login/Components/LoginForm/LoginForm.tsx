@@ -6,7 +6,6 @@ import { useForm } from "react-hook-form";
 import useAuth from "../../../../hook/useAuth";
 import { useToast } from "../../../../hook/useToast";
 import { loginHanle } from "../../../../services/auth";
-import { getData } from "../../../../utils/helps";
 import { USER_ID, USER_ROLE } from "../../../../types/local";
 import { AccountData, AuthData } from "../../../../types/types";
 import { routes } from "../../../../types/roles";
@@ -19,11 +18,9 @@ const LoginForm: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [loginState, setLoginState] = useState<{
     id: string;
-    password: string;
     userRole: number;
   }>();
   const [showPassword, setShowPassword] = useState(false);
-  const loginInfo = useRef(false);
   const {
     register,
     formState: { errors },
@@ -36,36 +33,21 @@ const LoginForm: React.FC = () => {
   };
 
   useEffect(() => {
-    const idStored = JSON.parse(localStorage.getItem(USER_ID) ?? "null");
     const authData: AuthData = {
       user: "",
-      pwd: "",
-      role: undefined,
+      role: 2000,
     };
-    loginInfo.current = true;
-    if (!loginState) {
-      if (idStored) {
-        const fetchAPI = async () => {
-          const res = await getData(`/userAccounts/${idStored}`);
-          if (res) {
-            setLoginState({
-              id: res["id"],
-              password: res["Password"],
-              userRole: res["Role Id"],
-            });
-          } else loginInfo.current = false;
-        };
 
-        fetchAPI();
-      }
-    } else {
+    if (loginState) {
       authData["user"] = loginState.id;
-      authData["pwd"] = loginState.password;
       authData["role"] = loginState.userRole;
+    } else {
+      authData["user"] = JSON.parse(localStorage.getItem(USER_ID) ?? '""');
+      authData["role"] = JSON.parse(localStorage.getItem(USER_ROLE) ?? "2000");
     }
 
     setAuth(authData);
-
+    if (authData.role !== 2000) showToast("Login successful!", "success");
     navigate(routes[authData.role ?? 2000], { replace: true });
     refs.user.current?.focus();
   }, [refs.user, navigate, loginState, setAuth, showToast]);
@@ -77,7 +59,7 @@ const LoginForm: React.FC = () => {
   const onSubmit = async (data: AccountData) => {
     try {
       setLoading(true);
-      const { id, role, password } = await loginHanle(data);
+      const { id, role } = await loginHanle(data);
       if (data.remember) {
         localStorage.setItem(USER_ID, JSON.stringify(id));
         localStorage.setItem(USER_ROLE, JSON.stringify(role));
@@ -85,12 +67,8 @@ const LoginForm: React.FC = () => {
 
       setLoginState({
         id: id,
-        password: password,
         userRole: role,
       });
-
-      if (loginInfo.current) showToast("Login successful!", "success");
-      else showToast("Incorrect ID or password!", "error");
     } catch {
       showToast("Incorrect ID or password!", "error");
       refs.error.current?.focus();

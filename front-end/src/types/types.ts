@@ -1,6 +1,5 @@
 export interface AuthData {
   user: string;
-  pwd: string;
   role?: number;
 }
 
