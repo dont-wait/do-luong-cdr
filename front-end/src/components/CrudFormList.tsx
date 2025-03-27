@@ -203,7 +203,7 @@ const CrudFormList = ({
                 ))
               ) : (
                 <tr>
-                  <td colSpan={5} className='text-center py-3'>
+                  <td colSpan={5} className='text-center py-3 cell'>
                     {searchTerm ? "No item match your search" : "No item found"}
                   </td>
                 </tr>

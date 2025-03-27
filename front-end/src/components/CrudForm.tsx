@@ -22,7 +22,7 @@ const CrudForm = ({
 }: {
   inputFields: CrudFromField[];
   url: string;
-  isFilter: boolean;
+  isFilter?: boolean;
 }) => {
   const [filterText, setFilterText] = useState<string>("");
   const [editMode, setEditMode] = useState<boolean>(false);
@@ -207,9 +207,12 @@ const CrudForm = ({
                               ) : (
                                 <Form.Select
                                   className='dropdown-custom px-2 py-3 text-base'
-                                  {...register(label, { required: true })}
+                                  {...register(key, {
+                                    required: true,
+                                    valueAsNumber: type === "number",
+                                  })}
                                   onChange={(e) => {
-                                    setValue(label, e.target.value);
+                                    setValue(key, e.target.value);
                                     setFilterText("");
                                   }}>
                                   {filterHandle(dataDrop, dropLabel)?.map(
