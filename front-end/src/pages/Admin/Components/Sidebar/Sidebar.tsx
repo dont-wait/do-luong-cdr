@@ -6,6 +6,7 @@ import {
 } from "react-icons/md";
 import { FaUserGraduate } from "react-icons/fa6";
 import { GrTarget } from "react-icons/gr";
+import { BiSolidDetail } from "react-icons/bi";
 interface SidebarProps {
   isOpen: boolean;
   toggleSidebar: () => void;
@@ -52,6 +53,11 @@ const Sidebar: React.FC<SidebarProps> = ({
       section: "plo",
       icon: <GrTarget className='sidebar-item' />,
       label: "Plo",
+    },
+    {
+      section: "ploDetail",
+      icon: <BiSolidDetail className='sidebar-item' />,
+      label: "Plo Detail",
     },
   ];
 

@@ -8,6 +8,7 @@ import Subject from "./Subject/Subject";
 import Lecturer from "./Lecturer/Lecturer";
 import Admin from "./Admin/Admin";
 import Plo from "./Plo/Plo";
+import PloDetail from "./PloDetail/PloDetail";
 
 export {
   Navbar,
@@ -20,4 +21,5 @@ export {
   Lecturer,
   Admin,
   Plo,
+  PloDetail,
 };
