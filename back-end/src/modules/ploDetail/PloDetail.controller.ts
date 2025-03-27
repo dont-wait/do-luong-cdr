@@ -1,34 +1,41 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Patch, Body, Param, BadRequestException } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { PloDetailService } from './PloDetail.service';
 import { CreatePloDetailDto } from './dto/create-plo_detail.dto';
-import { UpdatePloDetailDto } from './dto/update-plo_detail.dto';
 
-@Controller('plo-detail')
+@ApiTags('plo-detail')
+@Controller('plo-details')
 export class PloDetailController {
   constructor(private readonly ploDetailService: PloDetailService) {}
 
+  @ApiOperation({ summary: 'Create new PloDetail' })
+  @ApiResponse({ status: 201, description: 'PloDetail has been successfully created.' })
+  @ApiResponse({ status: 400, description: 'Invalid input data' })
   @Post()
-  create(@Body() createPloDetailDto: CreatePloDetailDto) {
-    return this.ploDetailService.create(createPloDetailDto);
+  async create(@Body() data: CreatePloDetailDto | CreatePloDetailDto[]) {
+    return this.ploDetailService.createPloDetail(data);
   }
 
-  @Get()
-  findAll() {
-    return this.ploDetailService.findAll();
-  }
-
+  @ApiOperation({ summary: 'Get PloDetail by ID' })
+  @ApiResponse({ status: 200, description: 'PloDetail found' })
+  @ApiResponse({ status: 400, description: 'PloDetail not found' })
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.ploDetailService.findOne(+id);
+  async getById(@Param('id') id: string) {
+    return this.ploDetailService.getPloDetailByID(id);
   }
 
+  @ApiOperation({ summary: 'Get all PloDetails' })
+  @ApiResponse({ status: 200, description: 'List of all PloDetails' })
+  @Get()
+  async getAll() {
+    return this.ploDetailService.getAllPloDetail();
+  }
+
+  @ApiOperation({ summary: 'Update PloDetail' })
+  @ApiResponse({ status: 200, description: 'PloDetail updated successfully' })
+  @ApiResponse({ status: 400, description: 'Invalid input data or PloDetail not found' })
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updatePloDetailDto: UpdatePloDetailDto) {
-    return this.ploDetailService.update(+id, updatePloDetailDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.ploDetailService.remove(+id);
+  async update(@Param('id') id: string, @Body() newData: CreatePloDetailDto) {
+    return this.ploDetailService.updatePloDeTail(id, newData);
   }
 }

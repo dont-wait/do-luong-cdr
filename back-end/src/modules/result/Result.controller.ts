@@ -12,7 +12,7 @@ export class ResultController {
   @ApiResponse({ status: 201, description: 'Result has been successfully created.' })
   @ApiResponse({ status: 400, description: 'Invalid input data' })
   @Post()
-  create(@Body() createResultDto: CreateResultDto) {
+  create(@Body() createResultDto: CreateResultDto | CreateResultDto[]) {
     return this.resultService.createResult(createResultDto);
   }
 
