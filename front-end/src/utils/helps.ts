@@ -177,7 +177,7 @@ export const handleFormattoJSON = (
 export const getData = async (url: string) => {
   try {
     const res = await axios.get(url);
-    return STATE === "TEST" ? res.data : res.data.data;
+    return STATE ? res.data : res.data.data;
   } catch {
     throw new Error("fetch data fail!");
   }
@@ -187,7 +187,7 @@ export const postData = async (url: string, info: Obj | Obj[]) => {
   console.log(info);
   try {
     const res = await axios.post(url, info);
-    return STATE === "TEST" ? res.data : res.data.data;
+    return STATE ? res.data : res.data.data;
   } catch {
     throw new Error("fetch data fail!");
   }
@@ -196,7 +196,7 @@ export const postData = async (url: string, info: Obj | Obj[]) => {
 export const updateData = async (url: string, info: Obj | Obj[]) => {
   try {
     const res = await axios.put(url, info);
-    return STATE === "TEST" ? res.data : res.data.data;
+    return STATE ? res.data : res.data.data;
   } catch {
     throw new Error("fetch data fail!");
   }
@@ -205,7 +205,7 @@ export const updateData = async (url: string, info: Obj | Obj[]) => {
 export const deleteData = async (url: string) => {
   try {
     const res = await axios.delete(url);
-    return STATE === "TEST" ? res.data : res.data.data;
+    return STATE ? res.data : res.data.data;
   } catch {
     throw new Error("fetch data fail!");
   }

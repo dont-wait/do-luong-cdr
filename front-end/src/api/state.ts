@@ -1,2 +1,1 @@
-// export const STATE = "TEST";
-export const STATE = "BE";
+export const STATE = true;
