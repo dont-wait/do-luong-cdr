@@ -10,3 +10,11 @@ export const loginHanle = async ({ id, password }: AccountData) => {
     role: res["admin_id"] ? ROLES.Admin : ROLES.Lecturer,
   };
 };
+
+export const logoutHandle = () => {
+  localStorage.clear();
+  return {
+    user: "",
+    role: 2000,
+  };
+};

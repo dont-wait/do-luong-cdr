@@ -7,17 +7,23 @@ import {
 import { FaUserGraduate } from "react-icons/fa6";
 import { GrTarget } from "react-icons/gr";
 import { BiSolidDetail } from "react-icons/bi";
+import { TbLogout2 } from "react-icons/tb";
 interface SidebarProps {
   isOpen: boolean;
   toggleSidebar: () => void;
   setActiveSection: (section: string) => void;
 }
+import useAuth from "../../../../hook/useAuth";
+import { useNavigate } from "react-router-dom";
+import { logoutHandle } from "../../../../services/auth";
 
 const Sidebar: React.FC<SidebarProps> = ({
   isOpen,
   toggleSidebar,
   setActiveSection,
 }) => {
+  const { setAuth } = useAuth();
+  const navigate = useNavigate();
   const navItems = [
     {
       section: "dashboard",
@@ -85,11 +91,21 @@ const Sidebar: React.FC<SidebarProps> = ({
                 setActiveSection(item.section);
                 if (window.innerWidth < 768) toggleSidebar();
               }}
-              className='nav-btn flex items-center w-full px-4 py-3 text-left rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700'>
+              className='nav-btn flex items-center w-full px-4 py-3 text-left rounded-lg hover:bg-gray-100 '>
               {item.icon}
               <span>{item.label}</span>
             </button>
           ))}
+
+          <button
+            onClick={() => {
+              setAuth(logoutHandle());
+              navigate("/", { replace: true });
+            }}
+            className='nav-btn flex items-center w-full px-4 py-3 text-left rounded-lg hover:bg-gray-100 '>
+            <TbLogout2 className='sidebar-item' />
+            <span>Log out</span>
+          </button>
         </div>
       </div>
     </div>
