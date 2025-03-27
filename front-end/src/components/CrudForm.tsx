@@ -61,9 +61,9 @@ const CrudForm = ({
   const createHandle = useCallback(
     async (info: { [key: string]: string }) => {
       try {
-        const res = await postData(url, info);
+        await postData(url, info);
         setLoading(true);
-        setData((prev) => [...prev, res]);
+        setData((prev) => [...prev, info]);
         reset();
         showToast("Create Success!", "success");
       } catch {
@@ -179,14 +179,14 @@ const CrudForm = ({
                                     padding: "5px",
                                   }}>
                                   {filterHandle(dataDrop, dropLabel)?.map(
-                                    (item) => (
+                                    (item, j) => (
                                       <Form.Check
-                                        key={item.id}
+                                        key={j}
                                         type='checkbox'
                                         label={item[`${dropLabel}`]}
                                         value={item.id}
                                         checked={selectedValues.includes(
-                                          JSON.stringify(item.id)
+                                          item.id?.toString()
                                         )}
                                         onChange={(e) => {
                                           const value = e.target.value;
@@ -198,7 +198,7 @@ const CrudForm = ({
                                               : [...selectedValues, value];
 
                                           setSelectedValues(updatedValues);
-                                          setValue(label, updatedValues);
+                                          setValue(key, updatedValues);
                                         }}
                                       />
                                     )
@@ -216,8 +216,12 @@ const CrudForm = ({
                                     setFilterText("");
                                   }}>
                                   {filterHandle(dataDrop, dropLabel)?.map(
-                                    (item) => (
-                                      <option key={item.id} value={item.id}>
+                                    (item, j) => (
+                                      <option
+                                        key={j}
+                                        value={
+                                          type === "number" ? j + 1 : item.id
+                                        }>
                                         {item[`${dropLabel}`]}
                                       </option>
                                     )

@@ -167,15 +167,18 @@ const CrudFormList = ({
               {currentItems.length > 0 ? (
                 currentItems.map((dept: Obj, idx) => (
                   <tr key={idx} className='flex'>
-                    {colLabels.map((colLabel, j) => (
-                      <td
-                        key={j}
-                        className='cell text-center flex-1 roboto-300'>
-                        {Array.isArray(dept[colLabel])
-                          ? dept[colLabel].join(", ")
-                          : dept[colLabel]}
-                      </td>
-                    ))}
+                    {colLabels.map((colLabel, j) => {
+                      console.log(colLabel, dept);
+                      return (
+                        <td
+                          key={j}
+                          className='cell text-center flex-1 roboto-300'>
+                          {Array.isArray(dept[colLabel])
+                            ? dept[colLabel].join(", ")
+                            : dept[colLabel]}
+                        </td>
+                      );
+                    })}
                     <td className='cell flex justify-center flex-2'>
                       <div className='flex space-x-2 justify-center'>
                         <Button

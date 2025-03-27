@@ -74,7 +74,7 @@ const Lecturer = () => {
       isRequired: true,
     }),
     CrudFormClass.create({
-      key: PK.ACADEMIC_API,
+      key: "academic_id",
       label: "Curriculum ID",
       type: "text",
       isRequired: true,
@@ -84,7 +84,7 @@ const Lecturer = () => {
       isVisible: true,
     }),
     CrudFormClass.create({
-      key: PK.DEGREE_API,
+      key: "degree_id",
       label: "Degree Name",
       type: "number",
       isRequired: true,
@@ -93,13 +93,13 @@ const Lecturer = () => {
       dropLabel: "degree_name",
       isVisible: true,
     }),
-    CrudFormClass.create({
-      key: "subject_manage_id",
-      label: "SubJect Manage ID",
-      type: "text",
-      isRequired: true,
-      isVisible: true,
-    }),
+    // CrudFormClass.create({
+    //   key: "subject_manage_id",
+    //   label: "SubJect Manage ID",
+    //   type: "text",
+    //   isRequired: false,
+    //   isVisible: false,
+    // }),
   ];
   return (
     <CrudForm inputFields={inputFields} url={LECTURES_API} isFilter={true} />
