@@ -1,34 +1,54 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, NotFoundException} from '@nestjs/common';
 import { ResultService } from './Result.service';
 import { CreateResultDto } from './dto/create-result.dto';
-import { UpdateResultDto } from './dto/update-result.dto';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
-@Controller('result')
+@ApiTags('results')
+@Controller('results')
 export class ResultController {
   constructor(private readonly resultService: ResultService) {}
 
+  @ApiOperation({ summary: 'Create new Result' })
+  @ApiResponse({ status: 201, description: 'Result has been successfully created.' })
+  @ApiResponse({ status: 400, description: 'Invalid input data' })
   @Post()
   create(@Body() createResultDto: CreateResultDto) {
-    return this.resultService.create(createResultDto);
+    return this.resultService.createResult(createResultDto);
   }
 
+  @ApiOperation({ summary: 'Get all Results' })
+  @ApiResponse({ status: 200, description: 'List of results retrieved successfully' })
   @Get()
   findAll() {
-    return this.resultService.findAll();
+    return this.resultService.findAllResult();
   }
 
+  @ApiOperation({ summary: 'Get Result by ID' })
+  @ApiResponse({ status: 200, description: 'Result found' })
+  @ApiResponse({ status: 404, description: 'Result not found' })
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.resultService.findOne(+id);
+  async findOne(@Param('id') id: string) {
+    const result = await this.resultService.getResultById(id);
+    if (!result) throw new NotFoundException(`Result with id ${id} not found`);
+    return result;
   }
 
+  @ApiOperation({ summary: 'Update Result by ID' })
+  @ApiResponse({ status: 200, description: 'Result updated successfully' })
+  @ApiResponse({ status: 404, description: 'Result not found' })
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateResultDto: UpdateResultDto) {
-    return this.resultService.update(+id, updateResultDto);
+  async update(@Param('id') id: string, @Body() newData: CreateResultDto) {
+    const updatedResult = await this.resultService.updateResult(id, newData);
+    if (!updatedResult) throw new NotFoundException(`Result with id ${id} not found`);
+    return updatedResult;
   }
 
+  @ApiOperation({ summary: 'Delete Result by ID' })
+  @ApiResponse({ status: 204, description: 'Result deleted successfully' })
+  @ApiResponse({ status: 404, description: 'Result not found' })
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.resultService.remove(+id);
+  async remove(@Param('id') id: string) {
+    const deleted = await this.resultService.removeResult(id);
+    if (!deleted) throw new NotFoundException(`Result with id ${id} not found`);
   }
 }

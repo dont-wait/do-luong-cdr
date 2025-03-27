@@ -1,16 +1,16 @@
 department
 {
-	'department_id' : 'CNTT',
-	'department_name' : 'Khoa Công nghệ thông tin'
+	"id" : "CNTT",
+	"department_name" : "Khoa Công nghệ thông tin"
 }
 
 academic 
 {
-	'academic_id' : '7480201',
-	'academic_name' : 'Công nghệ thông tin',
-	'academic_level : 1,
-	academic_type : 1,
-	department_id : 'CNTT'
+	"id" : "7480201",
+	"academic_name" : "Công nghệ thông tin",
+	"academic_level" : 1,
+	"academic_type" : 1,
+	"department_id" : "CNTT"
 }
 
 {
@@ -124,6 +124,18 @@ academic
     "lecturer_id": "01001002"
   }
 ]
+
+lecturer
+{
+  "id":"LEC001",
+  "first_name": "America",
+  "last_name":"Caption",
+  "email":"America.Caption@example.com",
+  "password":"password123",
+  "phone":"0123456789",
+  "academic_id":"7480201",
+  "degree_id":1
+}
 
 clo
 [
