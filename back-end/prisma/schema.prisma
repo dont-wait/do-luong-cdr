@@ -77,11 +77,12 @@ model Plo_detail {
 model Subject {
   id          String     @id 
   subject_name        String  @db.VarChar(255)
-  practical_credits   Int
+  practical_credits   Int 
   theoretical_credits Int
   description         String? @db.VarChar(255)
 
   lecturer_subject_manager_id String
+  lecturer Lecturer @relation(fields: [lecturer_subject_manager_id], references: [id])
 
   academic_subject Academic_subject[]
   class            Class[]

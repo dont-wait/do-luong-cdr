@@ -67,12 +67,23 @@ Table Subject {
   practical_credits Int [not null]
   theoretical_credits Int [not null]
   description String
-  lecturer_id String [not null]
   lecturer_subject_manager_id String [not null]
   lecturer Lecturer [not null]
   academic_subject Academic_subject [not null]
   class Class [not null]
   clo Clo [not null]
+  LecturerSubject LecturerSubject [not null]
+}
+
+Table LecturerSubject {
+  lecturer_id String [not null]
+  subject_id String [not null]
+  lecturer Lecturer [not null]
+  subject Subject [not null]
+
+  indexes {
+    (lecturer_id, subject_id) [pk]
+  }
 }
 
 Table Clo {
@@ -156,6 +167,7 @@ Table Lecturer {
   subjects Subject [not null]
   class Class [not null]
   user_account User_account
+  LecturerSubject LecturerSubject [not null]
 }
 
 Table Student {
@@ -199,7 +211,11 @@ Ref: Plo_clo.clo_id > Clo.id
 
 Ref: Plo_detail.plo_id > Plo.id
 
-Ref: Subject.lecturer_id > Lecturer.id
+Ref: Subject.lecturer_subject_manager_id > Lecturer.id
+
+Ref: LecturerSubject.lecturer_id > Lecturer.id
+
+Ref: LecturerSubject.subject_id > Subject.id
 
 Ref: Clo.subject_id > Subject.id
 
