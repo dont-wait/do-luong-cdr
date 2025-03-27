@@ -2,7 +2,6 @@ import * as XLSX from "xlsx";
 import { FormattedCell, MergedCell, Obj } from "../types/types";
 import axios from "../api/axios";
 import { STATE } from "../api/state";
-import { MdCleaningServices } from "react-icons/md";
 
 export function handleFormatData(ws: XLSX.WorkSheet): {
   header: FormattedCell[][];

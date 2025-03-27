@@ -29,7 +29,6 @@ const CrudForm = ({
   const [loading, setLoading] = useState<boolean>(false);
   const [data, setData] = useState<Obj[]>([]);
   const formRef = useRef<HTMLFormElement>(null);
-  const [selectedValues, setSelectedValues] = useState<string[]>([]);
   const { showToast } = useToast();
   const {
     register,
@@ -37,6 +36,7 @@ const CrudForm = ({
     formState: { errors },
     handleSubmit,
     reset,
+    watch,
   } = useForm();
 
   // GET
@@ -44,6 +44,7 @@ const CrudForm = ({
     try {
       setLoading(true);
       const res = await getData(url);
+      console.log(res);
       setData(res);
     } catch {
       showToast("Get Method Fail!", "error");
@@ -179,29 +180,39 @@ const CrudForm = ({
                                     padding: "5px",
                                   }}>
                                   {filterHandle(dataDrop, dropLabel)?.map(
-                                    (item, j) => (
-                                      <Form.Check
-                                        key={j}
-                                        type='checkbox'
-                                        label={item[`${dropLabel}`]}
-                                        value={item.id}
-                                        checked={selectedValues.includes(
-                                          item.id?.toString()
-                                        )}
-                                        onChange={(e) => {
-                                          const value = e.target.value;
-                                          const updatedValues =
-                                            selectedValues.includes(value)
-                                              ? selectedValues.filter(
-                                                  (v) => v !== value
-                                                ) // Bỏ chọn
-                                              : [...selectedValues, value];
+                                    (item, j) => {
+                                      const selectedGroupValues =
+                                        watch(key) || [];
 
-                                          setSelectedValues(updatedValues);
-                                          setValue(key, updatedValues);
-                                        }}
-                                      />
-                                    )
+                                      return (
+                                        <Form.Check
+                                          key={j}
+                                          type='checkbox'
+                                          label={item[`${dropLabel}`]}
+                                          value={item.id}
+                                          checked={selectedGroupValues.includes(
+                                            item.id
+                                          )}
+                                          onChange={(e) => {
+                                            const value = e.target.value;
+                                            let updatedValues = [
+                                              ...selectedGroupValues,
+                                            ];
+
+                                            if (e.target.checked) {
+                                              updatedValues.push(value);
+                                            } else {
+                                              updatedValues =
+                                                updatedValues.filter(
+                                                  (v) => v !== value
+                                                );
+                                            }
+
+                                            setValue(key, updatedValues);
+                                          }}
+                                        />
+                                      );
+                                    }
                                   )}
                                 </div>
                               ) : (

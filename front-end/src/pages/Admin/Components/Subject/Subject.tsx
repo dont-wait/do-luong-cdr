@@ -72,10 +72,11 @@ const Subject = () => {
       label: "Lecturer ID",
       type: "text",
       isRequired: true,
-      isVisible: true,
+      isVisible: false,
       isDropBox: true,
       dataDrop: lecturer,
       dropLabel: "email",
+      isMultiple: true,
     }),
     CrudFormClass.create({
       key: "academic_id",
@@ -87,6 +88,16 @@ const Subject = () => {
       dataDrop: curriculum,
       dropLabel: "academic_name",
       isMultiple: true,
+    }),
+    CrudFormClass.create({
+      key: "lecturer_subject_manager_id",
+      label: "CNHP",
+      type: "text",
+      isRequired: false,
+      isVisible: false,
+      isDropBox: true,
+      dataDrop: [{ id: "", email: "Không có chủ nhiệm" }, ...lecturer],
+      dropLabel: "email",
     }),
   ];
   return (
