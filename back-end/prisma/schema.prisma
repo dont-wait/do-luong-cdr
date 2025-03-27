@@ -232,3 +232,12 @@ model Degree {
 
   leturer Lecturer[]
 }
+
+model Approve {
+  id String @id @default(uuid())
+  sender_id String
+  receiver_id String
+  data Json
+  approve Boolean @default(false)
+  approve_date DateTime? @default(now())
+}
