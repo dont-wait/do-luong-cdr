@@ -168,7 +168,6 @@ const CrudFormList = ({
                 currentItems.map((dept: Obj, idx) => (
                   <tr key={idx} className='flex'>
                     {colLabels.map((colLabel, j) => {
-                      console.log(colLabel, dept);
                       return (
                         <td
                           key={j}
