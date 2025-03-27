@@ -48,7 +48,7 @@ export class SubjectService {
         };
       } 
 
-      const newSubject = this.prisma.subject.create({
+      const newSubject = await this.prisma.subject.create({
         data: {
           ...subject,
           LecturerSubject: {
@@ -60,7 +60,7 @@ export class SubjectService {
         include: { LecturerSubject: true },
       });
   
-      subjectId = (await newSubject).id;
+      subjectId = newSubject.id;
       
       for (const aId of academic_id) {
         const academic = await this.prisma.academic.findUnique({
