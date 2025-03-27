@@ -5,5 +5,6 @@ export const DEGREE_API = "/degree";
 export const SUBJECT_API = "/subjects";
 export const ADMIN_API = "/admin";
 export const ACADEMIC_SUBJECT_API = "/academic-subject";
+export const PLO_API = "/plos";
 
 export const LOGIN_API = "/login";

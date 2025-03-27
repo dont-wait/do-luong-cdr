@@ -5,6 +5,7 @@ import {
   MdOutlineAdminPanelSettings,
 } from "react-icons/md";
 import { FaUserGraduate } from "react-icons/fa6";
+import { GrTarget } from "react-icons/gr";
 interface SidebarProps {
   isOpen: boolean;
   toggleSidebar: () => void;
@@ -46,6 +47,11 @@ const Sidebar: React.FC<SidebarProps> = ({
       section: "admin",
       icon: <MdOutlineAdminPanelSettings className='sidebar-item' />,
       label: "Admin",
+    },
+    {
+      section: "plo",
+      icon: <GrTarget className='sidebar-item' />,
+      label: "Plo",
     },
   ];
 
