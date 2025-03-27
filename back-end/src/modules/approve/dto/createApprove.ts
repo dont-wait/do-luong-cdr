@@ -9,6 +9,10 @@ export class CreateApproveDto {
     @IsNotEmpty()
     receiver_id: string;
 
+    @IsString()
+    @IsNotEmpty()
+    subject_id: string;
+
     @IsNotEmpty()
     @IsObject()
     approveData: object;

@@ -89,6 +89,9 @@ model Subject {
   clo              Clo[]
 
   LecturerSubject LecturerSubject[]
+  Approve         Approve[]
+
+  @@unique([id, lecturer_subject_manager_id])
 }
 
 model LecturerSubject {
@@ -200,6 +203,8 @@ model Lecturer {
   user_account User_account?
 
   LecturerSubject LecturerSubject[]
+  sender         Approve[] @relation(name: "sender")
+  receiver       Approve[] @relation(name: "receiver")
 }
 
 model Student {
@@ -237,7 +242,14 @@ model Approve {
   id String @id @default(uuid())
   sender_id String
   receiver_id String
+  subject_id String 
   data Json
   approve Boolean @default(false)
   approve_date DateTime? @default(now())
+
+  subject Subject @relation(fields: [subject_id], references: [id])
+  receiver Lecturer @relation(fields: [receiver_id], references: [id], name: "receiver")
+  sender Lecturer @relation(fields: [sender_id], references: [id], name: "sender")
+
+  @@unique([subject_id, receiver_id, sender_id])
 }

@@ -96,6 +96,7 @@ export class SubjectService {
   public async getSubjectById(id: string) {
     return await this.prisma.subject.findUnique({
       where: { id },
+      include: { LecturerSubject: true },
     });
   }
 }
