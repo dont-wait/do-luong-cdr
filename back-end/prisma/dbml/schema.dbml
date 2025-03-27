@@ -73,6 +73,11 @@ Table Subject {
   class Class [not null]
   clo Clo [not null]
   LecturerSubject LecturerSubject [not null]
+  Approve Approve [not null]
+
+  indexes {
+    (id, lecturer_subject_manager_id) [unique]
+  }
 }
 
 Table LecturerSubject {
@@ -168,6 +173,8 @@ Table Lecturer {
   class Class [not null]
   user_account User_account
   LecturerSubject LecturerSubject [not null]
+  sender Approve [not null]
+  receiver Approve [not null]
 }
 
 Table Student {
@@ -201,9 +208,17 @@ Table Approve {
   id String [pk]
   sender_id String [not null]
   receiver_id String [not null]
+  subject_id String [not null]
   data Json [not null]
   approve Boolean [not null, default: false]
   approve_date DateTime [default: `now()`]
+  subject Subject [not null]
+  receiver Lecturer [not null]
+  sender Lecturer [not null]
+
+  indexes {
+    (subject_id, receiver_id, sender_id) [unique]
+  }
 }
 
 Ref: Academic.department_id > Department.id
@@ -255,3 +270,9 @@ Ref: Lecturer.degree_id > Degree.id
 Ref: Lecturer.academic_id > Academic.id
 
 Ref: Student.academic_id > Academic.id
+
+Ref: Approve.subject_id > Subject.id
+
+Ref: Approve.receiver_id > Lecturer.id
+
+Ref: Approve.sender_id > Lecturer.id
