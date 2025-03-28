@@ -54,10 +54,10 @@ export interface MergedCell {
   e: { r: number; c: number };
 }
 
+// src/types/types.ts
 export interface Obj {
   [key: string]: string | number;
 }
-
 export interface CrudFromField {
   key: string;
   label: string;
@@ -68,7 +68,6 @@ export interface CrudFromField {
   dropLabel?: string;
   isMultiple?: boolean;
   isVisible?: boolean;
-  defaultValue?: string | number;
 }
 
 export interface ErrorResponse {

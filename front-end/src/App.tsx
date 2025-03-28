@@ -12,8 +12,3 @@ function App() {
 }
 
 export default App;
-
-// <>
-//   <FileUpload files={file} setFiles={setFile} />
-//   <Sheet files={file} />
-// </>;
