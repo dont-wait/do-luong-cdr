@@ -12,7 +12,7 @@ export const loginHanle = async ({ id, password }: AccountData) => {
     );
     localStorage.setItem(
       CNHP,
-      JSON.stringify(lecturerInfo.LecturerSubject.length > 0)
+      JSON.stringify(lecturerInfo.subjects.length > 0)
     );
   }
   return {

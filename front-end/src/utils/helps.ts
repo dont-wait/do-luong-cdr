@@ -86,29 +86,30 @@ export function handleFormatData(ws: XLSX.WorkSheet): {
   };
 }
 
-function parseTableData(
+function parseheader(
   cell: FormattedCell,
   header: FormattedCell[][]
-): unknown {
+): string[] | Record<string, Record<string, string[]>> {
   const keys: FormattedCell[] = [];
   const label = cell.value;
-  const res: unknown = label ? {} : [];
+  const res: string[] | Record<string, Record<string, string[]>> = label
+    ? {}
+    : [];
   const nOfRows = header.length;
   const currCell = cell;
   let currRowIdx = 0;
-  let nextRowIdx = 0 + (currCell.rowspan ?? 1);
-  const info: Record<string, any> = {};
+  let nextRowIdx = currCell.rowspan ?? 1;
+  const info = new Map<string, string[]>();
 
   while (currRowIdx + nextRowIdx < nOfRows) {
     let currColIdx = currCell.colspan ?? 1;
-    let s;
+    let s: FormattedCell | undefined;
+
     if (!label) {
       while (currColIdx) {
         s = header[nextRowIdx].shift();
         (res as string[]).push(
-          typeof s?.value === "string"
-            ? s?.value?.toString()
-            : JSON.stringify(s?.value)
+          s?.value ? s.value.toString() : JSON.stringify(s?.value)
         );
         currColIdx -= s?.colspan ?? 1;
       }
@@ -117,7 +118,7 @@ function parseTableData(
         while (currColIdx) {
           s = header[nextRowIdx].shift();
           if (s) keys.push(s);
-          if (s?.value) info[s?.value?.toString()] = [];
+          if (s?.value) info.set(s.value.toString(), []);
           currColIdx -= s?.colspan ?? 1;
         }
       } else {
@@ -126,8 +127,7 @@ function parseTableData(
           while (currColIdx) {
             s = header[nextRowIdx].shift();
             if (s?.value && key.value) {
-              info[key.value][Math.abs(currColIdx - (key.colspan ?? 1))] =
-                JSON.stringify(s?.value);
+              info.get(key.value.toString())?.push(JSON.stringify(s.value));
             }
             currColIdx -= s?.colspan ?? 1;
           }
@@ -140,24 +140,78 @@ function parseTableData(
           while (currColIdx) {
             s = header[nextRowIdx + 1].shift();
             if (s?.value && key.value) {
-              info[key.value][Math.abs(currColIdx - (key.colspan ?? 1))] =
-                JSON.stringify(s?.value);
+              info.get(key.value.toString())?.push(JSON.stringify(s.value));
             }
             currColIdx -= s?.colspan ?? 1;
           }
         });
       }
 
-      (res as Record<string, any>)[label] = info;
+      // Chuyển Map về Object
+      (res as Record<string, any>)[label] = Object.fromEntries(info);
     }
 
-    const tmp = nextRowIdx;
-    currRowIdx = tmp;
-    nextRowIdx = tmp + (s?.rowspan ?? 1);
+    currRowIdx = nextRowIdx;
+    nextRowIdx += s?.rowspan ?? 1;
   }
 
   return res;
 }
+
+interface HeaderTree {
+  [key: string]: number | string | HeaderTree | null;
+}
+
+const buildTree = (
+  headers: (string[] | Record<string, Record<string, string[]>>)[]
+): HeaderTree => {
+  const tree: HeaderTree = {};
+
+  headers.forEach((header) => {
+    if (Array.isArray(header)) {
+      header.forEach((key) => {
+        tree[key] = null;
+      });
+    } else {
+      Object.entries(header).forEach(([key, value]) => {
+        tree[key] = {};
+        Object.entries(value).forEach(([subKey, subValue]) => {
+          (tree[key] as HeaderTree)[subKey] = subValue.length
+            ? parseFloat(subValue[0])
+            : [];
+        });
+      });
+    }
+  });
+
+  return tree;
+};
+
+const mapDataToTree = (
+  tree: HeaderTree,
+  rowData: FormattedCell[]
+): Record<string, any> => {
+  let index = 0; // Biến đếm vị trí dữ liệu trong rowData
+
+  const traverse = (node: HeaderTree | number | string | null): any => {
+    if (node === null) {
+      return rowData[index++]?.value ?? null; // Gán giá trị từ rowData
+    }
+    if (typeof node === "number" || typeof node === "string") {
+      return rowData[index++]?.value ?? "null";
+    }
+    if (typeof node === "object") {
+      const obj: Record<string, any> = {};
+      Object.entries(node).forEach(([key, value]) => {
+        obj[key] = traverse(value); // Đệ quy để duyệt hết cây
+      });
+      return obj;
+    }
+    return null;
+  };
+
+  return traverse(tree);
+};
 
 export const handleFormattoJSON = (
   header: FormattedCell[][],
@@ -165,13 +219,15 @@ export const handleFormattoJSON = (
 ) => {
   if (header.length === 1) return header[0].map((cell) => cell.value);
 
+  console.log(data);
   const copyHeader = header.map((row) => [...row]);
   const firstRow = copyHeader[0];
-  const headerJSON = firstRow.map((cell) => parseTableData(cell, copyHeader));
-  console.log(headerJSON);
-  return headerJSON;
-
-  console.log(data);
+  const headerTree = buildTree(
+    firstRow.map((cell) => parseheader(cell, copyHeader))
+  );
+  const dataTree = data.map((row) => mapDataToTree(headerTree, row));
+  console.log(dataTree);
+  return "";
 };
 
 export const getData = async (url: string) => {
