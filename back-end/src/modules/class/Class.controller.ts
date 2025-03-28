@@ -1,42 +1,50 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-} from '@nestjs/common';
+import { Controller, Get, Post, Patch, Delete, Body, Param } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { ClassService } from './Class.service';
 import { CreateClassDto } from './dto/create-class.dto';
 import { UpdateClassDto } from './dto/update-class.dto';
 
+@ApiTags('class')
 @Controller('class')
 export class ClassController {
   constructor(private readonly classService: ClassService) {}
 
+  @ApiOperation({ summary: 'Create new Class' })
+  @ApiResponse({ status: 201, description: 'Class successfully created' })
+  @ApiResponse({ status: 400, description: 'Invalid input data' })
   @Post()
-  create(@Body() createClassDto: CreateClassDto) {
-    return this.classService.create(createClassDto);
+  async create(@Body() data: CreateClassDto | CreateClassDto[]) {
+    return this.classService.createClass(data);
   }
 
-  @Get()
-  findAll() {
-    return this.classService.findAll();
-  }
-
+  @ApiOperation({ summary: 'Get Class by ID' })
+  @ApiResponse({ status: 200, description: 'Class found' })
+  @ApiResponse({ status: 400, description: 'Class not found' })
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.classService.findOne(+id);
+  async getById(@Param('id') id: string) {
+    return this.classService.getClassById(id);
   }
 
+  @ApiOperation({ summary: 'Get all Classes' })
+  @ApiResponse({ status: 200, description: 'List of all Classes' })
+  @Get()
+  async getAll() {
+    return this.classService.getAllClasses();
+  }
+
+  @ApiOperation({ summary: 'Update Class' })
+  @ApiResponse({ status: 200, description: 'Class updated successfully' })
+  @ApiResponse({ status: 400, description: 'Invalid input data or Class not found' })
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateClassDto: UpdateClassDto) {
-    return this.classService.update(+id, updateClassDto);
+  async update(@Param('id') id: string, @Body() newData: UpdateClassDto) {
+    return this.classService.updateClass(id, newData);
   }
 
+  @ApiOperation({ summary: 'Delete Class' })
+  @ApiResponse({ status: 200, description: 'Class deleted successfully' })
+  @ApiResponse({ status: 400, description: 'Class not found' })
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.classService.remove(+id);
+  async delete(@Param('id') id: string) {
+    return this.classService.deleteClass(id);
   }
 }
