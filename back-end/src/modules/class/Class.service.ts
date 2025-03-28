@@ -1,26 +1,61 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, BadRequestException } from '@nestjs/common';
+import { PrismaService } from '../prisma/Prisma.service';
 import { CreateClassDto } from './dto/create-class.dto';
 import { UpdateClassDto } from './dto/update-class.dto';
 
 @Injectable()
 export class ClassService {
-  create(createClassDto: CreateClassDto) {
-    return 'This action adds a new class';
+  constructor(private readonly prisma: PrismaService) {}
+
+  async createClass(data: CreateClassDto | CreateClassDto[]) {
+    if (Array.isArray(data)) {
+      for (const c of data) {
+        await this.validateClassData(c);
+      }
+      return this.prisma.class.createMany({ data });
+    } else {
+      await this.validateClassData(data);
+      return this.prisma.class.create({ data });
+    }
   }
 
-  findAll() {
-    return `This action returns all class`;
+  async getClassById(id: string) {
+    const classData = await this.prisma.class.findUnique({ where: { id } });
+    if (!classData) {
+      throw new BadRequestException(`Class ID ${id} not found`);
+    }
+    return classData;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} class`;
+  async getAllClasses() {
+    return this.prisma.class.findMany();
   }
 
-  update(id: number, updateClassDto: UpdateClassDto) {
-    return `This action updates a #${id} class`;
+  async updateClass(id: string, newData: UpdateClassDto) {
+    const classData = await this.prisma.class.findUnique({ where: { id } });
+    if (!classData) {
+      throw new BadRequestException(`Class ID ${id} not found`);
+    }
+    return this.prisma.class.update({ where: { id }, data: newData });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} class`;
+  async deleteClass(id: string) {
+    const classData = await this.prisma.class.findUnique({ where: { id } });
+    if (!classData) {
+      throw new BadRequestException(`Class ID ${id} not found`);
+    }
+    return this.prisma.class.delete({ where: { id } });
+  }
+
+  private async validateClassData(c: CreateClassDto) {
+    const subjectExist = await this.prisma.subject.findUnique({ where: { id: c.subject_id } });
+    if (!subjectExist) {
+      throw new BadRequestException(`Subject ID ${c.subject_id} not found`);
+    }
+
+    const lecturerExist = await this.prisma.lecturer.findUnique({ where: { id: c.lecturer_id } });
+    if (!lecturerExist) {
+      throw new BadRequestException(`Lecturer ID ${c.lecturer_id} not found`);
+    }
   }
 }
