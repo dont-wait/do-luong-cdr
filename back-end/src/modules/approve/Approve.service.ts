@@ -47,6 +47,15 @@ export class ApproveService {
         return await this.prisma.approve.update({
             where: { id: existingApprove.id },
             data: { approve }
-        });
+        }).then(async () => {
+
+            await this.prisma.approve.delete({
+                where: { id: existingApprove.id }
+            });
+            
+        }).catch((error) => {
+            if (error instanceof NotFoundException || error instanceof BadRequestException) 
+                throw error;
+        })
     }
 }
