@@ -22,35 +22,13 @@ const Home = () => {
     Record<string, Lecturer>
   >({});
   const [loading, setLoading] = useState(true);
-  const [darkMode, setDarkMode] = useState(false);
   const { showToast } = useToast();
   const { auth } = useAuth();
   const lecturerData = useRef<Lecturer>(null);
 
   useEffect(() => {
-    // Check for dark mode preference
-    if (
-      window.matchMedia &&
-      window.matchMedia("(prefers-color-scheme: dark)").matches
-    ) {
-      setDarkMode(true);
-      document.body.classList.add("bg-dark", "text-light");
-    }
-
-    window
-      .matchMedia("(prefers-color-scheme: dark)")
-      .addEventListener("change", (event) => {
-        if (event.matches) {
-          setDarkMode(true);
-          document.body.classList.add("bg-dark", "text-light");
-        } else {
-          setDarkMode(false);
-          document.body.classList.remove("bg-dark", "text-light");
-        }
-      });
-
     const id = auth?.user ?? JSON.parse(localStorage.getItem(USER_ID) ?? '""');
-    if (!id) return; // Tránh gọi API nếu id không hợp lệ
+    if (!id) return;
 
     const fetchData = async () => {
       setLoading(true);
@@ -148,11 +126,8 @@ const Home = () => {
     );
 
   return (
-    <div className={`container py-4 ${darkMode ? "text-light" : ""}`}>
-      <div
-        className={`card mb-4 ${
-          darkMode ? "bg-dark text-light border-secondary" : "bg-light"
-        }`}>
+    <div className='container py-4'>
+      <div className='card mb-4 bg-light'>
         <div className='card-body p-4'>
           <h3 className='display-5 fw-bold mb-2'>
             {lecturer?.first_name} {lecturer?.last_name}
@@ -181,10 +156,7 @@ const Home = () => {
       <div className='row g-4'>
         <div className='col-md-4'>
           {/* Personal Information Card */}
-          <div
-            className={`card mb-4 ${
-              darkMode ? "bg-dark text-light border-secondary" : "bg-light"
-            }`}>
+          <div className='card mb-4 bg-light'>
             <div className='card-body p-4'>
               <h2 className='card-title h4 fw-bold mb-3'>Thông tin cá nhân</h2>
               <ul className='list-unstyled'>
@@ -193,9 +165,7 @@ const Home = () => {
                   <span className='fw-medium me-2'>Email:</span>
                   <a
                     href={`mailto:${lecturer?.email}`}
-                    className={`${
-                      darkMode ? "text-info" : "text-primary"
-                    } text-decoration-hover`}>
+                    className='text-primary text-decoration-hover'>
                     {lecturer?.email}
                   </a>
                 </li>
@@ -204,9 +174,7 @@ const Home = () => {
                   <span className='fw-medium me-2'>Điện thoại:</span>
                   <a
                     href={`tel:${lecturer?.phone}`}
-                    className={`${
-                      darkMode ? "text-info" : "text-primary"
-                    } text-decoration-hover`}>
+                    className='text-primary text-decoration-hover'>
                     {lecturer?.phone}
                   </a>
                 </li>
@@ -240,10 +208,7 @@ const Home = () => {
             lecturer.subjects.filter(
               (sub) => sub.lecturer_subject_manager_id === lecturer.id
             ).length > 0 && (
-              <div
-                className={`card ${
-                  darkMode ? "bg-dark text-light border-secondary" : "bg-light"
-                }`}>
+              <div className='card bg-light'>
                 <div className='card-body p-4'>
                   <h3 className='card-title h4 fw-bold mb-3 d-flex align-items-center'>
                     <i className='bi bi-shield-check text-success me-2'></i>
@@ -266,11 +231,7 @@ const Home = () => {
                         return (
                           <div
                             key={subject.id}
-                            className={`p-3 rounded ${
-                              darkMode
-                                ? "bg-secondary bg-opacity-25 border border-secondary"
-                                : "bg-light border"
-                            }`}>
+                            className='p-3 rounded bg-light border'>
                             <div className='d-flex justify-content-between align-items-center'>
                               <span className='fw-medium text-primary'>
                                 {subject.subject_name}
@@ -307,10 +268,7 @@ const Home = () => {
         </div>
 
         <div className='col-md-8'>
-          <div
-            className={`card ${
-              darkMode ? "bg-dark text-light border-secondary" : "bg-light"
-            }`}>
+          <div className='card bg-light '>
             <div className='card-body p-4'>
               <h2 className='card-title h4 fw-bold mb-3 d-flex align-items-center'>
                 Học phần phụ trách
@@ -336,11 +294,7 @@ const Home = () => {
                     return (
                       <div
                         key={item.subject_id}
-                        className={`p-4 rounded ${
-                          darkMode
-                            ? "bg-secondary bg-opacity-10 border border-secondary"
-                            : "bg-light border"
-                        }`}>
+                        className='p-4 rounded bg-light border'>
                         <div className='d-flex justify-content-between align-items-start'>
                           <h3 className='h5 fw-semibold mb-0 text-capitalize'>
                             {subject ? subject.subject_name : item.subject_id}
@@ -354,20 +308,20 @@ const Home = () => {
                           <>
                             <div className='row mt-3 g-2'>
                               <div className='col-md-4'>
-                                <span className='d-inline-flex align-items-center badge bg-success text-dark bg-opacity-25 p-2 w-100'>
+                                <span className='d-inline-flex align-items-center badge bg-success bg-opacity-25 p-2 w-100'>
                                   <i className='bi bi-check-circle me-1'></i>
                                   Thực hành: {subject.practical_credits} tín chỉ
                                 </span>
                               </div>
                               <div className='col-md-4'>
-                                <span className='d-inline-flex align-items-center badge bg-warning text-dark bg-opacity-25 p-2 w-100'>
+                                <span className='d-inline-flex align-items-center badge bg-warning bg-opacity-25 p-2 w-100'>
                                   <i className='bi bi-plus-circle me-1'></i>
                                   Lý thuyết: {subject.theoretical_credits} tín
                                   chỉ
                                 </span>
                               </div>
                               <div className='col-md-4'>
-                                <span className='d-inline-flex align-items-center badge bg-info text-dark bg-opacity-25 p-2 w-100'>
+                                <span className='d-inline-flex align-items-center badge bg-info bg-opacity-25 p-2 w-100'>
                                   <i className='bi bi-clipboard me-1'></i>
                                   Tổng:{" "}
                                   {subject.practical_credits +
@@ -392,12 +346,7 @@ const Home = () => {
                                 Chủ nhiệm học phần:
                               </h4>
 
-                              <div
-                                className={`p-3 rounded ${
-                                  darkMode
-                                    ? "bg-dark border border-secondary"
-                                    : "bg-white border"
-                                }`}>
+                              <div className='p-3 rounded bg-white border'>
                                 {manager ? (
                                   <div className='row'>
                                     <div className='col-md-7 mb-2 mb-md-0'>

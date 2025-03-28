@@ -5,6 +5,5 @@ import Dashboard from "./Dashboard/Dashboard";
 import Upload from "./Upload/Upload";
 import Home from "./Home/Home";
 import Clo from "./Clo/Clo";
-import PloClo from "./PloClo/PloClo";
 
-export { Sidebar, Content, Navbar, Dashboard, Upload, Home, Clo, PloClo };
+export { Sidebar, Content, Navbar, Dashboard, Upload, Home, Clo };

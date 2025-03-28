@@ -12,7 +12,6 @@ const Sheet = ({ worksheet }: SheetProps) => {
     header: [] as FormattedCell[][],
     data: [] as FormattedCell[][],
   });
-
   const [json, setJson] = useState<string | undefined>(undefined);
 
   useEffect(() => {

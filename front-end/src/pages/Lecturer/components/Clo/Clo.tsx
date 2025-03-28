@@ -25,13 +25,6 @@ const Clo = () => {
 
   const inputFields: CrudFromField[] = [
     CrudFormClass.create({
-      key: PK.CLO_API,
-      label: "CLO ID",
-      type: "text",
-      isRequired: true,
-      isVisible: true,
-    }),
-    CrudFormClass.create({
       key: "clo_name",
       label: "CLO Name",
       type: "text",

@@ -1,5 +1,5 @@
 import { JSX } from "react";
-import { Navbar, Dashboard, Upload, Home, Clo, PloClo } from "../index";
+import { Navbar, Dashboard, Upload, Home, Clo } from "../index";
 import ErrorBoundary from "../../../../components/ErrorBoundary";
 import { CNHP } from "../../../../types/local";
 
@@ -17,7 +17,6 @@ const Content = ({ activeSection }: ContentProps) => {
 
   if (isCnhp) {
     sections["clo"] = <Clo />;
-    sections["ploClo"] = <PloClo />;
   }
 
   const renderSection = () => {

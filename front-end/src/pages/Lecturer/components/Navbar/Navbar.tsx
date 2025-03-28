@@ -15,7 +15,6 @@ const Navbar: React.FC<HeaderProps> = ({ activeSection }) => {
 
   if (isCnhp) {
     sectionTitles["clo"] = "Clo";
-    sectionTitles["ploClo"] = "pLoClo";
   }
 
   return (

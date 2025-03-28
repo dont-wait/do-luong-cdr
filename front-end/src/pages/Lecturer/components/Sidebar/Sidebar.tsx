@@ -4,7 +4,7 @@ import {
   FaHome,
   FaClone,
 } from "react-icons/fa";
-import { MdOutlineDashboard, MdOutlineMultipleStop } from "react-icons/md";
+import { MdOutlineDashboard } from "react-icons/md";
 import { CNHP } from "../../../../types/local";
 import { TbLogout2 } from "react-icons/tb";
 interface SidebarProps {
@@ -48,24 +48,17 @@ const Sidebar: React.FC<SidebarProps> = ({
       icon: <FaClone className='sidebar-item' />,
       label: "Clo",
     });
-    navItems.push({
-      section: "ploClo",
-      icon: <MdOutlineMultipleStop className='sidebar-item' />,
-      label: "Plo Clo",
-    });
   }
 
   return (
     <div
-      className={`fixed inset-y-0 left-0 w-64 bg-white dark:bg-gray-800 shadow-lg transform transition-transform duration-300 ease-in-out z-20 md:translate-x-0 ${
+      className={`fixed inset-y-0 left-0 w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out z-20 md:translate-x-0 ${
         isOpen ? "translate-x-0" : "-translate-x-full"
       }`}>
-      <div className='flex items-center justify-between p-4 border-b dark:border-gray-700'>
-        <span className='text-2xl font-bold text-gray-800 dark:text-white'>
-          EduManage
-        </span>
+      <div className='flex items-center justify-between p-4 border-b'>
+        <span className='text-2xl font-bold text-gray-800'>EduManage</span>
         <button
-          className='p-2.5 rounded-lg bg-gray-200 dark:bg-gray-700 md:hidden'
+          className='p-2.5 rounded-lg bg-gray-200 md:hidden'
           onClick={toggleSidebar}>
           <FaBusinessTime />
         </button>
