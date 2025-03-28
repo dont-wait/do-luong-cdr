@@ -1,5 +1,5 @@
 import { JSX } from "react";
-import { Navbar, Dashboard, Upload } from "../index";
+import { Navbar, Dashboard, Upload, Home } from "../index";
 import ErrorBoundary from "../../../../components/ErrorBoundary";
 
 interface ContentProps {
@@ -9,6 +9,7 @@ interface ContentProps {
 const Content = ({ activeSection }: ContentProps) => {
   const sections: { [key: string]: JSX.Element } = {
     dashboard: <Dashboard />,
+    home: <Home />,
     upload: <Upload />,
   };
 

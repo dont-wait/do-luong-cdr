@@ -1,4 +1,4 @@
-import { FaBusinessTime, FaCloudUploadAlt } from "react-icons/fa";
+import { FaBusinessTime, FaCloudUploadAlt, FaHome } from "react-icons/fa";
 import { MdOutlineDashboard } from "react-icons/md";
 
 import { TbLogout2 } from "react-icons/tb";
@@ -23,6 +23,11 @@ const Sidebar: React.FC<SidebarProps> = ({
       section: "dashboard",
       icon: <MdOutlineDashboard className='sidebar-item' />,
       label: "Dashboard",
+    },
+    {
+      section: "home",
+      icon: <FaHome className='sidebar-item' />,
+      label: "Home",
     },
     {
       section: "upload",
