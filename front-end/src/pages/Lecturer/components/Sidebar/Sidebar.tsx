@@ -1,6 +1,11 @@
-import { FaBusinessTime, FaCloudUploadAlt, FaHome } from "react-icons/fa";
-import { MdOutlineDashboard } from "react-icons/md";
-
+import {
+  FaBusinessTime,
+  FaCloudUploadAlt,
+  FaHome,
+  FaClone,
+} from "react-icons/fa";
+import { MdOutlineDashboard, MdOutlineMultipleStop } from "react-icons/md";
+import { CNHP } from "../../../../types/local";
 import { TbLogout2 } from "react-icons/tb";
 interface SidebarProps {
   isOpen: boolean;
@@ -18,6 +23,7 @@ const Sidebar: React.FC<SidebarProps> = ({
 }) => {
   const { setAuth } = useAuth();
   const navigate = useNavigate();
+  const isCnhp = JSON.parse(localStorage.getItem(CNHP) ?? '""');
   const navItems = [
     {
       section: "dashboard",
@@ -35,6 +41,19 @@ const Sidebar: React.FC<SidebarProps> = ({
       label: "Upload",
     },
   ];
+
+  if (isCnhp) {
+    navItems.push({
+      section: "clo",
+      icon: <FaClone className='sidebar-item' />,
+      label: "Clo",
+    });
+    navItems.push({
+      section: "ploClo",
+      icon: <MdOutlineMultipleStop className='sidebar-item' />,
+      label: "Plo Clo",
+    });
+  }
 
   return (
     <div

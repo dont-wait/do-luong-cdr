@@ -7,4 +7,6 @@ export const ADMIN_API = "/admin";
 export const ACADEMIC_SUBJECT_API = "/academic-subject";
 export const PLO_API = "/plos";
 export const PLO_DETAIL_API = "/plo-details";
+export const CLO_API = "/clo";
+export const PLO_CLO_API = "/plo-clo";
 export const LOGIN_API = "/login";

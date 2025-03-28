@@ -226,16 +226,20 @@ const CrudForm = ({
                                     setValue(key, e.target.value);
                                     setFilterText("");
                                   }}>
-                                  {filterHandle(dataDrop, dropLabel)?.map(
-                                    (item, j) => (
-                                      <option
-                                        key={j}
-                                        value={
-                                          type === "number" ? j + 1 : item.id
-                                        }>
-                                        {item[`${dropLabel}`]}
-                                      </option>
+                                  {dataDrop?.length !== 0 ? (
+                                    filterHandle(dataDrop, dropLabel)?.map(
+                                      (item, j) => (
+                                        <option
+                                          key={j}
+                                          value={
+                                            type === "number" ? j + 1 : item.id
+                                          }>
+                                          {item[`${dropLabel}`]}
+                                        </option>
+                                      )
                                     )
+                                  ) : (
+                                    <option>Không có dữ liệu</option>
                                   )}
                                 </Form.Select>
                               )}

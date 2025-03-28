@@ -1,17 +1,24 @@
 import { JSX } from "react";
-import { Navbar, Dashboard, Upload, Home } from "../index";
+import { Navbar, Dashboard, Upload, Home, Clo, PloClo } from "../index";
 import ErrorBoundary from "../../../../components/ErrorBoundary";
+import { CNHP } from "../../../../types/local";
 
 interface ContentProps {
   activeSection: string;
 }
 
 const Content = ({ activeSection }: ContentProps) => {
+  const isCnhp = JSON.parse(localStorage.getItem(CNHP) ?? '""');
   const sections: { [key: string]: JSX.Element } = {
     dashboard: <Dashboard />,
     home: <Home />,
     upload: <Upload />,
   };
+
+  if (isCnhp) {
+    sections["clo"] = <Clo />;
+    sections["ploClo"] = <PloClo />;
+  }
 
   const renderSection = () => {
     return (

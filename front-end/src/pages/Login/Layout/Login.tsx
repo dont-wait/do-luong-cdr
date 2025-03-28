@@ -1,8 +1,12 @@
-import "./Login.css";
 import LoginForm from "../Components/LoginForm/LoginForm";
+import { useEffect } from "react";
 import { Container, Row, Col } from "react-bootstrap";
+import "./Login.css";
 
 const Login: React.FC = () => {
+  useEffect(() => {
+    localStorage.clear();
+  }, []);
   return (
     <Container fluid className='login-page d-flex flex-column vh-100 p-4'>
       <Row className='flex-grow-1'>

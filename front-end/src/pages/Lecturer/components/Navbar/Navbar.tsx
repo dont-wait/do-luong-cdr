@@ -1,14 +1,22 @@
+import { CNHP } from "../../../../types/local";
+
 interface HeaderProps {
   activeSection: string;
 }
 
 const Navbar: React.FC<HeaderProps> = ({ activeSection }) => {
+  const isCnhp = JSON.parse(localStorage.getItem(CNHP) ?? '""');
   const sectionTitles: { [key: string]: string } = {
     dashboard: "Dashboard",
     home: "Home",
     upload: "Upload",
     // Add more mappings
   };
+
+  if (isCnhp) {
+    sectionTitles["clo"] = "Clo";
+    sectionTitles["ploClo"] = "pLoClo";
+  }
 
   return (
     <header className='bg-white shadow-md mb-1.5'>
