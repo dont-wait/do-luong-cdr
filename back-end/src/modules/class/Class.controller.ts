@@ -32,13 +32,6 @@ export class ClassController {
     return this.classService.getAllClasses();
   }
 
-  @ApiOperation({ summary: 'Update Class' })
-  @ApiResponse({ status: 200, description: 'Class updated successfully' })
-  @ApiResponse({ status: 400, description: 'Invalid input data or Class not found' })
-  @Patch(':id')
-  async update(@Param('id') id: string, @Body() newData: UpdateClassDto) {
-    return this.classService.updateClass(id, newData);
-  }
 
   @ApiOperation({ summary: 'Delete Class' })
   @ApiResponse({ status: 200, description: 'Class deleted successfully' })

@@ -39,14 +39,7 @@ export class DepartmentController {
     return this.departmentService.getDepartmentById(id);
   }
 
-  @Patch(':id')
-  @ApiOperation({ summary: 'Update department by ID' })
-  @ApiOkResponse({ description: 'Department updated successfully' })
-  @ApiResponse({ status: 404, description: 'Department not found' })
-  @ApiResponse({ status: 400, description: 'Bad Request' })
-  updateDepartment(@Param('id') id: string, @Body() data: CreateDepartmentDto) {
-    return this.departmentService.updateDepartment(id, data);
-  }
+
 
   @Delete(':id')
   @ApiOperation({ summary: 'Delete department by ID' })

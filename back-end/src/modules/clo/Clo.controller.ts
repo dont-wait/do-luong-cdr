@@ -30,13 +30,7 @@ export class CloController {
     return this.cloService.getCloById(id);
   }
 
-  @Patch(':id')
-  @ApiParam({ name: 'id', type: 'string' })
-  @ApiResponse({ status: 200, description: 'Cập nhật CLO thành công' })
-  @ApiResponse({ status: 400, description: 'ID không hợp lệ' })
-  async update(@Param('id') id: string, @Body() newData: CreateCloDto) {
-    return this.cloService.updateClo(id, newData);
-  }
+
 
   @Delete(':id')
   @ApiParam({ name: 'id', type: 'string' })

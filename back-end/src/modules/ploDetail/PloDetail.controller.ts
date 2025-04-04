@@ -31,11 +31,5 @@ export class PloDetailController {
     return this.ploDetailService.getAllPloDetail();
   }
 
-  @ApiOperation({ summary: 'Update PloDetail' })
-  @ApiResponse({ status: 200, description: 'PloDetail updated successfully' })
-  @ApiResponse({ status: 400, description: 'Invalid input data or PloDetail not found' })
-  @Patch(':id')
-  async update(@Param('id') id: string, @Body() newData: CreatePloDetailDto) {
-    return this.ploDetailService.updatePloDeTail(id, newData);
-  }
+
 }

@@ -26,10 +26,7 @@ export class DegreeController {
     return this.degreeService.getDegreeById(+id);
   }
 
-  @Patch(':id')
-  updateDegree(@Param('id') id: string, @Body() Data: CreateDegreeDto) {
-    return this.degreeService.updateDegree(+id, Data);
-  }
+
 
   @Delete(':id')
   removeDegree(@Param('id') id: string) {

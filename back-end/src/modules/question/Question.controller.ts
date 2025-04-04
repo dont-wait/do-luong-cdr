@@ -32,13 +32,6 @@ export class QuestionController {
     return await this.questionService.createQuestion(createQuestionDto);
   }
 
-  @Patch(':id')
-  @ApiOperation({ summary: 'Update a question by id' })
-  @ApiResponse({ status: 200, description: 'The question has been successfully updated.' })
-  @ApiResponse({ status: 404, description: 'Question not found.' })
-  public async updateQuestion(@Param('id') id: string, @Body() updateQuestionDto: UpdateQuestionDto) {
-    return await this.questionService.updateQuestion(id, updateQuestionDto);
-  }
 
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a question by id' })

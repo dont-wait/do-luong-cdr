@@ -31,13 +31,7 @@ export class AcademicController {
     return this.academicService.getAcademicById(id);
   }
 
-  @Patch(':id')
-  @ApiOperation({ summary: 'Update academic by id' })
-  @ApiResponse({ status: 200, description: 'Academic successfully updated.' })
-  @ApiResponse({ status: 404, description: 'Academic not found.' })
-  updateAcademic(@Param('id') id: string, @Body() data: CreateAcademicDto) {
-    return this.academicService.updateAcademic(id, data)
-  }
+
 
   @Put(':id')
   @ApiOperation({ summary: 'Update academic by id' })

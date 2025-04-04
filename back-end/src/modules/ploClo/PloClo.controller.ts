@@ -22,10 +22,7 @@ export class PloCloController {
     return this.ploCloService.findOne(+id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updatePloCloDto: UpdatePloCloDto) {
-    return this.ploCloService.update(+id, updatePloCloDto);
-  }
+ 
 
   @Delete(':id')
   remove(@Param('id') id: string) {

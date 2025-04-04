@@ -33,15 +33,7 @@ export class ResultController {
     return result;
   }
 
-  @ApiOperation({ summary: 'Update Result by ID' })
-  @ApiResponse({ status: 200, description: 'Result updated successfully' })
-  @ApiResponse({ status: 404, description: 'Result not found' })
-  @Patch(':id')
-  async update(@Param('id') id: string, @Body() newData: CreateResultDto) {
-    const updatedResult = await this.resultService.updateResult(id, newData);
-    if (!updatedResult) throw new NotFoundException(`Result with id ${id} not found`);
-    return updatedResult;
-  }
+
 
   @ApiOperation({ summary: 'Delete Result by ID' })
   @ApiResponse({ status: 204, description: 'Result deleted successfully' })

@@ -31,13 +31,7 @@ export class PloController {
       return this.ploService.getPloById(id);
     }
   
-    @Patch(':id')
-    @ApiOperation({ summary: 'Update plo by id' })
-    @ApiResponse({ status: 200, description: 'Plo successfully updated.' })
-    @ApiResponse({ status: 404, description: 'Plo not found.' })
-    updateAcademic(@Param('id') id: string, @Body() data: CreatePloDto) {
-      return this.ploService.updatePlo(id, data)
-    }
+
   
     @Delete(':id')
     @ApiOperation({ summary: 'Delete plo by id' })

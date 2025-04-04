@@ -31,14 +31,7 @@ export class ExamController {
     return this.examService.getExamById(id);
   }
 
-  @Patch(':id')
-  @ApiOperation({ summary: 'Update exam by ID' })
-  @ApiOkResponse({ description: 'Exam updated successfully' })
-  @ApiResponse({ status: 404, description: 'Exam not found' })
-  @ApiResponse({ status: 400, description: 'Bad Request' })
-  updateExam(@Param('id') id: string, @Body() data: CreateExamDto) {
-    return this.examService.updateExam(id, data);
-  }
+
 
   @Delete(':id')
   @ApiOperation({ summary: 'Delete exam by ID' })
