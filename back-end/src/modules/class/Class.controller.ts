@@ -1,5 +1,5 @@
-import { Controller, Get, Post, Patch, Delete, Body, Param } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { Controller, Get, Post, Patch, Delete, Body, Param, Put } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
 import { ClassService } from './Class.service';
 import { CreateClassDto } from './dto/create-class.dto';
 import { UpdateClassDto } from './dto/update-class.dto';
@@ -9,6 +9,7 @@ import { UpdateClassDto } from './dto/update-class.dto';
 export class ClassController {
   constructor(private readonly classService: ClassService) {}
 
+  @ApiBody({ type: CreateClassDto, isArray: true })
   @ApiOperation({ summary: 'Create new Class' })
   @ApiResponse({ status: 201, description: 'Class successfully created' })
   @ApiResponse({ status: 400, description: 'Invalid input data' })
@@ -39,5 +40,14 @@ export class ClassController {
   @Delete(':id')
   async delete(@Param('id') id: string) {
     return this.classService.deleteClass(id);
+  }
+
+  @ApiOperation({ summary: 'Update Class' })
+  @ApiResponse({ status: 200, description: 'Class updated successfully' })
+  @ApiResponse({ status: 400, description: 'Class not found' })
+  @ApiBody({ type: CreateClassDto })
+  @Put(':id')
+  async update(@Param('id') id: string, @Body() data: UpdateClassDto) {
+    return this.classService.updateClass(id, data);
   }
 }

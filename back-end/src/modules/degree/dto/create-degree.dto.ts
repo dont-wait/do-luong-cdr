@@ -1,10 +1,21 @@
-import { IsNotEmpty, IsString } from "class-validator";
+import { IsNotEmpty, IsString, IsNumber } from "class-validator";
+import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateDegreeDto {
-    @IsNotEmpty()
-    degree_id: number;
+  @ApiProperty({
+    example: 1,
+    description: 'Mã ID của học vị',
+  })    
+  @IsNotEmpty()
+  @IsNumber()
+  degree_id: number;
 
-    @IsNotEmpty()
-    @IsString()
-    degree_name: string;
+  @ApiProperty({
+    example: 'Tiến sĩ',
+    description: 'Tên học vị',
+  })
+  @IsNotEmpty()
+  @IsString()
+  degree_name: string;
 }
+

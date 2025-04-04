@@ -70,4 +70,21 @@ export class LecturerService {
             }
         })
     }
+    public async updateLecturer(lecturer_id: string, data: CreateLecturerDto) {
+        return this.prisma.lecturer.update({
+            where: {
+                id: lecturer_id
+            },
+            data: {
+                ...data
+            }
+        })
+    }
+    public async removeLecturer(lecturer_id: string) {
+        return this.prisma.lecturer.delete({
+            where: {
+                id: lecturer_id
+            }
+        })
+    }
 }

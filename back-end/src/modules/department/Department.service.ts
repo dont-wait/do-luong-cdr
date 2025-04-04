@@ -6,13 +6,14 @@ import { PrismaService } from '../prisma/Prisma.service';
 export class DepartmentService {
   constructor(private readonly prisma: PrismaService) {}
   
-  public async createDeparment(data: CreateDepartmentDto){
-    return this.prisma.department.create({ data });
+  public async createDepartment(data: CreateDepartmentDto | CreateDepartmentDto[]) {
+    if (Array.isArray(data)) {
+      return this.prisma.department.createMany({ data });
+    } else {
+      return this.prisma.department.create({ data });
+    }
   }
-
-  public async createManyDepartment(data: CreateDepartmentDto[]){
-    return this.prisma.department.createMany({ data });
-  }
+  
 
   public async getAllDepartments(){
     return this.prisma.department.findMany();

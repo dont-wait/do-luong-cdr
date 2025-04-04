@@ -1,7 +1,7 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Put } from '@nestjs/common';
 import { ExamService } from './Exam.service';
 import { CreateExamDto } from './dto/create-exam.dto';
-import { ApiOkResponse, ApiTags, ApiResponse, ApiOperation } from '@nestjs/swagger';
+import { ApiOkResponse, ApiTags, ApiResponse, ApiOperation, ApiBody } from '@nestjs/swagger';
 
 @ApiTags('exams')
 @Controller('exams')
@@ -9,10 +9,11 @@ export class ExamController {
   constructor(private readonly examService: ExamService) {}
 
   @Post()
+  @ApiBody({ type: CreateExamDto, isArray: true })
   @ApiOperation({ summary: 'Create a new exam' })
   @ApiResponse({ status: 201, description: 'Exam has been created successfully' })
   @ApiResponse({ status: 400, description: 'Bad Request' })
-  createExam(@Body() data: CreateExamDto) {
+  createExam(@Body() data: CreateExamDto | CreateExamDto[]) {
     return this.examService.createExam(data);
   }
 
@@ -39,5 +40,14 @@ export class ExamController {
   @ApiResponse({ status: 404, description: 'Exam not found' })
   deleteExam(@Param('id') id: string) {
     return this.examService.deleteExam(id);
+  }
+
+  @Put(':id')
+  @ApiOperation({ summary: 'Update exam by ID' })
+  @ApiOkResponse({ description: 'Exam updated successfully' })
+  @ApiResponse({ status: 404, description: 'Exam not found' })
+  @ApiBody({ type: CreateExamDto })
+  updateExam(@Param('id') id: string, @Body() data: CreateExamDto) {
+    return this.examService.updateExam(id, data);
   }
 }

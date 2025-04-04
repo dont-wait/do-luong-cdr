@@ -1,5 +1,5 @@
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { StudentService } from './Student.service';
 import { CreateStudentDto } from './dto/create-student.dto';
 import {} from '@prisma/client';
@@ -25,6 +25,7 @@ export class StudentController {
   }
 
   @Post()
+  @ApiBody({ type: CreateStudentDto })
   @ApiOperation({ summary: 'Create a new student' })
   @ApiResponse({
     status: 201,

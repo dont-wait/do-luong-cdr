@@ -1,5 +1,5 @@
-import { Controller, Get, Post, Patch, Body, Param, BadRequestException } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { Controller, Get, Post, Patch, Body, Param, BadRequestException, Put } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
 import { PloDetailService } from './PloDetail.service';
 import { CreatePloDetailDto } from './dto/create-plo_detail.dto';
 
@@ -8,6 +8,7 @@ import { CreatePloDetailDto } from './dto/create-plo_detail.dto';
 export class PloDetailController {
   constructor(private readonly ploDetailService: PloDetailService) {}
 
+  @ApiBody({ type: CreatePloDetailDto, isArray: true })
   @ApiOperation({ summary: 'Create new PloDetail' })
   @ApiResponse({ status: 201, description: 'PloDetail has been successfully created.' })
   @ApiResponse({ status: 400, description: 'Invalid input data' })
@@ -30,6 +31,11 @@ export class PloDetailController {
   async getAll() {
     return this.ploDetailService.getAllPloDetail();
   }
-
-
+  @ApiOperation({ summary: 'Update PloDetail' })
+  @ApiResponse({ status: 200, description: 'PloDetail updated successfully' })
+  @ApiResponse({ status: 400, description: 'PloDetail not found' })
+  @Put(':id')
+  async update(@Param('id') id: string, @Body() data: CreatePloDetailDto) {
+    return this.ploDetailService.updatePloDeTail(id, data);
+  }
 }

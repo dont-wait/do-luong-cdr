@@ -1,7 +1,7 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Put } from '@nestjs/common';
 import { PloService } from './Plo.service';
 import { CreatePloDto } from './dto/create-plo.dto';
-import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
 
 @ApiTags('plos')
 @Controller('plos')
@@ -9,6 +9,7 @@ export class PloController {
   constructor(private readonly ploService: PloService) {}
 
   @Post()
+    @ApiBody({ type: CreatePloDto, isArray: true })
     @ApiOperation({ summary: 'Create new plo(s)' })
     @ApiResponse({ status: 201, description: 'Plo(s) successfully created.' })
     @ApiResponse({ status: 400, description: 'Bad Request.' })
@@ -39,5 +40,12 @@ export class PloController {
     @ApiResponse({ status: 404, description: 'Plo not found.' })
     removeAcademic(@Param('id') id: string) {
       return this.ploService.removePlo(id)
+    }
+    @Put(':id')
+    @ApiOperation({ summary: 'Update plo by id' })
+    @ApiResponse({ status: 200, description: 'Plo successfully updated.' })
+    @ApiResponse({ status: 404, description: 'Plo not found.' })
+    updateAcademic(@Param('id') id: string, @Body() data: CreatePloDto) {
+      return this.ploService.updatePlo(id, data)
     }
 }

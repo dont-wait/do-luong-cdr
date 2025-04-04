@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Put } from '@nestjs/common';
 import { DepartmentService } from './Department.service';
 import { CreateDepartmentDto } from './dto/create-department.dto';
-import { ApiOkResponse, ApiTags, ApiResponse, ApiOperation } from '@nestjs/swagger';
+import { ApiOkResponse, ApiTags, ApiResponse, ApiOperation, ApiBody } from '@nestjs/swagger';
 
 @ApiTags('departments')
 @Controller('departments')
@@ -9,19 +9,12 @@ export class DepartmentController {
   constructor(private readonly departmentService: DepartmentService) {}
 
   @Post()
-  @ApiOperation({ summary: 'Create a new department' })
+  @ApiBody({ type: CreateDepartmentDto })
+  @ApiOperation({ summary: 'Create a new department(s)' })
   @ApiResponse({ status: 201, description: 'Department has been created successfully' })
   @ApiResponse({ status: 400, description: 'Bad Request' })
-  createDepartment(@Body() data: CreateDepartmentDto) {
-    return this.departmentService.createDeparment(data);
-  }
-
-  @Post("createMany")
-  @ApiOperation({ summary: 'Create multiple departments' })
-  @ApiResponse({ status: 201, description: 'Departments have been created successfully' })
-  @ApiResponse({ status: 400, description: 'Bad Request' })
-  createManyDepartment(@Body() data: CreateDepartmentDto[]) {
-    return this.departmentService.createManyDepartment(data);
+  createDepartment(@Body() data: CreateDepartmentDto | CreateDepartmentDto[]) {
+    return this.departmentService.createDepartment(data);
   }
 
   @Get()
