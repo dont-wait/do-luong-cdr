@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Put } from '@nestjs/common';
 import { DepartmentService } from './Department.service';
 import { CreateDepartmentDto } from './dto/create-department.dto';
 import { ApiOkResponse, ApiTags, ApiResponse, ApiOperation } from '@nestjs/swagger';
@@ -54,5 +54,14 @@ export class DepartmentController {
   @ApiResponse({ status: 404, description: 'Department not found' })
   deleteDepartment(@Param('id') id: string) {
     return this.departmentService.deleteDepartment(id);
+  }
+
+  @Put(':id')
+  @ApiOperation({ summary: 'Update department by ID' })
+  @ApiOkResponse({ description: 'Department updated successfully' })
+  @ApiResponse({ status: 404, description: 'Department not found' })
+  
+  updateDepartmentById(@Param('id') id: string, @Body() data: CreateDepartmentDto) {
+    return this.departmentService.updateDepartment(id, data);
   }
 }
