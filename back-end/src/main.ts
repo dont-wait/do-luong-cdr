@@ -5,7 +5,9 @@ import { ValidationPipe, INestApplication, ConsoleLogger } from '@nestjs/common'
 import { AppLoggerService } from './modules/appLogger/AppLogger.service';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { HttpResponseInterceptor } from './common/interceptors/HttpResponse.interceptor';
+import { HidePasswordInterceptor } from './common/interceptors/HidePassword.interceptor';
 import { HttpExceptionFilter } from './common/filter/HttpException.filter';
+import * as cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
@@ -15,8 +17,12 @@ async function bootstrap() {
     })
   });
 
+  app.use(cookieParser());
   app.setGlobalPrefix(process.env.GLOBAL_PREFIX!);
-  app.useGlobalInterceptors(new HttpResponseInterceptor());
+  app.useGlobalInterceptors(
+    new HttpResponseInterceptor(), 
+    new HidePasswordInterceptor()
+  );
   app.useGlobalFilters(new HttpExceptionFilter);
   app.enableCors(
     {
