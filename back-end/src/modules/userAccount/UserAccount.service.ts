@@ -83,16 +83,20 @@ export class UserAccountService {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    if (!lecturer_id)
-      throw new BadRequestException("Không ti`m tha^'y tài khoản giảng viên");
-
-    return await this.prisma.user_account.update({
+    if (!lecturer_id && !admin_id)
+      throw new BadRequestException("Không ti`m tha^'y tài khoản admin hoặc lecturer nào");
+    
+    return await this.prisma.user_account.updateMany({
       where: {
-        lecturer_id: lecturer_id,
-      }, data: {
+      OR: [
+        { admin_id: admin_id || undefined },
+        { lecturer_id: lecturer_id || undefined }
+      ]
+      },
+      data: {
         password: hashedPassword,
-        admin_id,
-        lecturer_id,
+        admin_id: admin_id,
+        lecturer_id: lecturer_id,
         role_id
       }
     });

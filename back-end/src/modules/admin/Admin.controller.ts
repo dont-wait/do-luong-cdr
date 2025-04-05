@@ -41,9 +41,9 @@ export class AdminController {
   @Put(':id')
   @ApiOperation({ summary: 'Update admin by ID' })
   @ApiParam({ name: 'id', description: 'Admin ID' })
-  @ApiBody({ type: UpdateAdminDto })
-  updateAdmin(@Param('id') id: string, @Body() updateAdminDto: UpdateAdminDto) {
-    return this.adminService.updateAdmin(id, updateAdminDto);
+  @ApiBody({ type: CreateAdminDto })
+  async updateAdmin(@Param('id') id: string, @Body() data: CreateAdminDto) {
+    return this.adminService.updateAdmin(id, data);
   }
 
   @Delete(':id')

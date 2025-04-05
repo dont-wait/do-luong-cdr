@@ -68,19 +68,27 @@ export class AdminService {
     return admin;
   }
 
-  public async updateAdmin(id: string, updateAdminDto: UpdateAdminDto) {
-    const admin = await this.prisma.admin.findUnique({
-      where: { id },
-    });
+  public async updateAdmin(admin_id: string, data: CreateAdminDto) {
+    const { password, id, ...updateData } = data;
+    const adminRole = roles.find((r) => r.role_name === 'admin');
 
-    if (!admin) {
-      throw new NotFoundException(`Admin with ID ${id} not found`);
+    if (!adminRole?.role_id) {
+      throw new BadRequestException('Không tìm thấy role admin');
     }
 
+    const userAccountData = {
+      ...updateData,
+      admin_id: id,
+      lecturer_id: null,
+      role_id: adminRole.role_id,
+    };
+
     try {
+      await this.userAccount.updateUserAccount(userAccountData, password);
+
       return await this.prisma.admin.update({
-        where: { id },
-        data: updateAdminDto,
+        where: { id: admin_id },
+        data: updateData,
       });
     } catch (err) {
       throw new InternalServerErrorException(err.message);
