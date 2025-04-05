@@ -6,6 +6,6 @@ import { UserAccountController } from './UserAccount.controller';
 @Module({
   controllers: [UserAccountController],
   providers: [UserAccountService],
-  exports: [UserAccountService]
+  exports: [UserAccountService],
 })
 export class UserAccountModule {}
