@@ -2,7 +2,7 @@ import { BadRequestException, Injectable, InternalServerErrorException, NotFound
 import { CreateAdminDto } from './dto/create-admin.dto';
 import { UpdateAdminDto } from './dto/update-admin.dto';
 import { PrismaService } from '../prisma/Prisma.service';
-import { UserAccountService } from '../userAccount/UseAccount.service';
+import { UserAccountService } from '../userAccount/UserAccount.service';
 import { roles } from "../../configs/config.json";
 
 @Injectable()
@@ -15,17 +15,16 @@ export class AdminService {
   public async createAdmin(data: CreateAdminDto) {
     const { id, password, ...rest } = data;
 
-    const adminRole = roles.find(r => r.role_name === "student");
+    const adminRole = roles.find(r => r.role_name === "admin");
 
     if (!adminRole?.role_id) 
       throw new BadRequestException("Không tìm thấy role admin");
     
-    try {
+   try {
       const createUserAccountDto = {
         admin_id: id,
         password,
         role_id: adminRole.role_id,
-        student_id: null, 
         lecturer_id: null 
       };
       
@@ -64,24 +63,34 @@ export class AdminService {
     return admin;
   }
 
-  public async updateAdmin(id: string, updateAdminDto: UpdateAdminDto) {
-    const admin = await this.prisma.admin.findUnique({
-      where: { id },
-    });
-
-    if (!admin) {
-      throw new NotFoundException(`Admin with ID ${id} not found`);
+  public async updateAdmin(admin_id: string, data: CreateAdminDto) {
+    const { password, id, ...updateData } = data;
+    const adminRole = roles.find(r => r.role_name === "admin");
+    
+    if (!adminRole?.role_id) {
+        throw new BadRequestException("Không tìm thấy role admin");
     }
 
+    const userAccountData = {
+        ...updateData,
+        admin_id: id,
+        lecturer_id: null,
+        role_id: adminRole.role_id,
+    };
+    
     try {
-      return await this.prisma.admin.update({
-        where: { id },
-        data: updateAdminDto,
-      });
-    } catch (err) {
-      throw new InternalServerErrorException(err.message);
-    }
-  }
+          await this.userAccount.updateUserAccount(userAccountData, password);
+            
+            return await this.prisma.admin.update({
+                where: { id: admin_id },
+                data: updateData,
+            });
+        } catch (err) {
+            throw new InternalServerErrorException(err.message);
+        }
+
+
+}
 
   public async deleteAdmin(id: string) {
     const admin = await this.prisma.admin.findUnique({
