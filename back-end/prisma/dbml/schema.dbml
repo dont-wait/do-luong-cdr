@@ -238,7 +238,7 @@ Ref: Academic.department_id > Department.id
 
 Ref: Academic_subject.academic_id > Academic.id
 
-Ref: Academic_subject.subject_id > Subject.id
+Ref: Academic_subject.subject_id > Subject.id [delete: Cascade]
 
 Ref: Plo.academic_id > Academic.id
 
@@ -248,13 +248,13 @@ Ref: Plo_clo.clo_id > Clo.id
 
 Ref: Plo_detail.plo_id > Plo.id
 
-Ref: Subject.lecturer_subject_manager_id > Lecturer.id
+Ref: Subject.lecturer_subject_manager_id > Lecturer.id [delete: Cascade]
 
 Ref: LecturerSubject.lecturer_id > Lecturer.id
 
-Ref: LecturerSubject.subject_id > Subject.id
+Ref: LecturerSubject.subject_id > Subject.id [delete: Cascade]
 
-Ref: Clo.subject_id > Subject.id
+Ref: Clo.subject_id > Subject.id [delete: Cascade]
 
 Ref: Exam.class_id > Class.id
 
@@ -266,7 +266,7 @@ Ref: Result.question_id > Question.id
 
 Ref: Result.student_id > Student.id
 
-Ref: Class.subject_id > Subject.id
+Ref: Class.subject_id > Subject.id [delete: Cascade]
 
 Ref: Class.lecturer_id > Lecturer.id
 
@@ -288,7 +288,7 @@ Ref: Lecturer.academic_id > Academic.id
 
 Ref: Student.academic_id > Academic.id
 
-Ref: Approve.subject_id > Subject.id
+Ref: Approve.subject_id > Subject.id [delete: Cascade]
 
 Ref: Approve.receiver_id > Lecturer.id
 
