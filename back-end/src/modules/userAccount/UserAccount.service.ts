@@ -4,6 +4,7 @@ import { UpdateUserAccountDto } from './dto/update-user_account.dto';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from '../prisma/Prisma.service';
 import { roles } from "../../configs/config.json";
+import { CLIENT_RENEG_LIMIT } from 'tls';
 
 @Injectable()
 export class UserAccountService {
@@ -17,34 +18,34 @@ export class UserAccountService {
     const { admin_id, lecturer_id, role_id } = createUserAccountDto; 
 
     if (!admin_id && !lecturer_id) {
-      throw new BadRequestException("Thiếu 1 trong 3 ID của admin, lecturer");
+        throw new BadRequestException("Thiếu 1 trong 2 ID của admin hoặc lecturer");
     }
 
     const role = await this.prisma.role.findUnique({
-      where: { id: role_id }
+        where: { id: role_id }
     });
 
     if (!role) {
-      throw new BadRequestException(`Không tìm thấy role ID: ${role_id}`);
+        throw new BadRequestException(`Không tìm thấy role ID: ${role_id}`);
     }
 
     try {
-      const hashedPassword = await bcrypt.hash(password, 10);
-      
-      const newUserAccount = await this.prisma.user_account.create({
-        data: {
-          password: hashedPassword,
-          admin_id,
-          lecturer_id,
-          role_id
-        }
-      });
-      
-      return newUserAccount;
-    } catch(err) {
-      throw new InternalServerErrorException(err.message);
+        const hashedPassword = await bcrypt.hash(password, 10);
+        
+        const newUserAccount = await this.prisma.user_account.create({
+            data: {
+                password: hashedPassword,
+                admin_id,
+                lecturer_id,
+                role_id
+            }
+        });
+        
+        return newUserAccount;
+    } catch (err) {
+        throw new InternalServerErrorException('Error creating user account: ' + err.message);
     }
-  }
+}
 
   getAllUserAccout() {
     
@@ -77,9 +78,25 @@ export class UserAccountService {
   }
 
 
-  updateUserAccount(id: number, updateUserAccountDto: UpdateUserAccountDto) {
-    return `This action updates a #${id} userAccount`;
-  }
+  public async updateUserAccount(updateUserAccountDto: UpdateUserAccountDto, password:string) {
+    const {admin_id, lecturer_id, role_id} = updateUserAccountDto;
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    if (!lecturer_id)
+      throw new BadRequestException("Không ti`m tha^'y tài khoản giảng viên");
+
+    return await this.prisma.user_account.update({
+      where: {
+        lecturer_id: lecturer_id,
+      }, data: {
+        password: hashedPassword,
+        admin_id,
+        lecturer_id,
+        role_id
+      }
+    });
+}
 
   deleteUserAccount(id: number) {
     return `This action removes a #${id} userAccount`;

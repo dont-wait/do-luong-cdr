@@ -1,7 +1,6 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Put } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
-import { UserAccountService } from './UseAccount.service';
-import { UpdateUserAccountDto } from './dto/update-user_account.dto';
+import { UserAccountService } from './UserAccount.service';
 
 @ApiTags('accounts')
 @Controller('accounts')
@@ -14,8 +13,6 @@ export class UserAccountController {
   getAllUserAccout() {
     return this.userAccountService.getAllUserAccout();
   }
-
-
 
   @ApiOperation({ summary: 'Delete user account' })
   @ApiParam({ name: 'id', description: 'User account ID' })
