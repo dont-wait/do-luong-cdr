@@ -7,10 +7,6 @@
     {
       "role_id": 2002,
       "role_name": "lecturer"
-    },
-    {
-      "role_id": 2003,
-      "role_name": "student"
     }
   ],
   "admin": {
