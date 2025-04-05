@@ -4,100 +4,101 @@ import { PrismaService } from '../prisma/Prisma.service';
 import { UserAccountService } from '../userAccount/UserAccount.service';
 import { DegreeService } from '../degree/Degree.service';
 import { AcademicService } from '../academic/Academic.service';
-import { roles } from "../../configs/config.json";
-import { CLIENT_RENEG_LIMIT } from 'tls';
+import { roles } from '../../configs/config.json';
 
 @Injectable()
 export class LecturerService {
-    constructor(
-        private readonly prisma: PrismaService,
-        private readonly userAccount: UserAccountService,
-        private readonly degree: DegreeService,
-        private readonly academic: AcademicService
-    ) {}
-    
-    public async createLecturer(data: CreateLecturerDto) {
-        const { password, degree_id, academic_id, id, ...rest } = data;
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly userAccount: UserAccountService,
+    private readonly degree: DegreeService,
+    private readonly academic: AcademicService,
+  ) {}
 
-        if (!await this.academic.getAcademicById(academic_id)) 
-            throw new BadRequestException(`Không tìm thấy Academic Id ${academic_id}`);
-        
-        if (!await this.degree.getDegreeById(degree_id))
-            throw new BadRequestException(`Không tìm thấy Degree Id ${degree_id}`);
+  public async createLecturer(data: CreateLecturerDto) {
+    const { password, degree_id, academic_id, id, ...rest } = data;
 
-        const lecturerRole = roles.find(r => r.role_name === "lecturer");
+    if (!(await this.academic.getAcademicById(academic_id)))
+      throw new BadRequestException(
+        `Không tìm thấy Academic Id ${academic_id}`,
+      );
 
-        if (!lecturerRole?.role_id) 
-          throw new BadRequestException("Không tìm thấy role lecturer");
+    if (!(await this.degree.getDegreeById(degree_id)))
+      throw new BadRequestException(`Không tìm thấy Degree Id ${degree_id}`);
 
-        const userAccountData = {
-            ...rest,
-            lecturer_id: id,
-            admin_id: null,
-            role_id: lecturerRole.role_id
-        }
+    const lecturerRole = roles.find((r) => r.role_name === 'lecturer');
 
-        await this.prisma.lecturer.create({
-            data: {
-                ...rest,
-                id,
-                academic_id,
-                degree_id
-            }
-        })
+    if (!lecturerRole?.role_id)
+      throw new BadRequestException('Không tìm thấy role lecturer');
 
-        await this.userAccount.createUserAccount(userAccountData, password);
+    const userAccountData = {
+      ...rest,
+      lecturer_id: id,
+      admin_id: null,
+      role_id: lecturerRole.role_id,
+    };
 
-        return {
-            ...rest,
-            degree_id,
-            academic_id
-        }
-    }
+    await this.prisma.lecturer.create({
+      data: {
+        ...rest,
+        id,
+        academic_id,
+        degree_id,
+      },
+    });
 
-    public async getAllLecturer() {
-        return this.prisma.lecturer.findMany();
-    }
+    await this.userAccount.createUserAccount(userAccountData, password);
 
-    public async getLecturerById(lecturer_id: string) {
-        return this.prisma.lecturer.findUnique({
-            where: {
-                id: lecturer_id
-            },
-            include: {
-                subjects: true,
-                LecturerSubject: true,
-            }
-        })
-    }
-    public async updateLecturer(lecturer_id: string, data: CreateLecturerDto) {
-        const { password, id, ...updateData } = data;
-        const lecturerRole = roles.find(r => r.role_name === "lecturer");
+    return {
+      ...rest,
+      degree_id,
+      academic_id,
+    };
+  }
 
-        if (!lecturerRole?.role_id) 
-          throw new BadRequestException("Không tìm thấy role lecturer");
+  public async getAllLecturer() {
+    return this.prisma.lecturer.findMany();
+  }
 
-        const userAccountData = {
-            ...updateData,
-            lecturer_id: id,
-            admin_id: null,
-            role_id: lecturerRole.role_id
-        }
-        
-        await this.userAccount.updateUserAccount(userAccountData, password);
+  public async getLecturerById(lecturer_id: string) {
+    return this.prisma.lecturer.findUnique({
+      where: {
+        id: lecturer_id,
+      },
+      include: {
+        subjects: true,
+        LecturerSubject: true,
+      },
+    });
+  }
+  public async updateLecturer(lecturer_id: string, data: CreateLecturerDto) {
+    const { password, id, ...updateData } = data;
+    const lecturerRole = roles.find((r) => r.role_name === 'lecturer');
 
-        return await this.prisma.lecturer.update({
-            where: {
-                id: lecturer_id
-            },
-            data: updateData
-        })
-    }
-    public async removeLecturer(lecturer_id: string) {
-        return this.prisma.lecturer.delete({
-            where: {
-                id: lecturer_id
-            }
-        })
-    }
+    if (!lecturerRole?.role_id)
+      throw new BadRequestException('Không tìm thấy role lecturer');
+
+    const userAccountData = {
+      ...updateData,
+      lecturer_id: id,
+      admin_id: null,
+      role_id: lecturerRole.role_id,
+    };
+
+    await this.userAccount.updateUserAccount(userAccountData, password);
+
+    return await this.prisma.lecturer.update({
+      where: {
+        id: lecturer_id,
+      },
+      data: updateData,
+    });
+  }
+  public async removeLecturer(lecturer_id: string) {
+    return this.prisma.lecturer.delete({
+      where: {
+        id: lecturer_id,
+      },
+    });
+  }
 }

@@ -7,7 +7,7 @@ import {
 import { CreateStudentDto } from './dto/create-student.dto';
 import { PrismaService } from '../prisma/Prisma.service';
 import { AcademicService } from '../academic/Academic.service';
-import { UserAccountService } from '../userAccount/UseAccount.service';
+import { UserAccountService } from '../userAccount/UserAccount.service';
 import { roles } from '../../configs/config.json';
 
 @Injectable()
@@ -17,7 +17,7 @@ export class StudentService {
     private readonly academic: AcademicService,
     private readonly userAccount: UserAccountService,
   ) {}
-  
+
   public getAllStudents() {
     return this.prisma.student.findMany();
   }
@@ -29,8 +29,7 @@ export class StudentService {
       },
     });
 
-    if (!student)
-      throw new NotFoundException("Không tìm thấy Student ID này");
+    if (!student) throw new NotFoundException('Không tìm thấy Student ID này');
 
     return student;
   }
@@ -40,38 +39,38 @@ export class StudentService {
     const isExistAcademicId = await this.academic.getAcademicById(academic_id);
 
     if (!isExistAcademicId)
-      throw new BadRequestException("Academic ID không hợp lệ");
+      throw new BadRequestException('Academic ID không hợp lệ');
 
-    const studentRole = roles.find(r => r.role_name === "student");
+    const studentRole = roles.find((r) => r.role_name === 'student');
 
-    if (!studentRole?.role_id) 
-      throw new BadRequestException("Không tìm thấy role student");
-    
+    if (!studentRole?.role_id)
+      throw new BadRequestException('Không tìm thấy role student');
+
     try {
       const createUserAccountDto = {
         student_id: id,
         password,
         role_id: studentRole.role_id,
-        admin_id: null, 
-        lecturer_id: null 
+        admin_id: null,
+        lecturer_id: null,
       };
-      
+
       await this.prisma.student.create({
         data: {
           id,
           academic_id,
-          ...rest
-        }
+          ...rest,
+        },
       });
-  
+
       await this.userAccount.createUserAccount(createUserAccountDto, password);
 
       return {
         id,
         academic_id,
-        ...rest
-      }
-    } catch(err) {
+        ...rest,
+      };
+    } catch (err) {
       throw new InternalServerErrorException(err.message);
     }
   }
