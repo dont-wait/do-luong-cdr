@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Put } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
 import { SubjectService } from './Subject.service';
 import { CreateSubjectDto } from './dto/create-subject.dto';
@@ -31,5 +31,25 @@ export class SubjectController {
   @ApiResponse({ status: 404, description: 'Subject not found.' })
   getSubjectById(@Param('id') id: string) {
     return this.subjectService.getSubjectById(id);
+  }
+
+  @Put(':id')
+  @ApiOperation({ summary: 'Update a subject by id' })
+  @ApiParam({ name: 'id', description: 'Subject ID' })
+  @ApiResponse({ status: 200, description: 'The subject has been successfully updated.' })
+  @ApiResponse({ status: 404, description: 'Subject not found.' })
+  @ApiResponse({ status: 400, description: 'Bad Request.' })
+  updateSubject(@Param('id') id: string, @Body() updateSubjectDto: CreateSubjectDto) {
+    return this.subjectService.updateSubject(id, updateSubjectDto);
+  }
+
+  @Delete(':id')
+  @ApiOperation({ summary: 'Delete a subject by id' })
+  @ApiParam({ name: 'id', description: 'Subject ID' })
+  @ApiResponse({ status: 200, description: 'The subject has been successfully deleted.' })
+  @ApiResponse({ status: 404, description: 'Subject not found.' })
+  @ApiResponse({ status: 400, description: 'Bad Request.' })
+  deleteSubject(@Param('id') id: string) {
+    return this.subjectService.deleteSubject(id);
   }
 }
