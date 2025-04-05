@@ -1,7 +1,7 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Put } from '@nestjs/common';
 import { AcademicService } from './Academic.service';
 import { CreateAcademicDto } from './dto/create-academic.dto';
-import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
 
 @ApiTags('academics')
 @Controller('academics')
@@ -12,6 +12,7 @@ export class AcademicController {
   @ApiOperation({ summary: 'Create new academic(s)' })
   @ApiResponse({ status: 201, description: 'Academic(s) successfully created.' })
   @ApiResponse({ status: 400, description: 'Bad Request.' })
+  @ApiBody({ type: CreateAcademicDto, isArray: true })
   createAcademic(@Body() data: CreateAcademicDto | CreateAcademicDto[]) {
     return this.academicService.createAcademic(data)
   }
@@ -31,11 +32,13 @@ export class AcademicController {
     return this.academicService.getAcademicById(id);
   }
 
-  @Patch(':id')
+
+
+  @Put(':id')
   @ApiOperation({ summary: 'Update academic by id' })
   @ApiResponse({ status: 200, description: 'Academic successfully updated.' })
   @ApiResponse({ status: 404, description: 'Academic not found.' })
-  updateAcademic(@Param('id') id: string, @Body() data: CreateAcademicDto) {
+  updateAcademicPut(@Param('id') id: string, @Body() data: CreateAcademicDto) {
     return this.academicService.updateAcademic(id, data)
   }
 

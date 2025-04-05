@@ -1,5 +1,5 @@
-import { Body, Controller, Get, Param, Post, Patch, Delete } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Get, Param, Post, Patch, Delete, Put } from '@nestjs/common';
+import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { QuestionService } from './Question.service';
 import { CreateQuestionDto } from './dto/create-question.dto';
 import { UpdateQuestionDto } from './dto/update-question.dto';
@@ -25,6 +25,7 @@ export class QuestionController {
   }
 
   @Post()
+  @ApiBody({ type: CreateQuestionDto })
   @ApiOperation({ summary: 'Create a new question' })
   @ApiResponse({ status: 201, description: 'The question has been successfully created.' })
   @ApiResponse({ status: 400, description: 'Bad Request.' })
@@ -32,13 +33,6 @@ export class QuestionController {
     return await this.questionService.createQuestion(createQuestionDto);
   }
 
-  @Patch(':id')
-  @ApiOperation({ summary: 'Update a question by id' })
-  @ApiResponse({ status: 200, description: 'The question has been successfully updated.' })
-  @ApiResponse({ status: 404, description: 'Question not found.' })
-  public async updateQuestion(@Param('id') id: string, @Body() updateQuestionDto: UpdateQuestionDto) {
-    return await this.questionService.updateQuestion(id, updateQuestionDto);
-  }
 
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a question by id' })
@@ -46,5 +40,14 @@ export class QuestionController {
   @ApiResponse({ status: 404, description: 'Question not found.' })
   public async deleteQuestion(@Param('id') id: string) {
     return await this.questionService.deleteQuestion(id);
+  }
+
+  @Put(':id')
+  @ApiOperation({ summary: 'Update a question by id' })
+  @ApiResponse({ status: 200, description: 'The question has been successfully updated.' })
+  @ApiResponse({ status: 404, description: 'Question not found.' })
+  @ApiBody({ type: CreateQuestionDto })
+  public async updateQuestion(@Param('id') id: string, @Body() updateQuestionDto: UpdateQuestionDto) {
+    return await this.questionService.updateQuestion(id, updateQuestionDto);
   }
 }

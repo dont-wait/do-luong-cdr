@@ -1,5 +1,6 @@
 import { IsNotEmpty, IsString, IsNumber } from "class-validator";
 import { ApiProperty } from "@nestjs/swagger";
+import { Type } from 'class-transformer';
 
 export class CreateAcademicDto {
     @ApiProperty({ description: 'The academic ID', example: 'ACD001' })
@@ -14,15 +15,18 @@ export class CreateAcademicDto {
 
     @ApiProperty({ description: 'The academic level', example: 1 })
     @IsNotEmpty()
+    @Type(() => Number)
     @IsNumber()
     academic_level: number;
 
     @ApiProperty({ description: 'The academic type', example: 1 })
     @IsNotEmpty()
+    @Type(() => Number)
     @IsNumber()
     academic_type: number;
 
     @ApiProperty({ description: 'The department ID', example: 'CNTT' })
     @IsString()
+    @IsNotEmpty()
     department_id: string;
 }

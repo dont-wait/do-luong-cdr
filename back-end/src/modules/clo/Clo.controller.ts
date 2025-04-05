@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, BadRequestException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, BadRequestException, Put } from '@nestjs/common';
 import { CloService } from './Clo.service';
 import { CreateCloDto } from './dto/create-clo.dto';
 import { ApiTags, ApiResponse, ApiParam, ApiBody } from '@nestjs/swagger';
@@ -30,13 +30,7 @@ export class CloController {
     return this.cloService.getCloById(id);
   }
 
-  @Patch(':id')
-  @ApiParam({ name: 'id', type: 'string' })
-  @ApiResponse({ status: 200, description: 'Cập nhật CLO thành công' })
-  @ApiResponse({ status: 400, description: 'ID không hợp lệ' })
-  async update(@Param('id') id: string, @Body() newData: CreateCloDto) {
-    return this.cloService.updateClo(id, newData);
-  }
+
 
   @Delete(':id')
   @ApiParam({ name: 'id', type: 'string' })
@@ -44,5 +38,14 @@ export class CloController {
   @ApiResponse({ status: 400, description: 'ID không hợp lệ' })
   async remove(@Param('id') id: string) {
     return this.cloService.remove(id);
+  }
+
+  @Put(':id')
+  @ApiParam({ name: 'id', type: 'string' })
+  @ApiBody({ type: CreateCloDto })
+  @ApiResponse({ status: 200, description: 'Cập nhật CLO thành công' })
+  @ApiResponse({ status: 400, description: 'ID không hợp lệ' })
+  async update(@Param('id') id: string, @Body() data: CreateCloDto) {
+    return this.cloService.updateClo(id, data);
   }
 }

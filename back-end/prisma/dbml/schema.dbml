@@ -138,6 +138,18 @@ Table Class {
   lecturer_id String [not null]
   lecturer Lecturer [not null]
   exams Exam [not null]
+  ClassStudent ClassStudent [not null]
+}
+
+Table ClassStudent {
+  student_id String [not null]
+  class_id String [not null]
+  student Student [not null]
+  class Class [not null]
+
+  indexes {
+    (student_id, class_id) [pk]
+  }
 }
 
 Table Role {
@@ -187,6 +199,7 @@ Table Student {
   academic Academic [not null]
   Result Result [not null]
   user_account User_account
+  ClassStudent ClassStudent [not null]
 }
 
 Table Admin {
@@ -256,6 +269,10 @@ Ref: Result.student_id > Student.id
 Ref: Class.subject_id > Subject.id
 
 Ref: Class.lecturer_id > Lecturer.id
+
+Ref: ClassStudent.student_id > Student.id
+
+Ref: ClassStudent.class_id > Class.id
 
 Ref: User_account.role_id > Role.id
 

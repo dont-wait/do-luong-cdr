@@ -1,15 +1,19 @@
-import { IsNotEmpty, IsString } from "class-validator";
+import { IsString, IsNotEmpty } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateClassDto {
-    @IsString()
-    @IsNotEmpty()
-    id: string;
+  @ApiProperty({ example: 'cls001', description: 'ID của lớp học' })
+  @IsString()
+  @IsNotEmpty()
+  id: string;
 
-    @IsString()
-    @IsNotEmpty()
-    subject_id: string;
+  @ApiProperty({ example: 'sub001', description: 'ID của môn học' })
+  @IsString()
+  @IsNotEmpty()
+  subject_id: string;
 
-    @IsString()
-    @IsNotEmpty()
-    lecturer_id: string;
+  @ApiProperty({ example: 'lec001', description: 'ID của giảng viên' })
+  @IsString()
+  @IsNotEmpty()
+  lecturer_id: string;
 }

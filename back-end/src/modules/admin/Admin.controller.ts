@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Put,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiParam, ApiBody } from '@nestjs/swagger';
 import { AdminService } from './Admin.service';
@@ -17,6 +18,19 @@ import { UpdateAdminDto } from './dto/update-admin.dto';
 export class AdminController {
   constructor(private readonly adminService: AdminService) {}
 
+  
+  @Get()
+  @ApiOperation({ summary: 'Get all admins' })
+  getAllAdmin() {
+    return this.adminService.getAllAdmin();
+  }
+  
+  @Get(':id')
+  @ApiOperation({ summary: 'Get admin by ID' })
+  @ApiParam({ name: 'id', description: 'Admin ID' })
+  getAdminById(@Param('id') id: string) {
+    return this.adminService.getAdminById(id);
+  }
   @Post()
   @ApiOperation({ summary: 'Create a new admin' })
   @ApiBody({ type: CreateAdminDto })
@@ -24,16 +38,18 @@ export class AdminController {
     return this.adminService.createAdmin(createAdminDto);
   }
 
-  @Get()
-  @ApiOperation({ summary: 'Get all admins' })
-  getAllAdmin() {
-    return this.adminService.getAllAdmin();
+  @Put(':id')
+  @ApiOperation({ summary: 'Update admin by ID' })
+  @ApiParam({ name: 'id', description: 'Admin ID' })
+  @ApiBody({ type: UpdateAdminDto })
+  updateAdmin(@Param('id') id: string, @Body() updateAdminDto: UpdateAdminDto) {
+    return this.adminService.updateAdmin(id, updateAdminDto);
   }
 
-  @Get(':id')
-  @ApiOperation({ summary: 'Get admin by ID' })
+  @Delete(':id')
+  @ApiOperation({ summary: 'Delete admin by ID' })
   @ApiParam({ name: 'id', description: 'Admin ID' })
-  getAdminById(@Param('id') id: string) {
-    return this.adminService.getAdminById(id);
+  deleteAdmin(@Param('id') id: string) {
+    return this.adminService.deleteAdmin(id);
   }
 }

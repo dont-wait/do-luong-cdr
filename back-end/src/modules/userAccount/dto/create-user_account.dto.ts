@@ -11,14 +11,6 @@ export class CreateUserAccountDto {
     admin_id: string | null;
 
     @ApiProperty({ 
-        description: 'Student ID',
-        type: String,
-        nullable: true 
-    })
-    @IsString()
-    student_id: string | null;
-
-    @ApiProperty({ 
         description: 'Lecturer ID',
         type: String,
         nullable: true 

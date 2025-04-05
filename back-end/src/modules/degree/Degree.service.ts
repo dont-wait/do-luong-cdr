@@ -5,14 +5,24 @@ import { PrismaService } from '../prisma/Prisma.service';
 @Injectable()
 export class DegreeService {
   constructor(private readonly prisma: PrismaService) {}
-  async createDegree(Data: CreateDegreeDto) {
-    return this.prisma.degree.create({ 
-      data: {
-        ...Data,
-        id: +Data.degree_id
-      }
-     });
+  async createDegreeOrMany(data: CreateDegreeDto | CreateDegreeDto[]) {
+    if (Array.isArray(data)) {
+      return this.prisma.degree.createMany({
+        data: data.map(d => ({
+          ...d,
+          id: +d.degree_id,
+        })),
+      });
+    } else {
+      return this.prisma.degree.create({
+        data: {
+          ...data,
+          id: +data.degree_id,
+        },
+      });
+    }
   }
+  
 
   async findAllDegree() {
     return this.prisma.degree.findMany();
@@ -37,10 +47,6 @@ export class DegreeService {
     });
   }
 
-  async createManyDegree(Data: CreateDegreeDto[]) {
-    return this.prisma.degree.createMany({
-      data: Data.map(d => ({ ...d, id: +d.degree_id })),
-    });
-  }
+
 
 }

@@ -1,7 +1,6 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Put } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
-import { UserAccountService } from './UseAccount.service';
-import { UpdateUserAccountDto } from './dto/update-user_account.dto';
+import { UserAccountService } from './UserAccount.service';
 
 @ApiTags('accounts')
 @Controller('accounts')
@@ -13,15 +12,6 @@ export class UserAccountController {
   @Get()
   getAllUserAccout() {
     return this.userAccountService.getAllUserAccout();
-  }
-
-  @ApiOperation({ summary: 'Update user account' })
-  @ApiParam({ name: 'id', description: 'User account ID' })
-  @ApiResponse({ status: 200, description: 'User account has been updated.' })
-  @ApiResponse({ status: 404, description: 'User account not found.' })
-  @Patch(':id')
-  updateUserAccount(@Param('id') id: string, @Body() updateUserAccountDto: UpdateUserAccountDto) {
-    return this.userAccountService.updateUserAccount(+id, updateUserAccountDto);
   }
 
   @ApiOperation({ summary: 'Delete user account' })

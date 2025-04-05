@@ -163,7 +163,19 @@ model Class {
   lecturer    Lecturer @relation(fields: [lecturer_id], references: [id])
 
   exams Exam[]
+
+  ClassStudent ClassStudent[]
 }
+//This table for many student in many class
+model ClassStudent {
+  student_id String 
+  class_id String 
+
+  student Student @relation(fields: [student_id], references: [id])
+  class   Class   @relation(fields: [class_id], references: [id])
+  @@id([student_id, class_id])
+}
+
 
 model Role {
   id   Int    @id @unique
@@ -219,6 +231,8 @@ model Student {
 
   Result       Result[]
   user_account User_account?
+
+  ClassStudent ClassStudent[]
 }
 
 model Admin {
