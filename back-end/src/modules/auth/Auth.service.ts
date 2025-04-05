@@ -4,7 +4,7 @@ import { UserAccountService } from '../userAccount/UserAccount.service';
 import { PrismaService } from '../prisma/Prisma.service';
 
 @Injectable()
-export class LoginService extends UserAccountService {
+export class AuthService extends UserAccountService {
   constructor(prisma: PrismaService) {
     super(prisma);
   }

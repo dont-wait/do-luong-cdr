@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, InternalServerErrorException } from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { CreateUserAccountDto } from './dto/create-user_account.dto';
 import { UpdateUserAccountDto } from './dto/update-user_account.dto';
 import * as bcrypt from 'bcrypt';
@@ -64,16 +64,17 @@ export class UserAccountService {
         lecturer: true,
         role: true,
       }
-    });
+    }); 
 
     if (!user) 
-      throw new BadRequestException(`Không tìm thấy user ID: ${id}`);
-    
+      throw new UnauthorizedException(`Sai mật khẩu hoặc id user`);
 
     const isPasswordMatch = await bcrypt.compare(password, user.password);
-    if (!isPasswordMatch) 
-      throw new BadRequestException("Sai mật khẩu");
+    if (!isPasswordMatch) {
+      throw new UnauthorizedException("Sai mật khẩu hoặc id user");
 
+    }
+    
     return user;
   }
 
