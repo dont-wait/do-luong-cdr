@@ -1,10 +1,11 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateLecturerDto } from './dto/create-lecturer.dto';
 import { PrismaService } from '../prisma/Prisma.service';
-import { UserAccountService } from '../userAccount/UseAccount.service';
+import { UserAccountService } from '../userAccount/UserAccount.service';
 import { DegreeService } from '../degree/Degree.service';
 import { AcademicService } from '../academic/Academic.service';
 import { roles } from "../../configs/config.json";
+import { CLIENT_RENEG_LIMIT } from 'tls';
 
 @Injectable()
 export class LecturerService {
@@ -32,7 +33,6 @@ export class LecturerService {
         const userAccountData = {
             ...rest,
             lecturer_id: id,
-            student_id: null,
             admin_id: null,
             role_id: lecturerRole.role_id
         }
@@ -71,13 +71,26 @@ export class LecturerService {
         })
     }
     public async updateLecturer(lecturer_id: string, data: CreateLecturerDto) {
-        return this.prisma.lecturer.update({
+        const { password, id, ...updateData } = data;
+        const lecturerRole = roles.find(r => r.role_name === "lecturer");
+
+        if (!lecturerRole?.role_id) 
+          throw new BadRequestException("Không tìm thấy role lecturer");
+
+        const userAccountData = {
+            ...updateData,
+            lecturer_id: id,
+            admin_id: null,
+            role_id: lecturerRole.role_id
+        }
+        
+        await this.userAccount.updateUserAccount(userAccountData, password);
+
+        return await this.prisma.lecturer.update({
             where: {
                 id: lecturer_id
             },
-            data: {
-                ...data
-            }
+            data: updateData
         })
     }
     public async removeLecturer(lecturer_id: string) {
