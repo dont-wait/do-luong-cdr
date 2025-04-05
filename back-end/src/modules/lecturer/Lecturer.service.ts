@@ -56,6 +56,7 @@ export class LecturerService {
     }
 
     public async getAllLecturer() {
+        console.log(this.prisma.lecturer.findMany())
         return this.prisma.lecturer.findMany();
     }
 
@@ -83,15 +84,18 @@ export class LecturerService {
             admin_id: null,
             role_id: lecturerRole.role_id
         }
-        
-        await this.userAccount.updateUserAccount(userAccountData, password);
-
-        return await this.prisma.lecturer.update({
-            where: {
-                id: lecturer_id
-            },
-            data: updateData
-        })
+       try{
+            await this.userAccount.updateUserAccount(userAccountData, password);
+    
+            return await this.prisma.lecturer.update({
+                where: {
+                    id: lecturer_id
+                },
+                data: updateData
+            })
+        }catch(err) {
+            throw new BadRequestException(err.message);
+        }
     }
     public async removeLecturer(lecturer_id: string) {
         return this.prisma.lecturer.delete({
