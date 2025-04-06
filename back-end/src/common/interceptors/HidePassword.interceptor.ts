@@ -8,10 +8,13 @@ import {
   
   @Injectable()
   export class HidePasswordInterceptor implements NestInterceptor {
-    intercept(context: ExecutionContext, next: CallHandler): Observable<Omit<UserAccountResponseData, 'password'>> {
+    intercept(context: ExecutionContext, next: CallHandler): Observable<{ user: Omit<UserAccountResponseData, 'password'>}> {
       return next.handle().pipe(
-        map((data: UserAccountResponseData) => {
-          return this.removePassword(data);
+        map((data) => {
+          return  { 
+            user:this.removePassword(data.user),
+            access_token: data.access_token,
+          };
         }),
       );
     }

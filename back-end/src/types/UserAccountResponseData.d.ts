@@ -14,9 +14,10 @@ type UserAccountResponseData = {
         phone: string;
         degree_id: number;
         academic_id: string;
-    },
+    };
     role: {
         id: number;
         role_name: string
-    }
+    };
+    access_token: string;
 }
