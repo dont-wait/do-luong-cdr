@@ -5,13 +5,16 @@ import * as bcrypt from 'bcrypt';
 import { PrismaService } from '../prisma/Prisma.service';
 import { roles } from "../../configs/config.json";
 import { CLIENT_RENEG_LIMIT } from 'tls';
+import { JwtService } from '@nestjs/jwt';
+import { access } from 'fs';
 
 @Injectable()
 export class UserAccountService {
   private readonly roleName = roles.map(role => role.role_name);
   
   constructor(
-    private readonly prisma: PrismaService
+    private readonly prisma: PrismaService,
+    private readonly jwtService: JwtService,
   ) {}
 
   public async createUserAccount(createUserAccountDto: CreateUserAccountDto, password: string) {
@@ -75,7 +78,12 @@ export class UserAccountService {
 
     }
 
-    return user;
+    // cái này là để xóa password ra khỏi payload
+    const { password: _, ...payload } = user;
+
+    const token = this.jwtService.sign(payload);
+
+    return { user, access_token: token };
   }
 
 

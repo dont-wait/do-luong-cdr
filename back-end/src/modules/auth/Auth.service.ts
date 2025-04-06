@@ -8,9 +8,9 @@ import { JwtService } from '@nestjs/jwt';
 export class AuthService extends UserAccountService {
   constructor(
     prisma: PrismaService,
-    private readonly jwtService: JwtService,
+    jwtService: JwtService,
   ) {
-    super(prisma);
+    super(prisma, jwtService);
   }
 
   public async login(dataLogin: LoginDto) {
