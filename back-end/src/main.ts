@@ -17,7 +17,7 @@ async function bootstrap() {
     })
   });
 
-  app.use(cookieParser());
+  app.use(cookieParser(process.env.COOKIE_SECRET));
   app.setGlobalPrefix(process.env.GLOBAL_PREFIX!);
   app.useGlobalInterceptors(
     new HttpResponseInterceptor(), 
