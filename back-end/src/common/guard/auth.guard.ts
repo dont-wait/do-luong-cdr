@@ -33,14 +33,14 @@ import {
       }
 
       try {
-        const payload = await this.jwtService.verifyAsync(token, {
+        const payload = await this.jwtService.verifyAsync<Omit<UserAccountResponseData, "password">>(token, {
           secret: process.env.JWT_SECRET,
         });
         
         request.user = payload;
 
       } catch {
-        throw new UnauthorizedException();
+        throw new UnauthorizedException("Invalid token");
       }
 
       return true;
