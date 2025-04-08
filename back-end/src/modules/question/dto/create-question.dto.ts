@@ -10,13 +10,13 @@ export class CreateQuestionDto {
   @IsNotEmpty()
   question_name: string;
 
-  @ApiProperty({
-    example: '...',
-    description: 'Câu trả lời mẫu hoặc đáp án tham khảo',
-  })
-  @IsString()
-  @IsNotEmpty()
-  answer: string;
+  // @ApiProperty({
+  //   example: '...',
+  //   description: 'Câu trả lời mẫu hoặc đáp án tham khảo',
+  // })
+  // @IsString()
+  // @IsNotEmpty()
+  // answer: string;
 
   @ApiProperty({
     example: 5,

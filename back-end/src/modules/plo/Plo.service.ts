@@ -20,11 +20,9 @@ export class PloService {
         return this.prisma.plo.createMany({data});
     }
     else{
-      const {academic_id} = data;
-
-      if(!academic_id || !await this.academic.getAcademicById(academic_id)) {
+      if (!data.academic_id || !await this.academic.getAcademicById(data.academic_id)) {
         throw new BadRequestException("Academic ID không hợp lệ");
-      }
+    }
       return this.prisma.plo.create({data})
     }
   }

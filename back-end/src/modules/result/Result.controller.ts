@@ -1,13 +1,14 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, NotFoundException} from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, NotFoundException, Put} from '@nestjs/common';
 import { ResultService } from './Result.service';
 import { CreateResultDto } from './dto/create-result.dto';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('results')
 @Controller('results')
 export class ResultController {
   constructor(private readonly resultService: ResultService) {}
 
+  @ApiBody({ type: CreateResultDto, isArray: true })
   @ApiOperation({ summary: 'Create new Result' })
   @ApiResponse({ status: 201, description: 'Result has been successfully created.' })
   @ApiResponse({ status: 400, description: 'Invalid input data' })
@@ -42,5 +43,15 @@ export class ResultController {
   async remove(@Param('id') id: string) {
     const deleted = await this.resultService.removeResult(id);
     if (!deleted) throw new NotFoundException(`Result with id ${id} not found`);
+  }
+
+  @ApiOperation({ summary: 'Update Result by ID' })
+  @ApiResponse({ status: 200, description: 'Result updated successfully' })
+  @ApiResponse({ status: 404, description: 'Result not found' })
+  @Put(':id')
+  async update(@Param('id') id: string, @Body() updateResultDto: CreateResultDto) {
+    const updated = await this.resultService.updateResult(id, updateResultDto);
+    if (!updated) throw new NotFoundException(`Result with id ${id} not found`);
+    return updated;
   }
 }

@@ -18,6 +18,9 @@ export class ResultService {
         if (!questionExists) {
           throw new BadRequestException(`Question ID ${r.question_id} not found`);
         }
+        if (r.score > questionExists.max_score) {
+          throw new BadRequestException(`Score ${r.score} exceeds max score ${questionExists.max_score}`);
+        }
       }
 
       return this.prisma.result.createMany({
@@ -49,10 +52,18 @@ export class ResultService {
     return this.prisma.result.findMany();
   }
 
-  async updateResult(id: string, newData: CreateResultDto) {
+  async updateResult(id: string, data: CreateResultDto) {
+    const studentExists = await this.prisma.student.findUnique({ where: { id: data.student_id } });
+    if (!studentExists) {
+      throw new BadRequestException(`Student ID ${data.student_id} not found`);
+    }
+    const questionExists = await this.prisma.question.findUnique({ where: { id: data.question_id } });
+    if (!questionExists) {
+      throw new BadRequestException(`Question ID ${data.question_id} not found`);
+    }
     return await this.prisma.result.update({
       where: { id },
-      data: newData,
+      data,
     });
   }
 
