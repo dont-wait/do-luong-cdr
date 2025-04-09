@@ -3,6 +3,7 @@ import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
 import { SubjectService } from './Subject.service';
 import { CreateSubjectDto } from './dto/create-subject.dto';
 import { UpdateSubjectDto } from './dto/update-subject.dto';
+import { Roles } from 'src/common/decorator/roles.decorator';
 
 @ApiTags('subjects')
 @Controller('subjects')
@@ -10,6 +11,7 @@ export class SubjectController {
   constructor(private readonly subjectService: SubjectService) {}
 
   @Post()
+  @Roles(2001)
   @ApiOperation({ summary: 'Create a new subject' })
   @ApiResponse({ status: 201, description: 'The subject has been successfully created.' })
   @ApiResponse({ status: 400, description: 'Bad Request.' })
@@ -34,6 +36,7 @@ export class SubjectController {
   }
 
   @Put(':id')
+  @Roles(2001)
   @ApiOperation({ summary: 'Update a subject by id' })
   @ApiParam({ name: 'id', description: 'Subject ID' })
   @ApiResponse({ status: 200, description: 'The subject has been successfully updated.' })
@@ -44,6 +47,7 @@ export class SubjectController {
   }
 
   @Delete(':id')
+  @Roles(2001)
   @ApiOperation({ summary: 'Delete a subject by id' })
   @ApiParam({ name: 'id', description: 'Subject ID' })
   @ApiResponse({ status: 200, description: 'The subject has been successfully deleted.' })
