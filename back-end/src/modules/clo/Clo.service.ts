@@ -2,21 +2,22 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateCloDto } from './dto/create-clo.dto';
 import { PrismaService } from '../prisma/Prisma.service';
 import { PloCloService } from '../ploClo/PloClo.service';
+import { SubjectService } from '../subject/Subject.service';
 
 @Injectable()
 export class CloService {
   constructor(
     private readonly prisma: PrismaService,
-    private readonly ploclo: PloCloService
+    private readonly ploclo: PloCloService,
+    private readonly subjectService: SubjectService,
   ) {}
     public async createClo(createCloDto: CreateCloDto | CreateCloDto[]) {
       try {
         if (!Array.isArray(createCloDto)) {
           const { clo_name, clo_content, clo_parent_id, subject_id, ploIds } = createCloDto;
 
-          const subject = await this.prisma.subject.findUnique({
-            where: { id: subject_id },
-          });
+          const subject = await this.subjectService.getSubjectById(subject_id);
+          
           if (!subject) {
             throw new BadRequestException('Subject not found');
           }
@@ -123,7 +124,12 @@ export class CloService {
     }
   
   async findManyClos() {
-    return this.prisma.clo.findMany();
+    return this.prisma.clo.findMany().then((clos) => { 
+      if (clos.length === 0) {
+        throw new BadRequestException('No CLO found');
+      }
+      return clos;
+    });
   }
 
   async getCloById(id: string) {
