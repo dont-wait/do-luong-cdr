@@ -5,5 +5,6 @@ import { PloCloController } from './PloClo.controller';
 @Module({
   controllers: [PloCloController],
   providers: [PloCloService],
+  exports: [PloCloService],
 })
 export class PloCloModule {}
