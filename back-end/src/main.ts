@@ -20,14 +20,6 @@ async function bootstrap() {
   app.setGlobalPrefix(process.env.GLOBAL_PREFIX!);
   app.useGlobalInterceptors(new HttpResponseInterceptor());
   app.useGlobalFilters(new HttpExceptionFilter);
-  app.enableCors(
-    {
-      origin: "*", 
-      methods: ["GET", "POST", "PUT", "DELETE"],
-      allowedHeaders: "Content-Type, Authorization, Cache-Control, Pragma, Expires", 
-      credentials: true
-    }
-  );
 
   const config = new DocumentBuilder()
     .setTitle('API DOCUMENTS')
@@ -52,9 +44,10 @@ async function bootstrap() {
 
 function setupMiddleware(app: INestApplication) {
   app.enableCors({
-    origin: process.env.CORS_ORIGIN || '*',
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
-    credentials: true,
+    origin: 'http://localhost:5173', 
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization", "Cache-Control", "Pragma", "Expires"], 
+    credentials: true
   });
 }
 
