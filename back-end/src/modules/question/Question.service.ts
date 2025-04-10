@@ -2,10 +2,13 @@ import { BadRequestException, Injectable, InternalServerErrorException, NotFound
 import { PrismaService } from '../prisma/Prisma.service';
 import { CreateQuestionDto } from './dto/create-question.dto';
 import { UpdateQuestionDto } from './dto/update-question.dto';
+import { ExamService } from '../exam/Exam.service';
 
 @Injectable()
 export class QuestionService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService,
+    private readonly exam: ExamService
+  ) {}
 
   public getAllQuestions() {
     return this.prisma.question.findMany();
@@ -21,6 +24,18 @@ export class QuestionService {
     }
 
     return question;
+  }
+
+  public async getAllQuestionsByExamId(examId: String) {
+    const exam = await this.prisma.exam.findUnique({
+      where: {id: examId.toString()}
+    });
+    if(!examId)
+      throw new BadRequestException(`Exam with ID ${examId} not found`);
+
+    return this.prisma.question.findMany({
+      where: {exam_id: examId.toString()}
+    });
   }
 
   public async createQuestion(data: CreateQuestionDto) {

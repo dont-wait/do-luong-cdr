@@ -56,7 +56,7 @@ Table Plo_clo {
 Table Plo_detail {
   id String [pk]
   plo_detail_name String [not null]
-  plo_content String [not null]
+  plo_detail_content String [not null]
   plo_id String [not null]
   plo Plo [not null]
 }
