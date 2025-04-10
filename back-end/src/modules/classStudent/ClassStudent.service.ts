@@ -26,7 +26,7 @@ export class ClassStudentService {
             throw new BadRequestException(`Class with ID ${item.classId} not found`);
           }
       
-          const studentExists = await this.studentService.getStudentById(String(item.studentId));
+          const studentExists = await this.studentService.getStudent(String(item.studentId));
           if (!studentExists) {
             throw new BadRequestException(`Student with ID ${item.studentId} not found`);
           }
