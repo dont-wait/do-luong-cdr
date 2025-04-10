@@ -76,12 +76,45 @@ export class ClassStudentService {
         
     }
 
-    async getInfoStudentsByClassId(id: string) {
-        if(!id)
+
+    async getInfoClassByStudentId(student_id: string) {
+        if (!student_id) {
+          throw new BadRequestException('Student id not found');
+        }
+      
+        try {
+          // Tìm kiếm các bản ghi trong bảng classStudent với student_id
+          const records = await this.prisma.classStudent.findMany({
+            where: {
+              student_id: student_id,
+            },
+            include: {
+              student: true,  
+              class: true,   
+            },
+          });
+      
+          if (!records.length) {
+            throw new BadRequestException(
+              `No records found for student ID ${student_id}`,
+            );
+          }
+          return records;
+          
+        } catch (error) {
+          // Nếu có lỗi xảy ra trong quá trình truy vấn
+          throw new BadRequestException(
+            'Failed to fetch classes by student ID: ' + error.message,
+          );
+        }
+      }
+
+    async getInfoStudentsByClassId(class_id: string) {
+        if(!class_id)
             throw new BadRequestException("Class id not found");
         try {
             const records = await this.prisma.classStudent.findMany({
-                where: { class_id: id },
+                where: { class_id: class_id },
                 include: {
                     student: true, 
                     class: true,   
@@ -89,7 +122,7 @@ export class ClassStudentService {
             });
 
             if (!records.length) {
-                throw new BadRequestException(`No students found for class ID ${id}`);
+                throw new BadRequestException(`No students found for class ID ${class_id}`);
             }
 
             return records;

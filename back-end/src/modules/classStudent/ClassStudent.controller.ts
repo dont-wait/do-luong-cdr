@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post } from "@nestjs/common";
+import { BadRequestException, Body, Controller, Get, Param, Post } from "@nestjs/common";
 import { ApiOperation, ApiTags } from "@nestjs/swagger";
 import { ClassStudentService } from "./ClassStudent.service";
 import { CreateClassStudentDto } from "./dto/createClassStudent.dto";
@@ -13,10 +13,19 @@ export class ClassStudentController {
     getAllClassStudent() {
         return this.classStudentService.getAllClassStudent();
     }
-    @Get(':classId')
+    @Get('class/:classId')
     @ApiOperation({summary: 'get many student by class id'})
-    getClassStudentById(@Param('classId') classId) {
+    getClassStudentByClassId(@Param('classId') classId) {
         return this.classStudentService.getInfoStudentsByClassId(classId);
+    }
+
+    @Get('student/:studentId')
+    @ApiOperation({summary: 'get many class by student id'})
+    getClassIdByStudentId(
+        @Param('studentId') studentId) {
+        if(!studentId)
+            throw new BadRequestException('studentId is required');
+        return this.classStudentService.getInfoClassByStudentId(studentId);
     }
 
     @Post()
