@@ -4,7 +4,6 @@ export class CreatePloCloDto {
     @ApiProperty({
         description: 'PLO ID',
         type: String,
-        nullable: true
     })
     @IsString()
     plo_id: string;
@@ -12,7 +11,6 @@ export class CreatePloCloDto {
     @ApiProperty({
         description: 'CLO ID',
         type: String,
-        nullable: true
     })
     @IsString()
     clo_id: string;

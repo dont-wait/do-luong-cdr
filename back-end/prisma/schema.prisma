@@ -66,7 +66,7 @@ model Plo_clo {
 }
 
 model Plo_detail {
-  id   String @id 
+  id   String @id
   plo_detail_name String @db.Char(10)
   plo_detail_content     String @db.VarChar(255)
 

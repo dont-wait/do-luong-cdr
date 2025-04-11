@@ -133,7 +133,10 @@ export class CloService {
   }
 
   async getCloById(id: string) {
-    return this.prisma.clo.findUnique({where: {id}})
+    const cloId = await this.prisma.clo.findUnique({where: {id}})
+    if(!cloId) 
+      throw new BadRequestException(`Clo with ${id} NOT FOUND`);
+    return cloId;
   }
 
   async updateClo(id: string, data: CreateCloDto) {
