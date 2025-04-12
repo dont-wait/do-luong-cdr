@@ -39,6 +39,23 @@ export class QuestionService {
   }
 
   public async createQuestion(data: CreateQuestionDto) {
+    const exam = await this.exam.getExamById(data.exam_id);
+    if (!exam) {
+      throw new BadRequestException(`Exam with ID ${data.exam_id} not found`);
+    }
+
+    const existingQuestion = await this.prisma.question.findFirst({
+      where: {
+        exam_id: data.exam_id,  
+        question_name: data.question_name,
+      },
+    });
+
+
+    if (existingQuestion) {
+      throw new BadRequestException(`Question with name '${data.question_name}' already exists in this exam`);
+    }
+
     try {
       return await this.prisma.question.create({
         data,
@@ -46,7 +63,8 @@ export class QuestionService {
     } catch (err) {
       throw new InternalServerErrorException(err.message);
     }
-  }
+}
+
 
   public async updateQuestion(id: string, data: UpdateQuestionDto) {
     const question = await this.prisma.question.findUnique({

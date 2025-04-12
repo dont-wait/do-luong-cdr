@@ -6,7 +6,6 @@ const AdminLayout = () => {
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
   const [activeSection, setActiveSection] = useState<string>("dashboard");
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
-
   return (
     <div className='flex h-screen overflow-hidden'>
       <Sidebar
