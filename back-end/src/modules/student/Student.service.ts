@@ -1,21 +1,17 @@
 import {
   BadRequestException,
   Injectable,
-  InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
 import { CreateStudentDto } from './dto/create-student.dto';
 import { PrismaService } from '../prisma/Prisma.service';
-import { AcademicService } from '../academic/Academic.service';
-import { UserAccountService } from '../userAccount/UserAccount.service';
-import { roles } from '../../configs/config.json';
+import { ClassStudentService } from '../classStudent/ClassStudent.service';
 
 @Injectable()
 export class StudentService {
   constructor(
     private readonly prisma: PrismaService,
-    private readonly academic: AcademicService,
-    private readonly userAccount: UserAccountService,
+    private readonly classstudent: ClassStudentService,
   ) {}
 
   public getAllStudents() {
@@ -33,45 +29,24 @@ export class StudentService {
 
     return student;
   }
-
-  public async createStudent(data: CreateStudentDto) {
-    const { academic_id, id, password, ...rest } = data;
-    const isExistAcademicId = await this.academic.getAcademicById(academic_id);
-
-    if (!isExistAcademicId)
-      throw new BadRequestException('Academic ID không hợp lệ');
-
-    const studentRole = roles.find((r) => r.role_name === 'student');
-
-    if (!studentRole?.role_id)
-      throw new BadRequestException('Không tìm thấy role student');
-
-    try {
-      const createUserAccountDto = {
-        student_id: id,
-        password,
-        role_id: studentRole.role_id,
-        admin_id: null,
-        lecturer_id: null,
-      };
-
-      await this.prisma.student.create({
-        data: {
-          id,
-          academic_id,
-          ...rest,
-        },
-      });
-
-      await this.userAccount.createUserAccount(createUserAccountDto, password);
-
-      return {
-        id,
-        academic_id,
-        ...rest,
-      };
-    } catch (err) {
-      throw new InternalServerErrorException(err.message);
+  
+  public async createStudent(createStudentDto: CreateStudentDto) {
+    const { class_id, ...Data } = createStudentDto;
+  
+    const classExists = await this.prisma.class.findUnique({
+      where: { id: class_id },
+    });
+  
+    if (!classExists) {
+      throw new BadRequestException(`Class ID ${class_id} not found`);
     }
+  
+
+    const newStudent = await this.prisma.student.create({ data: Data });
+  
+    await this.classstudent.createAClassStudent(class_id, newStudent.id);
+  
+    return newStudent;
   }
+  
 }

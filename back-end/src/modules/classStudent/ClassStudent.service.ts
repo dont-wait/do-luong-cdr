@@ -130,4 +130,34 @@ export class ClassStudentService {
             throw new BadRequestException("Failed to fetch students by class ID: " + error.message);
         }
     }
+
+    public async createAClassStudent(classId: string, studentId: string) {
+        if (!classId || !studentId) {
+            throw new BadRequestException('Class ID and Student ID are required');
+        }
+    
+        try {
+            const existingRecord = await this.prisma.classStudent.findFirst({
+                where: {
+                    class_id: classId,
+                    student_id: studentId,
+                },
+            });
+    
+            if (existingRecord) {
+                throw new BadRequestException(`Class-student record already exists`);
+            }
+    
+            const newRecord = await this.prisma.classStudent.create({
+                data: {
+                    class_id: classId,
+                    student_id: studentId,
+                },
+            });
+    
+            return { message: 'Class-student record created successfully', data: newRecord };
+        } catch (error) {
+            throw new BadRequestException('Failed to create class-student record: ' + error.message);
+        }
+    }
 }
