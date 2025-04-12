@@ -4,10 +4,10 @@ import { IsNotEmpty, IsNumber, IsString, IsUUID} from "class-validator";
 
 export class CreateResultDto {
     @ApiProperty({
-        description: 'Result score',
+        description: 'Score of the result',
         type: String,
         nullable: false,
-        example: 4
+        example: 2
     })
     @IsNumber()
     @IsNotEmpty()
@@ -15,7 +15,7 @@ export class CreateResultDto {
     score: number;
     
     @ApiProperty({
-        description: 'Result student ID',
+        description: 'Student ID',
         type: String,
         nullable: false,
         example: "ST001"
@@ -25,13 +25,36 @@ export class CreateResultDto {
     student_id: string;
 
     @ApiProperty({
-        description: 'Result question ID',
+        description: 'Question ID',
         type: String,
         nullable: false,
-        example: ""
+        example: "uuid-1234-5678-9101-112131415161"
     })
     @IsUUID()
     @IsString()
     @IsNotEmpty()
     question_id: string;
+
+
+    @ApiProperty({
+        description: 'Clo ID',
+        type: String,
+        nullable: false,
+        example: "uuid-1234-5678-9101-112131415161"
+    })
+    @IsUUID()
+    @IsString()
+    @IsNotEmpty()
+    clo_id: string;
+
+    @ApiProperty({
+        description: 'Max score of the result',
+        type: String,
+        nullable: false,
+        example: 2
+    })
+    @IsNumber()
+    @IsNotEmpty()
+    @Type(() => Number)
+    max_score: number;
 }

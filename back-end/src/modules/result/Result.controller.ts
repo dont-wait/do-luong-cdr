@@ -19,6 +19,7 @@ export class ResultController {
 
   @ApiOperation({ summary: 'Get all Results' })
   @ApiResponse({ status: 200, description: 'List of results retrieved successfully' })
+  @ApiResponse({ status: 404, description: 'No results found' })
   @Get()
   findAll() {
     return this.resultService.findAllResult();
@@ -26,7 +27,7 @@ export class ResultController {
 
   @ApiOperation({ summary: 'Get Result by ID' })
   @ApiResponse({ status: 200, description: 'Result found' })
-  @ApiResponse({ status: 404, description: 'Result not found' })
+  @ApiResponse({ status: 404, description: 'Result ID not found' })
   @Get(':id')
   async findOne(@Param('id') id: string) {
     const result = await this.resultService.getResultById(id);
