@@ -123,6 +123,55 @@
       "academic_type": 1,
       "academic_level": 1,
       "department_id": "DP006"
+    },
+    {
+      "id": "7480207",
+      "academic_name": "Artificial Intelligence",
+      "academic_type": 1,
+      "academic_level": 2,
+      "department_id": "DP007"
+    },
+    {
+      "id": "7480208",
+      "academic_name": "Machine Learning",
+      "academic_type": 1,
+      "academic_level": 1,
+      "department_id": "DP008"
+    },
+    {
+      "id": "7480209",
+      "academic_name": "Cloud Computing",
+      "academic_type": 1,
+      "academic_level": 2,
+      "department_id": "DP009"
+    },
+    {
+      "id": "7480210",
+      "academic_name": "Mobile App Development",
+      "academic_type": 1,
+      "academic_level": 1,
+      "department_id": "DP010"
+    },
+    {
+      "id": "7480211",
+      "academic_name": "Game Development",
+      "academic_type": 1,
+      "academic_level": 2,
+      "department_id": "DP011"
+    },
+    {
+      "id": "7480212",
+      "academic_name": "Cybersecurity",
+      "academic_type": 1,
+      "academic_level": 1,
+      "department_id": null
+    },
+    {
+      "id": null,
+      "academic_name": null,
+      "academic_type": null,
+      "academic_level": null,
+      "department_id": null
     }
   ],
   "lecturers": [
@@ -242,13 +291,13 @@
       "practical_credits": 3,
       "theoretical_credits": 2,
       "description": "",
-      "lecturer_id": ["01014021"],
+      "lecturer_id": ["01014019","01014022"],
       "lecturer_subject_manager_id": "01014019",
-      "academic_id": [
-        "7480201",
-        "7480206"
+        "academic_id": [
+              "7480201",
+              "7480206"
       ]
-    },
+  },
     {
       "id": "0697",
       "subject_name": "Mobile App Development",
@@ -460,10 +509,9 @@
     {
       "header":[
                 ["STT", "Mã sinh viên", "Họ đệm", "Tên"],
-                { "Câu 1": { "CLO3.1": ["2"] } },
-                { "Câu 2": { "CLO1": ["1.5"], "CLO3.3": ["0.5"], "CLO3.1": ["1"] } },
-                { "Câu 3": { "CLO3.1": ["1.5"], "CLO3.3": ["0.5"] } },
-                { "Câu 4": { "CLO3.1": ["2.5"], "CLO3.3": ["0.5"] } }
+                { "Câu 1": { "CLO3.1": ["3"], "CLO3.2": ["2"] } },
+                { "Câu 2": { "CLO1": ["2"], "CLO3.2": ["1"] } },
+                { "Câu 3": { "CLO1.1": ["1"], "CLO1.3": ["1"] } }
       ],
       "Body":
       [
@@ -471,28 +519,81 @@
                 "id_exam": "1efff6d5-7f86-4d0b-89f8-0c2d8688acd7",
                 "Data": [{
                     "STT": 12,
-                    "Mã sinh viên": 123,
+                    "Mã sinh viên": 200123,
                     "Họ đệm": "Nguyễn Bình",
                     "Tên": "Bảo _7",
                     "Máy": null,
                     "Câu 1 (5.0)": {
-                        "CLO2": 0.5,
-                        "CLO3.1": 0.5
+                        "CLO3.1": 3,
+                        "CLO3.2": 1.5
                     },
                     "Câu 2 (3.0)": {
-                        "CLO2": 0.5,
-                        "CLO1": 2
+                        "CLO1": 2,
+                        "CLO3.2": 0.5
+
                     },
                     "Câu 3 (2.0)": {
-                        "CLO3.1": 1,
-                        "CLO3.3": 0.5
+                        "CLO1.1": 1,
+                        "CLO1.3": 0.5
                     }
                 }
             ]
           }
         ]
           
+      },
+      {
+        "sender_id": "01014022",
+        "receiver_id": "01014019",
+        "subject_id": "0696",
+        "approveData":{
+          "header":[
+                  ["STT", "Mã sinh viên", "Họ đệm", "Tên"],
+                  { "Câu 1": { "CLO3.1": ["2"], "CLO3.2": ["1"] } },
+                  { "Câu 2": { "CLO1": ["2"], "CLO3.2": ["1"] } },
+                  { "Câu 3": { "CLO1.1": ["1"], "CLO1.3": ["1"] } },
+                  { "Câu 4": { "CLO1.1": ["1"], "CLO1.3": ["1"] } }
+          ],
+          "Body":
+              [
+                  {
+                      "id_exam": "b04113e5-0bee-4e60-8fef-7293404be348",
+                      "Data": [{
+                          "STT": 12,
+                          "Mã sinh viên": 200123,
+                          "Họ đệm": "Nguyễn Văn",
+                          "Tên": "A",
+                          "Máy": null,
+                          "Câu 1 (3.0)": {
+                              "CLO3.1": 0.5,
+                              "CLO3.2": 1
+                          },
+                          "Câu 2 (3.0)": {
+                              "CLO1": 2,
+                              "CLO3.2": 1
+      
+                          },
+                          "Câu 3 (2.0)": {
+                              "CLO1.1": 1,
+                              "CLO1.3": 1
+                          },
+                          "Câu 4 (2.0)": {
+                              "CLO1.1": 0.5,
+                              "CLO1.3": 1
+                          }
+                      }
+                  ]
+                  }
+              ]
+              
+          }
       }
+      
+      
+      
+      
+      
+      
     ]
   }
 
