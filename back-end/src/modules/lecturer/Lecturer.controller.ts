@@ -2,6 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, Put } from '@nestjs/
 import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBody } from '@nestjs/swagger';
 import { LecturerService } from './Lecturer.service';
 import { CreateLecturerDto } from './dto/create-lecturer.dto';
+import { Roles } from 'src/common/decorator/roles.decorator';
 
 @ApiTags('lecturers')
 @Controller('lecturers')
@@ -9,6 +10,7 @@ export class LecturerController {
   constructor(private readonly lecturerService: LecturerService) {}
 
   @Post()
+  @Roles(2001)
   @ApiBody({ type: CreateLecturerDto })
   @ApiOperation({ summary: 'Create a new lecturer' })
   @ApiResponse({ status: 201, description: 'The lecturer has been successfully created.' })
@@ -18,6 +20,7 @@ export class LecturerController {
   }
 
   @Get()
+  @Roles(2001)
   @ApiOperation({ summary: 'Get all lecturers' })
   @ApiResponse({ status: 200, description: 'Return all lecturers.' })
   async getAllLecturer() {
@@ -34,6 +37,7 @@ export class LecturerController {
   }
 
   @Delete(':id')
+  @Roles(2001)
   @ApiOperation({ summary: 'Delete a lecturer by id' })
   @ApiParam({ name: 'id', description: 'Lecturer ID' })
   @ApiResponse({ status: 200, description: 'Lecturer successfully deleted.' })
@@ -43,6 +47,7 @@ export class LecturerController {
   }
   
   @Put(':id')
+  @Roles(2001)
   @ApiOperation({ summary: 'Update a lecturer by id' })
   @ApiParam({ name: 'id', description: 'Lecturer ID' })
   @ApiBody({ type: CreateLecturerDto })

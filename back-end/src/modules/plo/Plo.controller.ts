@@ -9,13 +9,13 @@ export class PloController {
   constructor(private readonly ploService: PloService) {}
 
   @Post()
-    @ApiBody({ type: CreatePloDto, isArray: true })
-    @ApiOperation({ summary: 'Create new plo(s)' })
-    @ApiResponse({ status: 201, description: 'Plo(s) successfully created.' })
-    @ApiResponse({ status: 400, description: 'Bad Request.' })
-    createAcademic(@Body() data: CreatePloDto | CreatePloDto[]) {
-      return this.ploService.createPlo(data)
-    }
+  @ApiBody({ type: CreatePloDto, isArray: true })
+  @ApiOperation({ summary: 'Create new plo(s)' })
+  @ApiResponse({ status: 201, description: 'Plo(s) successfully created.' })
+  @ApiResponse({ status: 400, description: 'Bad Request.' })
+  createAcademic(@Body() data: CreatePloDto | CreatePloDto[]) {
+    return this.ploService.createPlo(data)
+  }
   
     @Get()
     @ApiOperation({ summary: 'Get all plos' })

@@ -2,6 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, Put } from '@nestjs/
 import { AcademicService } from './Academic.service';
 import { CreateAcademicDto } from './dto/create-academic.dto';
 import { ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
+import { Roles } from 'src/common/decorator/roles.decorator';
 
 @ApiTags('academics')
 @Controller('academics')
@@ -9,6 +10,7 @@ export class AcademicController {
   constructor(private readonly academicService: AcademicService) {}
   
   @Post()
+  @Roles(2001)
   @ApiOperation({ summary: 'Create new academic(s)' })
   @ApiResponse({ status: 201, description: 'Academic(s) successfully created.' })
   @ApiResponse({ status: 400, description: 'Bad Request.' })
@@ -18,6 +20,7 @@ export class AcademicController {
   }
 
   @Get()
+  @Roles(2001)
   @ApiOperation({ summary: 'Get all academics' })
   @ApiResponse({ status: 200, description: 'Return all academics.' })
   findManyAcademics() {
@@ -25,6 +28,7 @@ export class AcademicController {
   }
 
   @Get(':id')
+  @Roles(2001)
   @ApiOperation({ summary: 'Get academic by id' })
   @ApiResponse({ status: 200, description: 'Return a academic by id.' })
   @ApiResponse({ status: 404, description: 'Academic not found.' })
@@ -35,6 +39,7 @@ export class AcademicController {
 
 
   @Put(':id')
+  @Roles(2001)
   @ApiOperation({ summary: 'Update academic by id' })
   @ApiResponse({ status: 200, description: 'Academic successfully updated.' })
   @ApiResponse({ status: 404, description: 'Academic not found.' })
@@ -43,6 +48,7 @@ export class AcademicController {
   }
 
   @Delete(':id')
+  @Roles(2001)
   @ApiOperation({ summary: 'Delete academic by id' })
   @ApiResponse({ status: 200, description: 'Academic successfully deleted.' })
   @ApiResponse({ status: 404, description: 'Academic not found.' })

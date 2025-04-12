@@ -6,6 +6,7 @@ import { AppLoggerService } from './modules/appLogger/AppLogger.service';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { HttpResponseInterceptor } from './common/interceptors/HttpResponse.interceptor';
 import { HttpExceptionFilter } from './common/filter/HttpException.filter';
+import * as cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
@@ -15,17 +16,10 @@ async function bootstrap() {
     })
   });
 
+  app.use(cookieParser(process.env.COOKIE_SECRET));
   app.setGlobalPrefix(process.env.GLOBAL_PREFIX!);
   app.useGlobalInterceptors(new HttpResponseInterceptor());
   app.useGlobalFilters(new HttpExceptionFilter);
-  app.enableCors(
-    {
-      origin: "*", 
-      methods: ["GET", "POST", "PUT", "DELETE"],
-      allowedHeaders: "Content-Type, Authorization, Cache-Control, Pragma, Expires", 
-      credentials: true
-    }
-  );
 
   const config = new DocumentBuilder()
     .setTitle('API DOCUMENTS')
@@ -50,9 +44,10 @@ async function bootstrap() {
 
 function setupMiddleware(app: INestApplication) {
   app.enableCors({
-    origin: process.env.CORS_ORIGIN || '*',
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
-    credentials: true,
+    origin: 'http://localhost:5173', 
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization", "Cache-Control", "Pragma", "Expires"], 
+    credentials: true
   });
 }
 

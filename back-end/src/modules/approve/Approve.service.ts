@@ -29,7 +29,15 @@ export class ApproveService {
 
     public async getApproveByReceiverId(id: string) {
         return await this.prisma.approve.findMany({
-            where: { receiver_id: id }
+            where: { 
+                receiver_id: id 
+            }
+        })
+        .then((data) => { 
+            if (data.length === 0) {
+                throw new NotFoundException(`Không tìm thấy approve cho receiver ID: ${id}`);
+            }
+            return data;
         });
     }
 

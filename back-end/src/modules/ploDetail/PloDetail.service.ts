@@ -44,4 +44,11 @@ export class PloDetailService {
     }
     return this.prisma.plo_detail.update({where: {id}, data: newData});
   }
+  async deletePloDetail(id: string){
+    const PloDetail = await this.prisma.plo_detail.findUnique({where: {id}});
+    if(!PloDetail){
+      throw new BadRequestException(`Plo_Detail ID ${id}} not found`);
+    }
+    return this.prisma.plo_detail.delete({where: {id}});
+  }
 }

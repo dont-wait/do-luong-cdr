@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Patch, Body, Param, BadRequestException, Put } from '@nestjs/common';
+import { Controller, Get, Post, Delete, Body, Param, BadRequestException, Put } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
 import { PloDetailService } from './PloDetail.service';
 import { CreatePloDetailDto } from './dto/create-plo_detail.dto';
@@ -37,5 +37,13 @@ export class PloDetailController {
   @Put(':id')
   async update(@Param('id') id: string, @Body() data: CreatePloDetailDto) {
     return this.ploDetailService.updatePloDeTail(id, data);
+  }
+
+  @ApiOperation({ summary: 'Delete PloDetail' })
+  @ApiResponse({ status: 200, description: 'PloDetail deleted successfully' })
+  @ApiResponse({ status: 400, description: 'PloDetail not found' })
+  @Delete(':id')
+  async delete(@Param('id') id: string) {
+    return this.ploDetailService.deletePloDetail(id);
   }
 }

@@ -1,26 +1,36 @@
-import { Injectable } from '@nestjs/common';
-import { CreatePloCloDto } from './dto/create-plo_clo.dto';
-import { UpdatePloCloDto } from './dto/update-plo_clo.dto';
+import { Injectable, BadRequestException } from '@nestjs/common';
+import { PrismaService } from '../prisma/Prisma.service';
 
 @Injectable()
 export class PloCloService {
-  create(createPloCloDto: CreatePloCloDto) {
-    return 'This action adds a new ploClo';
+  constructor(private readonly prisma: PrismaService) {}
+  public async createPloClo(cloId: string, ploIds: string[]) {
+    const validPlos = await this.prisma.plo.findMany({
+      where: { id: { in: ploIds } },
+      select: { id: true },
+    });
+  
+    const validPloIds = validPlos.map(p => p.id);
+  
+    const invalidPloIds = ploIds.filter(id => !validPloIds.includes(id));
+  
+    if (invalidPloIds.length > 0) {
+      throw new BadRequestException(`Invalid Plo IDs: ${invalidPloIds.join(', ')}`);
+    }
+  
+    return await this.prisma.plo_clo.createMany({
+      data: ploIds.map(ploId => ({
+        clo_id: cloId,
+        plo_id: ploId,
+      })),
+    });
   }
-
-  findAll() {
-    return `This action returns all ploClo`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} ploClo`;
-  }
-
-  update(id: number, updatePloCloDto: UpdatePloCloDto) {
-    return `This action updates a #${id} ploClo`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} ploClo`;
+  async getAllPloClo() {  
+    return this.prisma.plo_clo.findMany({
+      include: {
+        plo: true,
+        clo: true,
+      },
+    });
   }
 }

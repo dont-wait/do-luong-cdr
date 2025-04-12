@@ -38,7 +38,7 @@ model Academic_subject {
   subject_id  String
 
   academic Academic @relation(fields: [academic_id], references: [id])
-  subject  Subject  @relation(fields: [subject_id], references: [id])
+  subject  Subject  @relation(fields: [subject_id], references: [id], onDelete: Cascade)
 
   @@id([academic_id, subject_id])
 }
@@ -68,7 +68,7 @@ model Plo_clo {
 model Plo_detail {
   id   String @id
   plo_detail_name String @db.Char(10)
-  plo_content     String @db.VarChar(255)
+  plo_detail_content     String @db.VarChar(255)
 
   plo_id String
   plo    Plo @relation(fields: [plo_id], references: [id])
@@ -82,7 +82,7 @@ model Subject {
   description         String? @db.VarChar(255)
 
   lecturer_subject_manager_id String
-  lecturer Lecturer @relation(fields: [lecturer_subject_manager_id], references: [id])
+  lecturer Lecturer @relation(fields: [lecturer_subject_manager_id], references: [id], onDelete: Cascade)
 
   academic_subject Academic_subject[]
   class            Class[]
@@ -99,7 +99,7 @@ model LecturerSubject {
   subject_id String
 
   lecturer Lecturer @relation(fields: [lecturer_id], references: [id])
-  subject  Subject  @relation(fields: [subject_id], references: [id])
+  subject  Subject  @relation(fields: [subject_id], references: [id], onDelete: Cascade)
 
   @@id([lecturer_id, subject_id])
 }
@@ -111,7 +111,7 @@ model Clo {
   clo_parent_id String?
 
   subject_id String
-  subject    Subject @relation(fields: [subject_id], references: [id])
+  subject    Subject @relation(fields: [subject_id], references: [id], onDelete: Cascade)
 
   plo_clo      Plo_clo[]
   Question Question[]
@@ -157,7 +157,7 @@ model Class {
   id String @id
 
   subject_id String
-  subject    Subject @relation(fields: [subject_id], references: [id])
+  subject    Subject @relation(fields: [subject_id], references: [id], onDelete: Cascade)
 
   lecturer_id String
   lecturer    Lecturer @relation(fields: [lecturer_id], references: [id])
@@ -261,7 +261,7 @@ model Approve {
   approve Boolean @default(false)
   approve_date DateTime? @default(now())
 
-  subject Subject @relation(fields: [subject_id], references: [id])
+  subject Subject @relation(fields: [subject_id], references: [id], onDelete: Cascade)
   receiver Lecturer @relation(fields: [receiver_id], references: [id], name: "receiver")
   sender Lecturer @relation(fields: [sender_id], references: [id], name: "sender")
 

@@ -1,22 +1,15 @@
-import { IsString, IsNotEmpty, IsNumber, IsUUID } from 'class-validator';
+import { IsString, IsNotEmpty, IsNumber, IsUUID, isUUID } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateQuestionDto {
   @ApiProperty({
     example: 'Câu hỏi 1:',
     description: 'Tên hoặc nội dung của câu hỏi',
-  })
+  })  
   @IsString()
   @IsNotEmpty()
+  @IsUUID()
   question_name: string;
-
-  @ApiProperty({
-    example: '...',
-    description: 'Câu trả lời mẫu hoặc đáp án tham khảo',
-  })
-  @IsString()
-  @IsNotEmpty()
-  answer: string;
 
   @ApiProperty({
     example: 5,

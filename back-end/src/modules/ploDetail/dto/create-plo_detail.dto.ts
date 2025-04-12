@@ -24,7 +24,7 @@ export class CreatePloDetailDto {
   })
   @IsString()
   @IsNotEmpty()
-  plo_content: string;
+  plo_detail_content: string;
 
   @ApiProperty({
     example: 'PLO1',

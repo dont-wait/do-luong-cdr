@@ -99,4 +99,53 @@ export class SubjectService {
       include: { LecturerSubject: true },
     });
   }
+
+  public async updateSubject(id: string, updateSubjectDto: CreateSubjectDto) {
+    const { academic_id, lecturer_id, ...subject } = updateSubjectDto;
+  
+    const existingSubject = await this.prisma.subject.findUnique({
+      where: { id },
+    });
+  
+    if (!existingSubject) {
+      throw new NotFoundException(`Subject with ID ${id} not found`);
+    }
+  
+    const updatedSubject = await this.prisma.subject.update({
+      where: { id },
+      data: {
+        ...subject,
+        
+        LecturerSubject: {
+          deleteMany: {},
+  
+          create: lecturer_id.map(lecturerId => ({
+            lecturer: {
+              connect: { id: lecturerId },
+            },
+          })),
+        },
+      },
+    });
+  
+    return updatedSubject;
+  }
+
+  public async deleteSubject(id: string) {
+    const existingSubject = await this.prisma.subject.findUnique({
+      where: { id },
+    });
+  
+    if (!existingSubject) {
+      throw new NotFoundException(`Subject with ID ${id} not found`);
+    }
+    await this.prisma.subject.delete({
+      where: { id },
+    });
+  }
+  
+  
+  
+  
+  
 }

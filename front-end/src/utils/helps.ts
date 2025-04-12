@@ -241,7 +241,9 @@ export const getData = async (url: string) => {
 
 export const postData = async (url: string, info: Obj | Obj[]) => {
   try {
-    const res = await axios.post(url, info);
+    const res = await axios.post(url, info, {
+      withCredentials: true,
+    });
     return STATE ? res.data : res.data.data;
   } catch {
     throw new Error("fetch data fail!");
