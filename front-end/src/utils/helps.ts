@@ -1,7 +1,8 @@
 import * as XLSX from "xlsx";
 import { FormattedCell, MergedCell, Obj } from "../types/types";
-import axios from "../api/axios";
+import { apiClient } from "../api/axios";
 import { STATE } from "../api/state";
+import Cookies from "js-cookie";
 
 export function handleFormatData(ws: XLSX.WorkSheet): {
   header: FormattedCell[][];
@@ -231,39 +232,50 @@ export const handleFormattoJSON = (
 };
 
 export const getData = async (url: string) => {
+  const accessToken = Cookies.get("access_token");
+  console.log(accessToken);
   try {
-    const res = await axios.get(url);
+    const res = await apiClient.get(url);
+    console.log("GET response:", res);
     return STATE ? res.data : res.data.data;
-  } catch {
+  } catch (error) {
+    console.error("Error fetching data:", error);
     throw new Error("fetch data fail!");
   }
 };
 
 export const postData = async (url: string, info: Obj | Obj[]) => {
   try {
-    const res = await axios.post(url, info, {
-      withCredentials: true,
-    });
+    console.log("POSTing to:", url, "with data:", info);
+    const res = await apiClient.post(url, info);
+    console.log("POST response:", res);
     return STATE ? res.data : res.data.data;
-  } catch {
+  } catch (error) {
+    console.error("Error posting data:", error);
     throw new Error("fetch data fail!");
   }
 };
 
 export const updateData = async (url: string, info: Obj | Obj[]) => {
   try {
-    const res = await axios.put(url, info);
+    console.log("PUTting to:", url, "with data:", info);
+    const res = await apiClient.put(url, info);
+    console.log("PUT response:", res);
     return STATE ? res.data : res.data.data;
-  } catch {
+  } catch (error) {
+    console.error("Error updating data:", error);
     throw new Error("fetch data fail!");
   }
 };
 
 export const deleteData = async (url: string) => {
   try {
-    const res = await axios.delete(url);
+    console.log("DELETEing from:", url);
+    const res = await apiClient.delete(url);
+    console.log("DELETE response:", res);
     return STATE ? res.data : res.data.data;
-  } catch {
+  } catch (error) {
+    console.error("Error deleting data:", error);
     throw new Error("fetch data fail!");
   }
 };

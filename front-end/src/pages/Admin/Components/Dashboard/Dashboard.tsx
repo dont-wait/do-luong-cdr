@@ -10,6 +10,7 @@ import {
   LECTURES_API,
   SUBJECT_API,
 } from "../../../../api/apiUrl";
+import Cookies from "js-cookie";
 
 const Dashboard: React.FC = () => {
   const [departments, setDepartments] = useState([]);
@@ -23,6 +24,7 @@ const Dashboard: React.FC = () => {
   const programChartInstance = useRef<Chart | null>(null);
 
   useEffect(() => {
+    console.log(Cookies.get("access_token"));
     const fetchData = async () => {
       try {
         const [deptRes, progRes, lecRes, subRes] = await Promise.all([
