@@ -1,5 +1,7 @@
 import {
   BadRequestException,
+  forwardRef,
+  Inject,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -11,6 +13,7 @@ import { ClassStudentService } from '../classStudent/ClassStudent.service';
 export class StudentService {
   constructor(
     private readonly prisma: PrismaService,
+    @Inject(forwardRef(() => ClassStudentService))
     private readonly classstudent: ClassStudentService,
   ) {}
 
@@ -18,8 +21,8 @@ export class StudentService {
     return this.prisma.student.findMany();
   }
 
-  public getStudent(id: string) {
-    const student = this.prisma.student.findFirst({
+  public async getStudent(id: string) {
+    const student = await this.prisma.student.findFirst({
       where: {
         id,
       },

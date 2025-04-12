@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from "@nestjs/common";
+import { BadRequestException, forwardRef, Inject, Injectable } from "@nestjs/common";
 import { PrismaService } from "../prisma/Prisma.service";
 import { CreateClassStudentDto } from "./dto/createClassStudent.dto";
 import { ClassService } from "../class/Class.service";
@@ -9,6 +9,7 @@ export class ClassStudentService {
     constructor(
         private readonly prisma: PrismaService,
         private readonly classService: ClassService,
+        @Inject(forwardRef(() => StudentService))
         private readonly studentService: StudentService
     ){}
     
