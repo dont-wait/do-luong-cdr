@@ -17,6 +17,56 @@ export class AdminService {
     private readonly userAccount: UserAccountService,
   ) {}
 
+  public async createDefaultAdmin() {
+    const defaultAdmin = {
+      id: 'AD002',
+      first_name: 'admin',
+      last_name: 'admin',
+      password: '123',
+      email: 'admin@example.com',
+      phone: '1254567890',
+    };
+
+    const adminRole = roles.find((r) => r.role_name === 'admin');
+
+    if (!adminRole?.role_id) {
+      throw new BadRequestException('Không tìm thấy role admin');
+    }
+
+    const existingAdmin = await this.prisma.admin.findUnique({
+      where: { id: defaultAdmin.id },
+    });
+
+    if (!existingAdmin) {
+      try {
+        await this.prisma.admin.create({
+          data: {
+            id: defaultAdmin.id,
+            first_name: defaultAdmin.first_name,
+            last_name: defaultAdmin.last_name,
+            email: defaultAdmin.email,
+            phone: defaultAdmin.phone,
+          },
+        });
+
+        const createUserAccountDto = {
+          admin_id: defaultAdmin.id,
+          password: defaultAdmin.password,
+          role_id: adminRole.role_id,
+          student_id: null,
+          lecturer_id: null,
+        };
+
+        await this.userAccount.createUserAccount(
+          createUserAccountDto,
+          defaultAdmin.password,
+        );
+      } catch (err) {
+        throw new InternalServerErrorException(err.message);
+      }
+    }
+  }
+
   public async createAdmin(data: CreateAdminDto) {
     const { id, password, ...rest } = data;
 

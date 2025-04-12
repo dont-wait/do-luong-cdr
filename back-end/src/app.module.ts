@@ -2,7 +2,7 @@ import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { getModules } from './utils/reflectModules';
 import { RequestLoggerMiddleware } from './common/middlewares/Logger.middleware';
 
-const dynamicModules = getModules().map(m => require(m.path)[m.name]);
+const dynamicModules = getModules().map((m) => require(m.path)[m.name]);
 @Module({
   imports: [...dynamicModules],
 })
