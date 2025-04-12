@@ -33,10 +33,6 @@ export interface MergedCell {
   e: { r: number; c: number };
 }
 
-export interface Obj {
-  [key: string]: string | number;
-}
-
 export interface ErrorResponse {
   details?: {
     message: string;

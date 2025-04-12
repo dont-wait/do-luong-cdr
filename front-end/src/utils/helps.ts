@@ -1,8 +1,7 @@
 import * as XLSX from "xlsx";
-import { FormattedCell, MergedCell, Obj } from "../types/types";
+import { FormattedCell, MergedCell } from "../types/types";
 import { apiClient } from "../api/axios";
 import { STATE } from "../api/state";
-import Cookies from "js-cookie";
 
 export function handleFormatData(ws: XLSX.WorkSheet): {
   header: FormattedCell[][];
@@ -248,8 +247,7 @@ export const postData = async (url: string, info: object | object[]) => {
     const res = await apiClient.post(url, info);
     console.log("POST response:", res);
     return STATE ? res.data : res.data.data;
-  } catch (error) {
-    console.error("Error posting data:", error);
+  } catch {
     throw new Error("fetch data fail!");
   }
 };

@@ -1,7 +1,6 @@
 import { LOGIN_API } from "./apiUrl";
 import axios from "axios";
 import { STATE } from "./state";
-import Cookies from "js-cookie";
 
 const TEST_URL = "http://localhost:3000";
 const BE_URL = "http://localhost:3000/api/v1";
@@ -21,13 +20,6 @@ const apiClient = axios.create({
 apiClient.interceptors.request.use((config) => {
   const separator = config.url?.includes("?") ? "&" : "?";
   config.url = `${config.url}${separator}_t=${new Date().getTime()}`;
-
-  // Lấy access_token từ cookie và thêm vào header
-  const accessToken = Cookies.get("access_token");
-  if (accessToken) {
-    config.headers.Authorization = `Bearer ${accessToken}`;
-  }
-
   return config;
 });
 
@@ -38,18 +30,16 @@ const login = async (id: string, password: string) => {
       password,
     });
 
-    Cookies.set("access_token", response.data.data.access_token, {
-      path: "/",
-      secure: false,
-      expires: 1,
-    });
+    // luu cookie vao session storage
+    const token = response.data.data.access_token;
+    sessionStorage.setItem("access_token", token);
 
     return {
       user: response.data.data.user,
       accessToken: response.data.data.access_token,
     };
   } catch {
-    console.error("Error during login:");
+    throw new Error("Error during login:");
   }
 };
 

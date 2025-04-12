@@ -3,10 +3,18 @@ import { USER_ROLE, USER_ID } from "../types/local";
 import { ROLES } from "../types/roles";
 import { Login, AdminLayout, LecturerLayout } from "../pages/pages";
 import useAuth from "../hook/useAuth";
+import { apiClient } from "../api/axios";
 
 const RequireAuth = ({ allowedRole }: { allowedRole: number }) => {
   const { auth } = useAuth();
   const location = useLocation();
+
+  if (auth?.accessToken) {
+    apiClient.defaults.headers.Authorization = `Bearer ${auth.accessToken}`;
+  } else {
+    const access_token = sessionStorage.getItem("access_token");
+    apiClient.defaults.headers.Authorization = `Bearer ${access_token}`;
+  }
 
   if (localStorage.getItem(USER_ID)) {
     const role = JSON.parse(localStorage.getItem(USER_ROLE) ?? "2000");

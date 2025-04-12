@@ -68,9 +68,7 @@ const Sidebar: React.FC<SidebarProps> = ({
         isOpen ? "translate-x-0" : "-translate-x-full"
       }`}>
       <div className='flex items-center justify-between p-4 border-b dark:border-gray-700'>
-        <span className='text-2xl font-bold text-gray-800 dark:text-white'>
-          EduManage
-        </span>
+        <span className='text-2xl font-bold text-gray-800'>EduManage</span>
         <button
           className='p-2.5 rounded-lg bg-gray-200 dark:bg-gray-700 md:hidden'
           onClick={toggleSidebar}>

@@ -15,7 +15,7 @@ const Navbar: React.FC<HeaderProps> = ({ activeSection }) => {
   };
 
   return (
-    <header className='bg-white dark:bg-gray-800 shadow-md'>
+    <header className='bg-white shadow-md'>
       <div className='flex items-center justify-between px-4 py-[19.5px]'>
         <div className='flex items-center'>
           <h3 className='font-semibold'>{sectionTitles[activeSection]}</h3>

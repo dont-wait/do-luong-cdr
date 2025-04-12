@@ -18,6 +18,8 @@ const DataTable: React.FC<DataTableProps> = ({
   const itemsPerPage = 5;
   const { showToast } = useToast();
 
+  console.log(data);
+
   const fetchData = async () => {
     setIsLoading(true);
     try {

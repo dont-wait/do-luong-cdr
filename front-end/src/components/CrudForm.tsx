@@ -154,8 +154,12 @@ const CrudForm = ({
         pendingItems.map((pendingItem) => postData(apiEndpoint, pendingItem))
       );
 
+      const data = responses.filter((item) => item !== undefined);
+
+      console.log(data);
+
       // Call the onSubmit callback with response data
-      onSubmit(responses);
+      onSubmit(data);
 
       // Reset form state
       setPendingItems([]);
@@ -164,8 +168,7 @@ const CrudForm = ({
       reset();
       setIsLoading(false);
     } catch {
-      console.error("Error submitting data:");
-      showToast("Failed to submit data", "error");
+      showToast("Post Data Fail", "error");
       setIsLoading(false);
     }
   };
