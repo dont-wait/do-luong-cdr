@@ -232,8 +232,6 @@ export const handleFormattoJSON = (
 };
 
 export const getData = async (url: string) => {
-  const accessToken = Cookies.get("access_token");
-  console.log(accessToken);
   try {
     const res = await apiClient.get(url);
     console.log("GET response:", res);
@@ -244,7 +242,7 @@ export const getData = async (url: string) => {
   }
 };
 
-export const postData = async (url: string, info: Obj | Obj[]) => {
+export const postData = async (url: string, info: object | object[]) => {
   try {
     console.log("POSTing to:", url, "with data:", info);
     const res = await apiClient.post(url, info);
@@ -256,7 +254,7 @@ export const postData = async (url: string, info: Obj | Obj[]) => {
   }
 };
 
-export const updateData = async (url: string, info: Obj | Obj[]) => {
+export const updateData = async (url: string, info: object) => {
   try {
     console.log("PUTting to:", url, "with data:", info);
     const res = await apiClient.put(url, info);

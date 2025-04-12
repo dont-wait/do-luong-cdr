@@ -8,7 +8,6 @@ import {
   Lecturer,
   Admin,
   Plo,
-  PloDetail,
 } from "../index";
 import ErrorBoundary from "../../../../components/ErrorBoundary";
 
@@ -25,7 +24,6 @@ const Content = ({ activeSection }: ContentProps) => {
     subject: <Subject />,
     admin: <Admin />,
     plo: <Plo />,
-    ploDetail: <PloDetail />,
   };
 
   const renderSection = () => {
