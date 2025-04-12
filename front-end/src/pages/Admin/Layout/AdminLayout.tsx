@@ -12,7 +12,6 @@ const AdminLayout = () => {
   if (auth?.accessToken) {
     Cookies.set("access_token", auth?.accessToken, {
       path: "/admin",
-      sameSite: "strict",
       secure: false,
       expires: 1,
     });
