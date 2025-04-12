@@ -134,7 +134,7 @@
       "phone": "1234567891",
       "academic_id": "7480201",
       "degree_id": 1,
-      "subject_manage_id": null
+      "password": "password123"
     },
     {
       "id": "01014019",
@@ -144,7 +144,7 @@
       "phone": "1234567892",
       "academic_id": "7480202",
       "degree_id": 2,
-      "subject_manage_id": null
+      "password": "password123"
     },
     {
       "id": "01014020",
@@ -154,7 +154,7 @@
       "phone": "1234567893",
       "academic_id": "7480203",
       "degree_id": 3,
-      "subject_manage_id": null
+      "password": "password123"
     },
     {
       "id": "01014021",
@@ -164,7 +164,7 @@
       "phone": "1234567894",
       "academic_id": "7480204",
       "degree_id": 4,
-      "subject_manage_id": null
+      "password": "password123"
     },
     {
       "id": "01014022",
@@ -174,7 +174,7 @@
       "phone": "1234567895",
       "academic_id": "7480205",
       "degree_id": 1,
-      "subject_manage_id": null
+      "password": "password123"
     }
   ],
   "degree": [
@@ -203,7 +203,8 @@
       "practical_credits": 3,
       "theoretical_credits": 2,
       "description": "",
-      "lecturer_id": "01014018",
+      "lecturer_id": ["01014018"],
+      "lecturer_subject_manager_id": "01014018",
       "academic_id": [
         "7480201",
         "7480203"
@@ -215,7 +216,8 @@
       "practical_credits": 3,
       "theoretical_credits": 2,
       "description": "",
-      "lecturer_id": "01014019",
+      "lecturer_id": ["01014019"],
+      "lecturer_subject_manager_id": "01014020",
       "academic_id": [
         "7480201",
         "7480204"
@@ -227,7 +229,8 @@
       "practical_credits": 3,
       "theoretical_credits": 2,
       "description": "",
-      "lecturer_id": "01014020",
+      "lecturer_id": ["01014020"],
+      "lecturer_subject_manager_id": "01014021",
       "academic_id": [
         "7480201",
         "7480205"
@@ -239,7 +242,8 @@
       "practical_credits": 3,
       "theoretical_credits": 2,
       "description": "",
-      "lecturer_id": "01014021",
+      "lecturer_id": ["01014021"],
+      "lecturer_subject_manager_id": "01014019",
       "academic_id": [
         "7480201",
         "7480206"
@@ -414,6 +418,34 @@
       ]
     }
   ],
+  "plo":[
+  {
+    "plo_name": "PLO1",
+    "plo_content": "",
+    "academic_id": "7480201"
+  },
+
+    {
+    "plo_name": "PLO2",
+    "plo_content": "",
+    "academic_id": "7480201"
+  },
+    {
+    "plo_name": "PLO3",
+    "plo_content": "",
+    "academic_id": "7480201"
+  },
+    {
+    "plo_name": "PLO4",
+    "plo_content": "",
+    "academic_id": "7480201"
+  },
+    {
+    "plo_name": "PLO5",
+    "plo_content": "",
+    "academic_id": "7480201"
+  }
+],
   "admin": [
     {
       "id": "AD001",
@@ -423,5 +455,44 @@
       "email": "john.smith@gmail.com",
       "password": "12345"
     }
-  ]
-}
+  ],
+  "approveData":[
+    {
+      "header":[
+                ["STT", "Mã sinh viên", "Họ đệm", "Tên"],
+                { "Câu 1": { "CLO3.1": ["2"] } },
+                { "Câu 2": { "CLO1": ["1.5"], "CLO3.3": ["0.5"], "CLO3.1": ["1"] } },
+                { "Câu 3": { "CLO3.1": ["1.5"], "CLO3.3": ["0.5"] } },
+                { "Câu 4": { "CLO3.1": ["2.5"], "CLO3.3": ["0.5"] } }
+      ],
+      "Body":
+      [
+            {
+                "id_exam": "1efff6d5-7f86-4d0b-89f8-0c2d8688acd7",
+                "Data": [{
+                    "STT": 12,
+                    "Mã sinh viên": 123,
+                    "Họ đệm": "Nguyễn Bình",
+                    "Tên": "Bảo _7",
+                    "Máy": null,
+                    "Câu 1 (5.0)": {
+                        "CLO2": 0.5,
+                        "CLO3.1": 0.5
+                    },
+                    "Câu 2 (3.0)": {
+                        "CLO2": 0.5,
+                        "CLO1": 2
+                    },
+                    "Câu 3 (2.0)": {
+                        "CLO3.1": 1,
+                        "CLO3.3": 0.5
+                    }
+                }
+            ]
+          }
+        ]
+          
+      }
+    ]
+  }
+

@@ -25,14 +25,13 @@ export class StudentController {
   }
 
   @Post()
+  @ApiOperation({ summary: 'Create a student' })
+  @ApiResponse({ status: 201, description: 'Student created successfully.' })
+  @ApiResponse({ status: 400, description: 'Bad request.' })
   @ApiBody({ type: CreateStudentDto })
-  @ApiOperation({ summary: 'Create a new student' })
-  @ApiResponse({
-    status: 201,
-    description: 'The student has been successfully created.',
-  })
-  @ApiResponse({ status: 400, description: 'Bad Request.' })
-  public async createStudent(@Body() data: CreateStudentDto) {
-    return await this.studentService.createStudent(data);
+  public createStudent(@Body() createStudentDto: CreateStudentDto) {
+    return this.studentService.createStudent(createStudentDto);
   }
+
+
 }

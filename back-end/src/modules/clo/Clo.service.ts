@@ -149,4 +149,12 @@ export class CloService {
   async remove(id: string) {
     return this.prisma.clo.delete({where: {id}})
   }
+  public async getCloIdByName(clo_name: string) {
+    const clo = await this.prisma.clo.findFirst({ where: { clo_name: clo_name } });
+    if (!clo) {
+      throw new BadRequestException(`CLO with name ${clo_name} not found`);
+    }
+    
+    return clo.id;
+  }
 }

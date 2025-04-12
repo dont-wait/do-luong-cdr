@@ -9,6 +9,11 @@ export class ResultService {
   async createResult(data: CreateResultDto | CreateResultDto[]) {
     if (Array.isArray(data)) {
       for (const r of data) {
+
+        if (!r.student_id || !r.question_id || !r.clo_id) {
+          throw new BadRequestException('Student ID, Question ID, and CLO ID are required');
+        }
+
         const studentExists = await this.prisma.student.findUnique({ where: { id: r.student_id } });
         if (!studentExists) {
           throw new BadRequestException(`Student ID ${r.student_id} not found`);
@@ -18,8 +23,14 @@ export class ResultService {
         if (!questionExists) {
           throw new BadRequestException(`Question ID ${r.question_id} not found`);
         }
-        if (r.score > questionExists.max_score) {
-          throw new BadRequestException(`Score ${r.score} exceeds max score ${questionExists.max_score}`);
+
+        const cloExists = await this.prisma.clo.findUnique({ where: { id: r.clo_id } });
+        if (!cloExists) {
+          throw new BadRequestException(`CLO ID ${r.clo_id} not found`);
+        }
+        
+        if (r.score > r.max_score) {
+          throw new BadRequestException(`Score ${r.score} exceeds max score ${r.max_score}`);
         }
       }
 

@@ -30,7 +30,6 @@ model Academic {
   academic_subject Academic_subject[]
   plo              Plo[]
   lecturer         Lecturer[]
-  student          Student[]
 }
 
 model Academic_subject {
@@ -114,7 +113,7 @@ model Clo {
   subject    Subject @relation(fields: [subject_id], references: [id], onDelete: Cascade)
 
   plo_clo      Plo_clo[]
-  Question Question[]
+  result Result[]
 }
 
 
@@ -131,11 +130,8 @@ model Exam {
 model Question {
   id String    @id @default(uuid())
   question_name    String @db.VarChar(255)
-  max_score        Float
 
   exam_id String
-  clo_id String 
-  clo   Clo @relation(fields: [clo_id], references: [id])
   exam    Exam @relation(fields: [exam_id], references: [id])
 
   Result Result[]
@@ -145,9 +141,11 @@ model Result {
   id String   @id @default(uuid())
   score     Float?
 
+  max_score Float?
   student_id String
   question_id String
-
+  clo_id String
+  clo Clo @relation(fields: [clo_id], references: [id])
 
   question Question @relation(fields: [question_id], references: [id])
   student Student @relation(fields: [student_id], references: [id])
@@ -194,7 +192,6 @@ model User_account {
 
   role    Role @relation(fields: [role_id], references: [id])
   admin    Admin?   @relation(fields: [admin_id], references: [id])
-  student  Student? @relation(fields: [student_id], references: [id])
   lecturer Lecturer? @relation(fields: [lecturer_id], references: [id])
 }
 
@@ -223,15 +220,8 @@ model Student {
   id String @id @unique
   first_name String @db.VarChar(255)
   last_name  String @db.VarChar(255)
-  email      String @unique @db.VarChar(255)
-  phone      String @unique @db.Char(12)
-
-  academic_id String
-  academic    Academic @relation(fields: [academic_id], references: [id])
 
   Result       Result[]
-  user_account User_account?
-
   ClassStudent ClassStudent[]
 }
 

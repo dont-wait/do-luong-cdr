@@ -18,7 +18,6 @@ Table Academic {
   academic_subject Academic_subject [not null]
   plo Plo [not null]
   lecturer Lecturer [not null]
-  student Student [not null]
 }
 
 Table Academic_subject {
@@ -99,7 +98,7 @@ Table Clo {
   subject_id String [not null]
   subject Subject [not null]
   plo_clo Plo_clo [not null]
-  Question Question [not null]
+  result Result [not null]
 }
 
 Table Exam {
@@ -114,10 +113,7 @@ Table Exam {
 Table Question {
   id String [pk]
   question_name String [not null]
-  max_score Float [not null]
   exam_id String [not null]
-  clo_id String [not null]
-  clo Clo [not null]
   exam Exam [not null]
   Result Result [not null]
 }
@@ -125,8 +121,11 @@ Table Question {
 Table Result {
   id String [pk]
   score Float
+  max_score Float
   student_id String [not null]
   question_id String [not null]
+  clo_id String [not null]
+  clo Clo [not null]
   question Question [not null]
   student Student [not null]
 }
@@ -167,7 +166,6 @@ Table User_account {
   role_id Int [not null]
   role Role [not null]
   admin Admin
-  student Student
   lecturer Lecturer
 }
 
@@ -193,12 +191,7 @@ Table Student {
   id String [pk]
   first_name String [not null]
   last_name String [not null]
-  email String [unique, not null]
-  phone String [unique, not null]
-  academic_id String [not null]
-  academic Academic [not null]
   Result Result [not null]
-  user_account User_account
   ClassStudent ClassStudent [not null]
 }
 
@@ -258,9 +251,9 @@ Ref: Clo.subject_id > Subject.id [delete: Cascade]
 
 Ref: Exam.class_id > Class.id
 
-Ref: Question.clo_id > Clo.id
-
 Ref: Question.exam_id > Exam.id
+
+Ref: Result.clo_id > Clo.id
 
 Ref: Result.question_id > Question.id
 
@@ -278,15 +271,11 @@ Ref: User_account.role_id > Role.id
 
 Ref: User_account.admin_id - Admin.id
 
-Ref: User_account.student_id - Student.id
-
 Ref: User_account.lecturer_id - Lecturer.id
 
 Ref: Lecturer.degree_id > Degree.id
 
 Ref: Lecturer.academic_id > Academic.id
-
-Ref: Student.academic_id > Academic.id
 
 Ref: Approve.subject_id > Subject.id [delete: Cascade]
 

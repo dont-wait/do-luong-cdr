@@ -17,25 +17,8 @@ export class CreateStudentDto {
   @IsString()
   last_name: string;
 
-  @ApiProperty({ description: 'Email address', example: 'You.Me@example.com' })
-  @IsEmail()
-  @IsNotEmpty()
-  email: string;
-
-  @ApiProperty({ description: 'Phone number (10 digits)', example: '1234567890' })
-  @IsString()
-  @Length(10, 10)
-  @IsNotEmpty()
-  phone: string;
-
-  @ApiProperty({ description: 'Password (minimum 5 characters)', example: 'password123' })
-  @IsString()
-  @Length(5)
-  @IsNotEmpty()
-  password: string;
-
-  @ApiProperty({ description: 'Academic ID', example: 'AC001' })
+  @ApiProperty({ description: 'Class ID', example: 'CL001' })
   @IsNotEmpty()
   @IsString()
-  academic_id: string;
+  class_id: string;
 }
