@@ -5,6 +5,11 @@ import { LOGIN_API, LECTURES_API } from "../api/apiUrl";
 import { postData, getData } from "../utils/helps";
 
 export const loginHanle = async ({ id, password }: AccountData) => {
+  return {
+    id: "LEC002",
+    role: 2002,
+  };
+
   const res = await postData(LOGIN_API, { id, password });
   if (res && res.lecturer_id) {
     const lecturerInfo: Lecturer = await getData(

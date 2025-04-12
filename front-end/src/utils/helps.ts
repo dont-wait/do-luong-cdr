@@ -227,7 +227,7 @@ export const handleFormattoJSON = (
   );
   const dataTree = data.map((row) => mapDataToTree(headerTree, row));
   console.log(dataTree);
-  return "";
+  return dataTree;
 };
 
 export const getData = async (url: string) => {
