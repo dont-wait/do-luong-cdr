@@ -5,6 +5,7 @@ import { UpdateApproveDto } from './dto/updateApprove';
 import { ApproveValidatePipe } from 'src/common/pipe/ApproveValidate.pipe';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
 
+
 @ApiTags('approve')
 @Controller("approve")
 export class ApproveController {
@@ -37,4 +38,6 @@ export class ApproveController {
     public async updateApprove(@Body() data: UpdateApproveDto) {
         return await this.approveService.updateApprove(data);
     }
+
+    
 }

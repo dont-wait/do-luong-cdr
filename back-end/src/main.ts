@@ -57,7 +57,7 @@ function setupGlobalPipes(app: INestApplication) {
       whitelist: true,
       transform: true,
       transformOptions: { enableImplicitConversion: true },
-      forbidNonWhitelisted: true,
+      forbidNonWhitelisted: false,
     }),
   );
 }

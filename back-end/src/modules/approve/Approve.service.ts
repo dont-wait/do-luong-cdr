@@ -2,12 +2,29 @@ import { BadRequestException, Body, Injectable, NotFoundException } from '@nestj
 import { PrismaService } from '../prisma/Prisma.service';
 import { CreateApproveDto } from './dto/createApprove';
 import { UpdateApproveDto } from './dto/updateApprove';
-
+import { SaveData } from 'src/utils/SaveData';
+import { ApproveDataDto } from 'src/utils/saveApproveData.dto';
+import { ResultService } from '../result/Result.service';
+import { QuestionService } from '../question/Question.service';
+import { CloService } from '../clo/Clo.service';
+import { get } from 'http';
 @Injectable()
 export class ApproveService {
+    private readonly saveDataUtil: SaveData;
+
     constructor(
         private readonly prisma: PrismaService,
-    ) {}
+        private readonly resultService: ResultService,
+        private readonly questionService: QuestionService,
+        private readonly cloService: CloService,
+    ) {
+      this.saveDataUtil = new SaveData(
+        this.resultService,
+        this.questionService,
+        this.cloService,
+      );
+    }
+  
 
     public async sendApprove(data: CreateApproveDto) {
         try {
@@ -42,8 +59,7 @@ export class ApproveService {
     }
 
     public async updateApprove(data: UpdateApproveDto) {
-        const { sender_id, receiver_id, approve } = data;
-
+        const { sender_id, receiver_id, approve} = data;
         const existingApprove = await this.prisma.approve.findFirst({
             where: { sender_id, receiver_id },
         });
@@ -51,6 +67,31 @@ export class ApproveService {
         if (!existingApprove) {
             throw new NotFoundException(`Không tìm thấy approve giữa sender ${sender_id} và receiver ${receiver_id}`);
         }
+
+        const ApproveSave = await this.getApproveByReceiverId(data.receiver_id);
+        
+        if (!ApproveSave) {
+            throw new NotFoundException(`Không tìm thấy approve với ID: ${data.receiver_id}`);
+        }
+        for (const approveItem of ApproveSave) {
+            try {
+              // Kiểm tra nếu có data và là string thì parse
+              if (approveItem.data && typeof approveItem.data === 'string') {
+                const parsedData = JSON.parse(approveItem.data);
+                console.log('📦 Parsed Approve Data:', parsedData);
+          
+                // Có thể gọi xử lý từng cái ở đây, ví dụ:
+                await this.saveDataUtil.saveApprovedData(parsedData);
+              } else {
+                console.warn('⚠️ Không có dữ liệu JSON hợp lệ trong approve:', approveItem.id);
+              }
+            } catch (err) {
+              console.error('❌ Lỗi parse JSON trong approve:', approveItem.id, err.message);
+            }
+          }
+
+
+
 
         return await this.prisma.approve.update({
             where: { id: existingApprove.id },

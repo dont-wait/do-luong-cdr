@@ -110,16 +110,28 @@ export class SubjectService {
     if (!existingSubject) {
       throw new NotFoundException(`Subject with ID ${id} not found`);
     }
+
+    const validLecturers = await this.prisma.lecturer.findMany({
+      where: {
+        id: {
+          in: lecturer_id,
+        },
+      },
+      select: { id: true },
+    });
   
+    const validLecturerIds = validLecturers.map(l => l.id);
+  
+    if (validLecturerIds.length === 0) {
+      throw new BadRequestException('No valid lecturer IDs provided.');
+    }
     const updatedSubject = await this.prisma.subject.update({
       where: { id },
       data: {
         ...subject,
-        
         LecturerSubject: {
           deleteMany: {},
-  
-          create: lecturer_id.map(lecturerId => ({
+          create: validLecturerIds.map(lecturerId => ({
             lecturer: {
               connect: { id: lecturerId },
             },
@@ -130,6 +142,7 @@ export class SubjectService {
   
     return updatedSubject;
   }
+  
 
   public async deleteSubject(id: string) {
     const existingSubject = await this.prisma.subject.findUnique({
