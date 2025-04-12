@@ -38,23 +38,18 @@ const login = async (id: string, password: string) => {
       password,
     });
 
-    // Lưu access token vào cookie bằng js-cookie
-    const accessToken = response.data.data.access_token;
-    console.log(accessToken);
-    Cookies.set("access_token", accessToken, {
-      path: response.data.data.user["admin_id"] ? "/admin" : "/lecturer",
+    Cookies.set("access_token", response.data.data.access_token, {
+      path: "/",
       secure: false,
-      sameSite: "Strict",
       expires: 1,
     });
 
-    // Trả về thông tin người dùng
-    return response.data.data.user;
-  } catch (error) {
-    console.error(
-      "Error during login:",
-      error.response ? error.response.data : error.message
-    );
+    return {
+      user: response.data.data.user,
+      accessToken: response.data.data.access_token,
+    };
+  } catch {
+    console.error("Error during login:");
   }
 };
 

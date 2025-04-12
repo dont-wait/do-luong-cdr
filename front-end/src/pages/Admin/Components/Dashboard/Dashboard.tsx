@@ -24,7 +24,6 @@ const Dashboard: React.FC = () => {
   const programChartInstance = useRef<Chart | null>(null);
 
   useEffect(() => {
-    console.log(Cookies.get("access_token"));
     const fetchData = async () => {
       try {
         const [deptRes, progRes, lecRes, subRes] = await Promise.all([

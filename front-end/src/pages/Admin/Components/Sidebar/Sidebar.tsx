@@ -60,11 +60,6 @@ const Sidebar: React.FC<SidebarProps> = ({
       icon: <GrTarget className='sidebar-item' />,
       label: "Plo",
     },
-    {
-      section: "ploDetail",
-      icon: <BiSolidDetail className='sidebar-item' />,
-      label: "Plo Detail",
-    },
   ];
 
   return (

@@ -1,345 +1,420 @@
-import { useState, useCallback, useEffect, useRef } from "react";
-import {
-  Form,
-  Button,
-  Card,
-  Spinner,
-  Container,
-  Row,
-  Col,
-} from "react-bootstrap";
-import { MdOutlineInsertChartOutlined } from "react-icons/md";
-import { useForm } from "react-hook-form";
-import CrudFormList from "./CrudFormList";
-import { CrudFromField, Obj } from "../types/types";
-import { getData, postData, updateData, deleteData } from "../utils/helps";
+import { useState, useEffect } from "react";
+import { useForm, Controller } from "react-hook-form";
+import { Card, Form, Button, Table, Alert, ListGroup } from "react-bootstrap";
+import { CrudFormProps, Field, FormType } from "../types/types";
 import { useToast } from "../hook/useToast";
+import { postData, getData } from "../utils/helps";
 
 const CrudForm = ({
-  inputFields,
-  url,
-  isFilter,
-}: {
-  inputFields: CrudFromField[];
-  url: string;
-  isFilter?: boolean;
-}) => {
-  const [filterText, setFilterText] = useState<string>("");
-  const [editMode, setEditMode] = useState<boolean>(false);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [data, setData] = useState<Obj[]>([]);
-  const formRef = useRef<HTMLFormElement>(null);
+  formType = FormType.BASIC,
+  title,
+  fields,
+  onSubmit,
+  apiEndpoint,
+  existingData = [],
+  parentData = [],
+  parentDisplayField = "name",
+  childRelationField,
+  childApiEndpoint,
+  initialValues = {},
+}: CrudFormProps) => {
+  // State for temporary saved items before final submission
+  const [pendingItems, setPendingItems] = useState<object[]>([]);
+  const [selectedParent, setSelectedParent] = useState<object | null>(null);
+  const [childItems, setChildItems] = useState<object[]>([]);
+  const [selectedItems, setSelectedItems] = useState<object>({});
+  const [editingIndex, setEditingIndex] = useState(-1);
+  const [isLoading, setIsLoading] = useState(false);
   const { showToast } = useToast();
+
   const {
-    register,
-    setValue,
-    formState: { errors },
     handleSubmit,
+    control,
     reset,
-    watch,
-  } = useForm();
+    formState: { errors },
+    setValue,
+  } = useForm({
+    defaultValues: initialValues,
+  });
 
-  // GET
-  const getHandle = useCallback(async () => {
-    try {
-      setLoading(true);
-      const res = await getData(url);
-      console.log(res);
-      setData(res);
-    } catch {
-      showToast("Get Method Fail!", "error");
-    } finally {
-      setLoading(false);
-    }
-  }, [url, showToast]);
-
-  // Fetch departments on component mount
+  // Effect to fetch child data when parent is selected in hierarchical form
   useEffect(() => {
-    getHandle();
-  }, [getHandle]);
+    if (
+      formType === FormType.HIERARCHICAL &&
+      selectedParent &&
+      childApiEndpoint
+    ) {
+      setIsLoading(true);
+      getData(`${childApiEndpoint}/${selectedParent.id}`)
+        .then((response) => {
+          setChildItems(response.data);
+          setIsLoading(false);
+        })
+        .catch((err) => {
+          console.error("Error fetching child data:", err);
+          setIsLoading(false);
+        });
+    }
+  }, [formType, selectedParent, childApiEndpoint]);
 
-  // CREATE
-  const createHandle = useCallback(
-    async (info: { [key: string]: string }) => {
-      try {
-        await postData(url, info);
-        setLoading(true);
-        setData((prev) => [...prev, info]);
-        reset();
-        showToast("Create Success!", "success");
-      } catch {
-        showToast("Create Fail!", "error");
-      } finally {
-        setLoading(false);
-      }
-    },
-    [reset, url, showToast]
-  );
-
-  // UPDATE
-  const updateHandle = useCallback(
-    async (info: Obj) => {
-      try {
-        setLoading(true);
-        const res = await updateData(url + `/${info.id}`, info);
-        setData((prev) => prev.map((obj) => (obj.id === res.id ? res : obj)));
-        reset();
-        setEditMode(false);
-        showToast("Update Success!", "success");
-      } catch {
-        showToast("Update Fail!", "error");
-      } finally {
-        setLoading(false);
-      }
-    },
-    [reset, url, showToast]
-  );
-
-  // DELETE
-  const deleteHandle = useCallback(
-    async (id: string) => {
-      if (!window.confirm("Are you sure you want to delete this item?")) return;
-      try {
-        setLoading(true);
-        const res = await deleteData(`${url}/${id}`);
-        setData((prev) => prev.filter((obj) => obj.id !== res.id));
-        showToast("Delete Success!", "success");
-      } catch {
-        showToast("Delete Fail!", "error");
-      } finally {
-        setLoading(false);
-      }
-    },
-    [url, showToast]
-  );
-
-  const onEditMode = (info: Obj) => {
-    setEditMode(true);
-    inputFields.forEach((field) => {
-      const label = field["key"];
-      setValue(label, info[label]);
-    });
-    formRef?.current?.scrollIntoView({ behavior: "smooth" });
-  };
-
-  const onSubmit = editMode ? updateHandle : createHandle;
-
-  // Filter based on search term
-  const filterHandle = (data: Obj[] | undefined, label: string | undefined) => {
-    const res = data?.filter((dept: Obj) => {
-      const filterTextLowercase = filterText.toLowerCase();
-      return (
-        dept[label ?? "id"] &&
-        JSON.stringify(dept[label ?? "id"])
-          .toLowerCase()
-          .includes(filterTextLowercase)
+  // Function to handle adding an item to the pending list
+  const handleAddItem = (data: object) => {
+    // For checkbox form, combine form data with selected items
+    if (formType === FormType.CHECKBOX) {
+      const selectedKeys = Object.keys(selectedItems).filter(
+        (key) => selectedItems[key]
       );
-    });
-    return res;
+
+      if (selectedKeys.length === 0) {
+        showToast("Please select at least one item", "info");
+        return;
+      }
+
+      const selectedData = existingData.filter((item) =>
+        selectedKeys.includes(item.id.toString())
+      );
+
+      // Combine form data with selected items
+      const newItems = selectedData.map((item) => ({
+        ...item,
+        ...data,
+      }));
+
+      setPendingItems([...pendingItems, ...newItems]);
+      setSelectedItems({});
+    }
+    // For hierarchical form, add relationship to parent
+    else if (formType === FormType.HIERARCHICAL && selectedParent) {
+      const newItem = {
+        ...data,
+        [childRelationField]: selectedParent.id,
+      };
+
+      if (editingIndex >= 0) {
+        const updatedItems = [...pendingItems];
+        updatedItems[editingIndex] = newItem;
+        setPendingItems(updatedItems);
+        setEditingIndex(-1);
+      } else {
+        setPendingItems([...pendingItems, newItem]);
+      }
+    }
+    // For basic form, just add the data
+    else {
+      if (editingIndex >= 0) {
+        const updatedItems = [...pendingItems];
+        updatedItems[editingIndex] = data;
+        setPendingItems(updatedItems);
+        setEditingIndex(-1);
+      } else {
+        setPendingItems([...pendingItems, data]);
+      }
+    }
+
+    reset();
   };
 
+  // Function to handle editing an item
+  const handleEditItem = (index: number) => {
+    setEditingIndex(index);
+    const item = pendingItems[index];
+
+    // Set form values for editing
+    fields.forEach((field) => {
+      if (item[field.name] !== undefined) {
+        setValue(field.name, item[field.name]);
+      }
+    });
+  };
+
+  // Function to handle deleting an item
+  const handleDeleteItem = (index) => {
+    const updatedItems = [...pendingItems];
+    updatedItems.splice(index, 1);
+    setPendingItems(updatedItems);
+
+    if (editingIndex === index) {
+      setEditingIndex(-1);
+      reset();
+    }
+  };
+
+  // Function to handle final submission of all pending items
+  const handleFinalSubmit = async () => {
+    if (pendingItems.length === 0) {
+      showToast("Please add at least one item before submitting", "info");
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      console.log(pendingItems);
+      // Use Axios to submit data
+      const responses = await Promise.all(
+        pendingItems.map((pendingItem) => postData(apiEndpoint, pendingItem))
+      );
+
+      // Call the onSubmit callback with response data
+      onSubmit(responses);
+
+      // Reset form state
+      setPendingItems([]);
+      setSelectedItems({});
+      setSelectedParent(null);
+      reset();
+      setIsLoading(false);
+    } catch {
+      console.error("Error submitting data:");
+      showToast("Failed to submit data", "error");
+      setIsLoading(false);
+    }
+  };
+
+  // Helper function to render form fields based on their type
+  const renderField = (field: Field) => {
+    return (
+      <Form.Group className='mb-3' key={field.name}>
+        <Form.Label htmlFor={field.name}>{field.label}</Form.Label>
+        <Controller
+          name={field.name}
+          control={control}
+          defaultValue={field.defaultValue || ""}
+          rules={field.validation || { required: field.required }}
+          render={({ field: { onChange, value, ref } }) => {
+            switch (field.type) {
+              case "select":
+                return (
+                  <Form.Select
+                    id={field.name}
+                    value={value || ""}
+                    onChange={(e) => {
+                      if (field.isNumber)
+                        return onChange(Number(e.target.value));
+                      return onChange(e.target.value);
+                    }}
+                    ref={ref}
+                    isInvalid={!!errors[field.name]}>
+                    <option value=''>Select {field.label}</option>
+                    {field.options?.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </Form.Select>
+                );
+              case "textarea":
+                return (
+                  <Form.Control
+                    as='textarea'
+                    id={field.name}
+                    value={value || ""}
+                    onChange={onChange}
+                    ref={ref}
+                    isInvalid={!!errors[field.name]}
+                    rows={4}
+                  />
+                );
+              default:
+                return (
+                  <Form.Control
+                    type={field.type || "text"}
+                    id={field.name}
+                    value={value || ""}
+                    onChange={onChange}
+                    ref={ref}
+                    isInvalid={!!errors[field.name]}
+                  />
+                );
+            }
+          }}
+        />
+        {errors[field.name] && (
+          <Form.Control.Feedback type='invalid'>
+            {errors[field.name].message || `${field.label} is required`}
+          </Form.Control.Feedback>
+        )}
+      </Form.Group>
+    );
+  };
+
+  // Render form based on type
   return (
-    <Container>
-      <Card className='mb-5 shadow-sm my-4'>
-        <Card.Body>
-          <Form onSubmit={handleSubmit(onSubmit)} ref={formRef}>
-            <Row className='mb-3'>
-              {inputFields.map(
-                (
-                  {
-                    key,
-                    label,
-                    type,
-                    isRequired,
-                    isDropBox,
-                    dataDrop,
-                    dropLabel,
-                    isMultiple,
-                  },
-                  idx
-                ) => (
-                  <Col md={6} key={idx}>
-                    <Form.Group className='mb-3'>
-                      <Form.Label
-                        className='font-bold text-2xl my-4'
-                        style={{ display: "flex", alignItems: "center" }}>
-                        <MdOutlineInsertChartOutlined className='text-3xl' />
-                        {label}
-                      </Form.Label>
-
-                      {isDropBox ? (
-                        <Row>
-                          <Col>
-                            <Form.Group>
-                              {isMultiple ? (
-                                <div
-                                  style={{
-                                    maxHeight: "110px",
-                                    overflowY: "auto",
-                                    border: "1px solid #ccc",
-                                    padding: "5px",
-                                  }}>
-                                  {filterHandle(dataDrop, dropLabel)?.map(
-                                    (item, j) => {
-                                      const selectedGroupValues =
-                                        watch(key) || [];
-
-                                      return (
-                                        <Form.Check
-                                          key={j}
-                                          type='checkbox'
-                                          label={item[`${dropLabel}`]}
-                                          value={item.id}
-                                          checked={selectedGroupValues.includes(
-                                            item.id
-                                          )}
-                                          onChange={(e) => {
-                                            const value = e.target.value;
-                                            let updatedValues = [
-                                              ...selectedGroupValues,
-                                            ];
-
-                                            if (e.target.checked) {
-                                              updatedValues.push(value);
-                                            } else {
-                                              updatedValues =
-                                                updatedValues.filter(
-                                                  (v) => v !== value
-                                                );
-                                            }
-
-                                            setValue(key, updatedValues);
-                                          }}
-                                        />
-                                      );
-                                    }
-                                  )}
-                                </div>
-                              ) : (
-                                <Form.Select
-                                  className='dropdown-custom px-2 py-3 text-base'
-                                  {...register(key, {
-                                    required: true,
-                                    valueAsNumber: type === "number",
-                                  })}
-                                  onChange={(e) => {
-                                    setValue(key, e.target.value);
-                                    setFilterText("");
-                                  }}>
-                                  {dataDrop?.length !== 0 ? (
-                                    filterHandle(dataDrop, dropLabel)?.map(
-                                      (item, j) => (
-                                        <option
-                                          key={j}
-                                          value={
-                                            type === "number" ? j + 1 : item.id
-                                          }>
-                                          {item[`${dropLabel}`]}
-                                        </option>
-                                      )
-                                    )
-                                  ) : (
-                                    <option>Không có dữ liệu</option>
-                                  )}
-                                </Form.Select>
-                              )}
-                            </Form.Group>
-                          </Col>
-                        </Row>
-                      ) : (
-                        <Form.Control
-                          readOnly={editMode && idx === 0}
-                          type={type}
-                          placeholder={`Input ${label}`}
-                          className='px-2 py-3 text-base'
-                          {...register(key, {
-                            required: isRequired,
-                            valueAsNumber: type === "number",
-                          })}
-                        />
-                      )}
-
-                      {errors[key] && (
-                        <p className='text-danger p-1 font-medium'>
-                          {label} is required!
-                        </p>
-                      )}
-                    </Form.Group>
-                  </Col>
-                )
+    <Card className='m-3'>
+      <Card.Header className='bg-primary text-white'>
+        <h5 className='mb-0'>{title}</h5>
+      </Card.Header>
+      <Card.Body>
+        {formType === FormType.HIERARCHICAL && (
+          <div className='row mb-4'>
+            <div className='col-md-4'>
+              <Card>
+                <Card.Header className='bg-secondary text-white'>
+                  Parent Items
+                </Card.Header>
+                <Card.Body style={{ maxHeight: "300px", overflowY: "auto" }}>
+                  <ListGroup>
+                    {parentData.map((parent) => (
+                      <ListGroup.Item
+                        key={parent.id}
+                        active={selectedParent?.id === parent.id}
+                        action
+                        onClick={() => setSelectedParent(parent)}>
+                        {parent[parentDisplayField]}
+                      </ListGroup.Item>
+                    ))}
+                  </ListGroup>
+                </Card.Body>
+              </Card>
+            </div>
+            <div className='col-md-8'>
+              {selectedParent ? (
+                <>
+                  <h5>Adding for: {selectedParent[parentDisplayField]}</h5>
+                  {isLoading && (
+                    <div className='text-center my-3'>
+                      <div
+                        className='spinner-border text-primary'
+                        role='status'>
+                        <span className='visually-hidden'>Loading...</span>
+                      </div>
+                    </div>
+                  )}
+                  {/* Form will be rendered below */}
+                </>
+              ) : (
+                <Alert variant='info'>
+                  Please select a parent item from the list
+                </Alert>
               )}
+            </div>
+          </div>
+        )}
 
-              {isFilter && (
-                <Col md={6}>
-                  <Form.Group>
-                    <Form.Label
-                      className='font-bold text-2xl my-4'
-                      style={{ display: "flex", alignItems: "center" }}>
-                      <MdOutlineInsertChartOutlined className='text-3xl' />
-                      Filter
-                    </Form.Label>
-                    <Form.Control
-                      type='text'
-                      placeholder={`Input Filter`}
-                      value={filterText}
-                      onChange={(e) => setFilterText(e.target.value)}
-                      className='filter-input px-2 py-3 mb-3'
+        {formType === FormType.CHECKBOX && (
+          <div className='mb-4'>
+            <h5>Select Existing Items</h5>
+            <Card>
+              <Card.Body style={{ maxHeight: "250px", overflowY: "auto" }}>
+                {existingData.length > 0 ? (
+                  existingData.map((item) => (
+                    <Form.Check
+                      type='checkbox'
+                      id={`check-${item.id}`}
+                      key={item.id}
+                      label={item.name || item.id}
+                      checked={selectedItems[item.id] || false}
+                      onChange={() =>
+                        setSelectedItems({
+                          ...selectedItems,
+                          [item.id]: !selectedItems[item.id],
+                        })
+                      }
+                      className='mb-2'
                     />
-                  </Form.Group>
-                </Col>
-              )}
-            </Row>
+                  ))
+                ) : (
+                  <Alert variant='warning'>No existing items available</Alert>
+                )}
+              </Card.Body>
+            </Card>
+          </div>
+        )}
 
-            <div className='flex space-x-2'>
-              <Button type='submit' className='btn-custom-primary btn'>
-                {editMode ? "Update" : "Submit"}
+        {(formType !== FormType.HIERARCHICAL || selectedParent) && (
+          <Form onSubmit={handleSubmit(handleAddItem)}>
+            <div className='row'>
+              {fields.map((field) => (
+                <div className='col-md-6' key={field.name}>
+                  {renderField(field)}
+                </div>
+              ))}
+            </div>
+
+            <div className='mt-3 flex'>
+              <Button
+                type='submit'
+                variant='primary'
+                className='me-2'
+                disabled={isLoading}>
+                {editingIndex >= 0 ? "Update Item" : "Add to List"}
               </Button>
-
-              {editMode && (
+              {editingIndex >= 0 && (
                 <Button
-                  variant='outline-secondary'
-                  className='btn'
-                  onClick={() => setEditMode(false)}>
+                  variant='secondary'
+                  onClick={() => {
+                    setEditingIndex(-1);
+                    reset();
+                  }}
+                  disabled={isLoading}>
                   Cancel
                 </Button>
               )}
-
-              <Button
-                variant='outline-secondary'
-                className='btn'
-                onClick={() => reset()}>
-                Reset
-              </Button>
             </div>
           </Form>
-        </Card.Body>
-      </Card>
+        )}
 
-      <CrudFormList
-        listProps={{
-          label: "Information",
-          data,
-          dataLabels: inputFields
-            .filter((field) => field.label && field.isVisible)
-            .map((field) => field.label),
-          colLabels: inputFields
-            .filter((field) => field.key && field.isVisible)
-            .map((field) => field.key),
-        }}
-        onEditMode={onEditMode}
-        deleteHandle={deleteHandle}
-      />
-
-      {/* Loading Spinner */}
-      {loading && (
-        <div className='spinner-overlay'>
-          <div className='bg-white dark:bg-gray-800 p-4 rounded-lg shadow flex items-center space-x-3'>
-            <Spinner animation='border' role='status' variant='primary' />
-            <span>Processing...</span>
+        {pendingItems.length > 0 && (
+          <div className='mt-4'>
+            <h5>Pending Items ({pendingItems.length})</h5>
+            <div className='table-responsive'>
+              <Table striped bordered hover>
+                <thead className='table-dark'>
+                  <tr className='text-center'>
+                    {fields.map((field) => (
+                      <th key={field.name}>{field.label}</th>
+                    ))}
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {pendingItems.map((item, index) => (
+                    <tr key={index} className='text-center'>
+                      {fields.map((field) => (
+                        <td key={field.name}>{item[field.name]}</td>
+                      ))}
+                      <td className='flex'>
+                        <Button
+                          variant='warning'
+                          size='sm'
+                          className='me-1'
+                          onClick={() => handleEditItem(index)}
+                          disabled={isLoading}>
+                          Edit
+                        </Button>
+                        <Button
+                          variant='danger'
+                          size='sm'
+                          onClick={() => handleDeleteItem(index)}
+                          disabled={isLoading}>
+                          Delete
+                        </Button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </Table>
+            </div>
+            <Button
+              variant='primary'
+              className='mt-2'
+              onClick={handleFinalSubmit}
+              disabled={isLoading}>
+              {isLoading ? (
+                <>
+                  <span
+                    className='spinner-border spinner-border-sm me-2'
+                    role='status'
+                    aria-hidden='true'></span>
+                  Submitting...
+                </>
+              ) : (
+                "Submit All Items"
+              )}
+            </Button>
           </div>
-        </div>
-      )}
-    </Container>
+        )}
+      </Card.Body>
+    </Card>
   );
 };
 

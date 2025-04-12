@@ -19,6 +19,7 @@ const LoginForm: React.FC = () => {
   const [loginState, setLoginState] = useState<{
     id: string;
     userRole: number;
+    accessToken?: string;
   }>();
   const [showPassword, setShowPassword] = useState(false);
   const {
@@ -41,6 +42,7 @@ const LoginForm: React.FC = () => {
     if (loginState) {
       authData["user"] = loginState.id;
       authData["role"] = loginState.userRole;
+      authData["accessToken"] = loginState.accessToken;
     } else {
       authData["user"] = JSON.parse(localStorage.getItem(USER_ID) ?? '""');
       authData["role"] = JSON.parse(localStorage.getItem(USER_ROLE) ?? "2000");
@@ -59,16 +61,20 @@ const LoginForm: React.FC = () => {
   const onSubmit = async (data: AccountData) => {
     try {
       setLoading(true);
-      const { id, role } = await loginHanle(data);
-      if (data.remember) {
-        localStorage.setItem(USER_ID, JSON.stringify(id));
-        localStorage.setItem(USER_ROLE, JSON.stringify(role));
-      }
+      const res = await loginHanle(data);
+      if (res) {
+        const { id, role, accessToken } = res;
+        if (data.remember) {
+          localStorage.setItem(USER_ID, JSON.stringify(id));
+          localStorage.setItem(USER_ROLE, JSON.stringify(role));
+        }
 
-      setLoginState({
-        id: id,
-        userRole: role,
-      });
+        setLoginState({
+          id,
+          userRole: role,
+          accessToken,
+        });
+      }
     } catch {
       showToast("Incorrect ID or password!", "error");
       refs.error.current?.focus();

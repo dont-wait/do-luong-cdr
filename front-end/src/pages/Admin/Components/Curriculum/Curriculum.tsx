@@ -1,10 +1,10 @@
 import CrudForm from "../../../../components/CrudForm";
-import { CrudFromField, Obj } from "../../../../types/types";
-import { CrudFormClass } from "../../../../class/CrudFormClass";
+import DataTable from "../../../../components/DataTable";
 import { useState, useEffect } from "react";
 import { getData } from "../../../../utils/helps";
 import { useToast } from "../../../../hook/useToast";
 import { DEPARTMENT_API, CURRICULUM_API } from "../../../../api/apiUrl";
+import { FormType } from "../../../../types/types";
 import { PK } from "../../../../api/primaryKey";
 
 const levels = [
@@ -29,8 +29,55 @@ const types = [
   },
 ];
 
+const fields = [
+  {
+    name: PK.ACADEMIC_API,
+    label: "Cirriculum ID",
+    type: "text",
+    required: true,
+  },
+  {
+    name: "academic_name",
+    label: "Curriculum Name",
+    type: "text",
+    required: true,
+  },
+  {
+    name: "academic_type",
+    label: "Type",
+    type: "select",
+    required: true,
+    options: types.map((type) => ({
+      value: type.id,
+      label: type.academic_type,
+    })),
+    isNumber: true,
+  },
+  {
+    name: "academic_level",
+    label: "Level",
+    type: "select",
+    required: true,
+    options: levels.map((levels) => ({
+      value: levels.id,
+      label: levels.academic_level,
+    })),
+    isNumber: true,
+  },
+];
+
+const Columns = [
+  { key: "id", label: "ID" },
+  { key: "academic_name", label: "Curriculum Name" },
+  { key: "academic_type", label: "Type" },
+  { key: "academic_level", label: "Level" },
+  { key: "department_id", label: "Department ID" },
+];
+
 const Curriculum = () => {
-  const [department, setDepartment] = useState<Obj[]>([]);
+  const [data, setData] = useState<object[]>([]);
+  const [department, setDepartment] = useState<object[]>([]);
+  const [dataRefreshTrigger, setDataRefreshTrigger] = useState(0);
   const { showToast } = useToast();
 
   useEffect(() => {
@@ -46,54 +93,31 @@ const Curriculum = () => {
     fetchHanle();
   }, [showToast]);
 
-  const inputFields: CrudFromField[] = [
-    CrudFormClass.create({
-      key: PK.ACADEMIC_API,
-      label: "Curriculum Id",
-      type: "text",
-      isRequired: true,
-      isVisible: true,
-    }),
-    CrudFormClass.create({
-      key: "academic_name",
-      label: "Curriculum Name",
-      type: "text",
-      isRequired: true,
-      isVisible: true,
-    }),
-    CrudFormClass.create({
-      key: "academic_level",
-      label: "Curriculum Level",
-      type: "number",
-      isRequired: true,
-      isVisible: true,
-      isDropBox: true,
-      dataDrop: levels,
-      dropLabel: "academic_level",
-    }),
-    CrudFormClass.create({
-      key: "academic_type",
-      label: "Curriculum Type",
-      type: "number",
-      isRequired: true,
-      isVisible: true,
-      isDropBox: true,
-      dataDrop: types,
-      dropLabel: "academic_type",
-    }),
-    CrudFormClass.create({
-      key: "department_id",
-      label: "Department Id",
-      type: "text",
-      isRequired: true,
-      isVisible: true,
-      isDropBox: true,
-      dataDrop: department,
-      dropLabel: "department_name",
-    }),
-  ];
+  const handleApiResponse = (responseData: object[]) => {
+    setData((prevData) => [...prevData, ...responseData]);
+  };
+
   return (
-    <CrudForm inputFields={inputFields} url={CURRICULUM_API} isFilter={true} />
+    <>
+      <DataTable
+        data={data}
+        setData={setData}
+        title='Cirriculum Data'
+        columns={Columns}
+        apiEndpoint={CURRICULUM_API}
+        refreshTrigger={dataRefreshTrigger}
+      />
+      <CrudForm
+        formType={FormType.HIERARCHICAL}
+        title='Cirriculum Data'
+        fields={fields}
+        onSubmit={handleApiResponse}
+        apiEndpoint={CURRICULUM_API}
+        parentData={department}
+        parentDisplayField='department_name'
+        childRelationField='department_id'
+      />
+    </>
   );
 };
 

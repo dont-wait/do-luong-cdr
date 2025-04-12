@@ -1,6 +1,7 @@
 export interface AuthData {
   user: string;
   role?: number;
+  accessToken?: string;
 }
 
 export interface AuthContextType {
@@ -12,28 +13,6 @@ export interface AccountData {
   id: string;
   password: string;
   remember: boolean;
-}
-
-// input prop
-export interface InputFieldProps {
-  type: string;
-  id: string;
-  name: string;
-  value: string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  placeholder: string;
-  ref?: React.Ref<HTMLInputElement>;
-  required?: boolean;
-  showPasswordToggle?: () => void;
-  showPasswordIcon?: boolean;
-}
-
-export interface CheckboxProps {
-  id: string;
-  name: string;
-  checked: boolean;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  label: string;
 }
 
 export interface Toast {
@@ -54,20 +33,8 @@ export interface MergedCell {
   e: { r: number; c: number };
 }
 
-// src/types/types.ts
 export interface Obj {
   [key: string]: string | number;
-}
-export interface CrudFromField {
-  key: string;
-  label: string;
-  type: string;
-  isRequired?: boolean;
-  isDropBox?: boolean;
-  dataDrop?: Obj[];
-  dropLabel?: string;
-  isMultiple?: boolean;
-  isVisible?: boolean;
 }
 
 export interface ErrorResponse {
@@ -112,3 +79,49 @@ export interface Degree {
   id: number;
   degree_name: string;
 }
+
+export interface Field {
+  name: string; // - Field name (used as form field ID)
+  label: string; // - Display label
+  type: string; // - Input type (text, number, select, checkbox, etc.)
+  required?: boolean; // - Whether the field is required
+  defaultValue?: string | number; // - Default value for the field
+  options?: object[]; // - Options for select fields;
+  validation?: object; // - Validation rules
+  isNumber?: boolean;
+}
+
+export interface CrudFormProps {
+  formType: string; //- Type of form (basic, checkbox, hierarchical)
+  title: string; // - Form title
+  fields: Field[]; // - Field definitions
+  onSubmit: (data: object[]) => void; // - Submit handler
+  apiEndpoint: string; // - API endpoint for submissions
+  existingData?: object[]; // - Existing data for checkbox form
+  parentData?: object[]; // - Parent data for hierarchical form
+  parentDisplayField?: string; // - Field to display from parent data
+  childRelationField?: string; //  Field linking child to parent
+  childApiEndpoint?: string; // - API endpoint for fetching child data
+  initialValues?: object; // - Initial form values
+}
+
+export interface ColumnDefinition {
+  key: string;
+  label: string;
+}
+
+export interface DataTableProps {
+  data: object[];
+  setData: (data: object[]) => void;
+  title: string;
+  columns: ColumnDefinition[];
+  apiEndpoint: string;
+  refreshTrigger: number;
+  showActions?: boolean;
+}
+
+export const FormType = {
+  BASIC: "basic",
+  CHECKBOX: "checkbox",
+  HIERARCHICAL: "hierarchical",
+};
