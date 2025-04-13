@@ -1,14 +1,16 @@
-import { Controller, Get, Post, Patch, Delete, Body, Param, Put } from '@nestjs/common';
+import { Controller, Get, Post, Patch, Delete, Body, Param, Put, UsePipes } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
 import { ClassService } from './Class.service';
 import { CreateClassDto } from './dto/create-class.dto';
 import { UpdateClassDto } from './dto/update-class.dto';
+import { ClassValidatePipe } from 'src/common/pipe/ClassValidate.pipe';
 
 @ApiTags('class')
 @Controller('class')
 export class ClassController {
   constructor(private readonly classService: ClassService) {}
 
+  @UsePipes(ClassValidatePipe)
   @ApiBody({ type: CreateClassDto, isArray: true })
   @ApiOperation({ summary: 'Create new Class' })
   @ApiResponse({ status: 201, description: 'Class successfully created' })

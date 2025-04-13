@@ -59,4 +59,9 @@ export class ExamService {
   async deleteExam(id: string) {
     return this.prisma.exam.delete({ where: { id } });
   }
+  public async getExamsByClassId(class_id: string) {
+    return this.prisma.exam.findMany({
+      where: { class_id },
+    });
+  }
 }

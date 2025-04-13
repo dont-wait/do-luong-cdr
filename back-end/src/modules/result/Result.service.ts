@@ -81,4 +81,24 @@ export class ResultService {
   async removeResult(id: string) {
     return await this.prisma.result.delete({ where: { id } });
   }
+
+  getResultByQuestionIds(questionIds: string[]) {
+    return this.prisma.result.findMany({
+      where: {
+        question_id: {
+          in: questionIds,
+        },
+      },
+      include: {
+        clo: {
+          select: {
+            id: true,
+            clo_name: true,
+            clo_parent_id: true,
+          },
+        },
+      },
+    });
+  }
+  
 }

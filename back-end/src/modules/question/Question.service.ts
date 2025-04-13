@@ -38,32 +38,40 @@ export class QuestionService {
     });
   }
 
-  public async createQuestion(data: CreateQuestionDto) {
-    const exam = await this.exam.getExamById(data.exam_id);
-    if (!exam) {
-      throw new BadRequestException(`Exam with ID ${data.exam_id} not found`);
-    }
-
-    const existingQuestion = await this.prisma.question.findFirst({
-      where: {
-        exam_id: data.exam_id,  
-        question_name: data.question_name,
-      },
-    });
-
-
-    if (existingQuestion) {
-      throw new BadRequestException(`Question with name '${data.question_name}' already exists in this exam`);
-    }
-
-    try {
-      return await this.prisma.question.create({
-        data,
+    public async createQuestion(data: CreateQuestionDto) {
+      const exam = await this.exam.getExamById(data.exam_id);
+      if (!exam) {
+          throw new BadRequestException(`Kỳ thi với ID ${data.exam_id} không tồn tại`);
+      }
+  
+      const existingQuestion = await this.prisma.question.findFirst({
+          where: {
+              exam_id: data.exam_id,
+              question_name: data.question_name,
+          },
       });
-    } catch (err) {
-      throw new InternalServerErrorException(err.message);
-    }
-}
+  
+      if (existingQuestion) {
+          throw new BadRequestException(
+              `Câu hỏi "${data.question_name}" đã tồn tại trong kỳ thi với ID ${data.exam_id}`,
+          );
+      }
+  
+      // Tạo câu hỏi mới
+      const newQuestion = await this.prisma.question.create({
+          data: {
+              exam_id: data.exam_id,
+              question_name: data.question_name,
+          },
+      });
+  
+      return {
+          statusCode: 201,
+          message: 'Tạo câu hỏi thành công',
+          data: newQuestion,
+      };
+  }
+
 
 
   public async updateQuestion(id: string, data: UpdateQuestionDto) {
@@ -101,5 +109,20 @@ export class QuestionService {
     } catch (err) {
       throw new InternalServerErrorException(err.message);
     }
+  }
+
+  public async getQuestionIdsByExamIds(examIds: string[]) {
+    const questions = await this.prisma.question.findMany({
+      where: {
+        exam_id: {
+          in: examIds,
+        },
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    return questions.map((question) => question.id);
   }
 }
