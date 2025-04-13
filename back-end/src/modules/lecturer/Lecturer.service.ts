@@ -50,6 +50,7 @@ export class LecturerService {
     await this.userAccount.createUserAccount(userAccountData, password);
 
     return {
+      id,
       ...rest,
       degree_id,
       academic_id,

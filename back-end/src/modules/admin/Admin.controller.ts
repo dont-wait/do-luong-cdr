@@ -18,14 +18,13 @@ import { Roles } from 'src/common/decorator/roles.decorator';
 export class AdminController {
   constructor(private readonly adminService: AdminService) {}
 
-  
   @Get()
   @Roles(2001)
   @ApiOperation({ summary: 'Get all admins' })
   getAllAdmin() {
     return this.adminService.getAllAdmin();
   }
-  
+
   @Get(':id')
   @Roles(2001)
   @ApiOperation({ summary: 'Get admin by ID' })
