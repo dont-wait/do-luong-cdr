@@ -2,7 +2,6 @@ import React, { JSX, Ref, useEffect, useRef, useState } from "react";
 import Chart from "chart.js/auto";
 import { FaBuilding, FaGraduationCap, FaBook } from "react-icons/fa";
 import { FaUserGraduate } from "react-icons/fa6";
-import { Obj } from "../../../../types/types";
 import { getData } from "../../../../utils/helps";
 import {
   DEPARTMENT_API,
@@ -53,7 +52,9 @@ const Dashboard: React.FC = () => {
       departmentChartInstance.current = new Chart(departmentChartRef.current, {
         type: "bar",
         data: {
-          labels: (departments ?? []).map((dept: Obj) => dept.department_name),
+          labels: (departments ?? []).map(
+            (dept: object) => dept.department_name
+          ),
           datasets: [
             {
               label: "Departments",

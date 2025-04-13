@@ -47,7 +47,6 @@ const subFields = [
 ];
 
 const Columns = [
-  { key: "id", label: "ID" },
   { key: "plo_name", label: "Name" },
   { key: "plo_content", label: "Content" },
   { key: "academic_id", label: "Curriculum ID" },

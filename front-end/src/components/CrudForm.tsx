@@ -232,12 +232,11 @@ const CrudForm = ({
     // Create a new item with main entity data and the selected lists
     const newItem = {
       ...mainEntity,
-      [listLabels[0]?.toLowerCase().replace(/\s+/g, "")]: selectedLists[0].map(
-        (item) => item.id
-      ),
-      [listLabels[1]?.toLowerCase().replace(/\s+/g, "")]: selectedLists[1].map(
-        (item) => item.id
-      ),
+      ...listLabels.reduce((acc, label, index) => {
+        const key = label;
+        acc[key] = selectedLists[index]?.map((item) => item.id) || [];
+        return acc;
+      }, {}),
     };
 
     if (editingIndex >= 0) {
@@ -373,89 +372,91 @@ const CrudForm = ({
     return (
       <div className='mt-4'>
         <div className='row'>
-          {[0, 1].map((listIndex) => (
-            <div className='col-md-6 mb-3' key={listIndex}>
-              <Card>
-                <Card.Header className='bg-secondary text-white'>
-                  {listLabels[listIndex]}
-                </Card.Header>
-                <Card.Body>
-                  <Form.Group className='mb-3'>
-                    <Form.Control
-                      type='text'
-                      placeholder={`Search ${listLabels[listIndex]}...`}
-                      value={searchTerms[listIndex]}
-                      onChange={(e) =>
-                        handleSearchChange(e.target.value, listIndex)
-                      }
-                      className='text-base'
-                    />
-                  </Form.Group>
+          {listData
+            ?.map((_, idx) => idx)
+            ?.map((listIndex) => (
+              <div className='col-md-6 mb-3' key={listIndex}>
+                <Card>
+                  <Card.Header className='bg-secondary text-white'>
+                    {listLabels[listIndex]}
+                  </Card.Header>
+                  <Card.Body>
+                    <Form.Group className='mb-3'>
+                      <Form.Control
+                        type='text'
+                        placeholder={`Search ${listLabels[listIndex]}...`}
+                        value={searchTerms[listIndex]}
+                        onChange={(e) =>
+                          handleSearchChange(e.target.value, listIndex)
+                        }
+                        className='text-base'
+                      />
+                    </Form.Group>
 
-                  <div
-                    style={{ maxHeight: "200px", overflowY: "auto" }}
-                    className='mb-3'>
-                    <ListGroup>
-                      {getFilteredListItems(listIndex).map((item) => (
-                        <ListGroup.Item
-                          key={item.id}
-                          action
-                          onClick={() => handleAddToList(item, listIndex)}
-                          className='d-flex justify-content-between align-items-center'>
-                          {item[listDisplayField]}
-                          <CiSquarePlus className='text-3xl' />
-                        </ListGroup.Item>
-                      ))}
-                    </ListGroup>
-                    {getFilteredListItems(listIndex)?.length === 0 && (
-                      <p className='text-center text-muted my-2'>
-                        No items found
-                      </p>
-                    )}
-                  </div>
-
-                  <div>
-                    <h6>
-                      Selected {listLabels[listIndex]} (
-                      {selectedLists[listIndex]?.length})
-                    </h6>
-                    <div style={{ maxHeight: "150px", overflowY: "auto" }}>
-                      {selectedLists[listIndex]?.length > 0 ? (
-                        <Table size='sm' striped bordered>
-                          <tbody>
-                            {selectedLists[listIndex].map((item, idx) => (
-                              <tr key={idx}>
-                                <td>{item[listDisplayField]}</td>
-                                <td
-                                  align='center'
-                                  className='text-center'
-                                  style={{ width: "60px" }}>
-                                  <Button
-                                    className='flex justify-between align-middle'
-                                    style={{ width: "100%" }}
-                                    variant='danger'
-                                    size='sm'
-                                    onClick={() =>
-                                      handleRemoveFromList(idx, listIndex)
-                                    }>
-                                    <FaTrashAlt className='w-[50px]' />
-                                  </Button>
-                                </td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </Table>
-                      ) : (
+                    <div
+                      style={{ maxHeight: "200px", overflowY: "auto" }}
+                      className='mb-3'>
+                      <ListGroup>
+                        {getFilteredListItems(listIndex).map((item) => (
+                          <ListGroup.Item
+                            key={item.id}
+                            action
+                            onClick={() => handleAddToList(item, listIndex)}
+                            className='d-flex justify-content-between align-items-center'>
+                            {item[listDisplayField]}
+                            <CiSquarePlus className='text-3xl' />
+                          </ListGroup.Item>
+                        ))}
+                      </ListGroup>
+                      {getFilteredListItems(listIndex)?.length === 0 && (
                         <p className='text-center text-muted my-2'>
-                          No items selected
+                          No items found
                         </p>
                       )}
                     </div>
-                  </div>
-                </Card.Body>
-              </Card>
-            </div>
-          ))}
+
+                    <div>
+                      <h6>
+                        Selected {listLabels[listIndex]} (
+                        {selectedLists[listIndex]?.length})
+                      </h6>
+                      <div style={{ maxHeight: "150px", overflowY: "auto" }}>
+                        {selectedLists[listIndex]?.length > 0 ? (
+                          <Table size='sm' striped bordered>
+                            <tbody>
+                              {selectedLists[listIndex].map((item, idx) => (
+                                <tr key={idx}>
+                                  <td>{item[listDisplayField]}</td>
+                                  <td
+                                    align='center'
+                                    className='text-center'
+                                    style={{ width: "60px" }}>
+                                    <Button
+                                      className='flex justify-between align-middle'
+                                      style={{ width: "100%" }}
+                                      variant='danger'
+                                      size='sm'
+                                      onClick={() =>
+                                        handleRemoveFromList(idx, listIndex)
+                                      }>
+                                      <FaTrashAlt className='w-[50px]' />
+                                    </Button>
+                                  </td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </Table>
+                        ) : (
+                          <p className='text-center text-muted my-2'>
+                            No items selected
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  </Card.Body>
+                </Card>
+              </div>
+            ))}
         </div>
         <div className='d-flex mt-3'>
           <Button
@@ -621,11 +622,13 @@ const CrudForm = ({
                       <th key={field.name}>{field.label}</th>
                     ))}
                     {formType === FormType.COMPOSITE &&
-                      [0, 1]?.map((listIndex) => (
-                        <th key={`list-${listIndex}`}>
-                          {listLabels[listIndex]}
-                        </th>
-                      ))}
+                      listData
+                        ?.map((_, idx) => idx)
+                        ?.map((listIndex) => (
+                          <th key={`list-${listIndex}`}>
+                            {listLabels[listIndex]}
+                          </th>
+                        ))}
                     <th>Actions</th>
                   </tr>
                 </thead>
@@ -636,18 +639,20 @@ const CrudForm = ({
                         <td key={field.name}>{item[field.name]}</td>
                       ))}
                       {formType === FormType.COMPOSITE &&
-                        [0, 1].map((listIndex) => {
-                          const listKey = listLabels[listIndex]
-                            .toLowerCase()
-                            .replace(/\s+/g, "");
-                          const listIds = item[listKey] || [];
-                          return (
-                            <td key={`list-${listIndex}`}>
-                              {listIds?.length} item
-                              {listIds?.length !== 1 ? "s" : ""}
-                            </td>
-                          );
-                        })}
+                        listData
+                          ?.map((_, idx) => idx)
+                          ?.map((listIndex) => {
+                            const listKey = listLabels[listIndex]
+                              .toLowerCase()
+                              .replace(/\s+/g, "");
+                            const listIds = item[listKey] || [];
+                            return (
+                              <td key={`list-${listIndex}`}>
+                                {listIds?.length} item
+                                {listIds?.length !== 1 ? "s" : ""}
+                              </td>
+                            );
+                          })}
                       <td className='d-flex justify-content-center'>
                         <Button
                           variant='warning'

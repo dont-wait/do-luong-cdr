@@ -113,7 +113,7 @@ const Subject = () => {
 
       <CrudForm
         formType={FormType.COMPOSITE}
-        title='Add New Course'
+        title='Add New Subject'
         fields={fields}
         onSubmit={handleApiResponse}
         apiEndpoint={SUBJECT_API}
