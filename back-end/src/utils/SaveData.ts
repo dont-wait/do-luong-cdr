@@ -4,8 +4,11 @@ import { CreateQuestionDto } from "src/modules/question/dto/create-question.dto"
 import { QuestionService } from "src/modules/question/Question.service"
 import { CloService } from "src/modules/clo/Clo.service"
 import { ApproveDataDto} from "./saveApproveData.dto"
+import { StudentService } from "src/modules/student/Student.service"
+import { ExamService } from "src/modules/exam/Exam.service"
+
 function normalizeQuestionName(raw: string): string {
-  return raw.replace(/\s*\(.*?\)\s*/g, '').trim(); // "Câu 1 (5.0)" => "Câu 1"
+  return raw.replace(/\s*\(.*?\)\s*/g, '').trim();
 }
 
 export class SaveData {
@@ -13,50 +16,46 @@ export class SaveData {
     private readonly resultService: ResultService,
     private readonly questionService: QuestionService,
     private readonly cloService: CloService,
+    private readonly studentService: StudentService,
+    private readonly examService: ExamService,
   ) {}
 
   private parseMaxScoreMap(headers: any[]): Record<string, Record<string, number>> {
     const maxScoreMap: Record<string, Record<string, number>> = {};
     for (const item of headers) {
-      console.log("==> Parsing item:", item);
-      console.log("==> Item type:", typeof item);
       if (typeof item === 'object') {
-        console.log("Đã vào đây");
         const questionName = Object.keys(item)[0];
-        console.log("==> Question Name:", questionName);
         const cloMap = item[questionName];
 
         const cloScores: Record<string, number> = {};
         for (const clo in cloMap) {
-          cloScores[clo] = parseFloat(cloMap[clo][0]); // từ ["3"] => 3
+          cloScores[clo] = parseFloat(cloMap[clo][0]);
         }
 
         maxScoreMap[questionName] = cloScores;
       }
     }
-    console.log("==> Max Score Mapping:", maxScoreMap);
     return maxScoreMap;
   }
 
   public async saveApprovedData(approvedData: ApproveDataDto) {
     const headers = approvedData.header.slice(1);
-     // Bỏ dòng tiêu đề ['STT', 'Mã sinh viên', ...]
     const exams = approvedData.Body;
     
     const maxScoreMap = this.parseMaxScoreMap(headers);
-
-    console.log("Exams:", exams);
     for (const exam of exams) {
+
       const examId = exam.id_exam;
+      const existingExam = await this.examService.getExamById(examId);
+      if (!existingExam) {
+        console.warn(`⚠️ Không tìm thấy exam với ID: ${examId}`);
+        continue;
+      }
       const students: Record<string, any>[] = exam.Data;
 
-      // === Tạo câu hỏi song song ===
       await Promise.all(
         headers.map(async (item) => {
-          console.log("==> Headers:", item);
-          console.log("==> Headers type:", typeof item);
           if (typeof item === "object") {
-            console.log("==> Creating question:", item);
             const questionName = Object.keys(item)[0];
             const dto: CreateQuestionDto = { question_name: questionName, exam_id: examId };
             await this.questionService.createQuestion(dto);
@@ -68,10 +67,12 @@ export class SaveData {
       const cloIdCache: Record<string, string> = {};
 
       for (const student of students) {
-        console.log("==> Raw student:", student);
-        console.log("==> Processing student:", student["Mã sinh viên"]);
         const studentId = String(student["Mã sinh viên"]);
-
+        const existingStudent = await this.studentService.getStudent(studentId);
+        if (!existingStudent) {
+          console.warn(`⚠️ Không tìm thấy sinh viên với ID: ${studentId}`);
+          continue;
+        }
         const resultPromises: Promise<any>[] = [];
 
         for (const key in student) {
@@ -80,8 +81,6 @@ export class SaveData {
           const cloScores = student[key];
           
           const normalizedName = normalizeQuestionName(key);
-          console.log("==> Processing question:", normalizedName);
-          console.log("==> CLO Scores:", cloScores);
           const question = listQuestion.find(q => q.question_name === normalizedName);
 
           if (!question?.id) {
@@ -92,7 +91,6 @@ export class SaveData {
           for (const cloName in cloScores) {
             const score = Number(cloScores[cloName]);
 
-            // Cache clo_id
             if (!cloIdCache[cloName]) {
               try {
                 cloIdCache[cloName] = await this.cloService.getCloIdByName(cloName);
@@ -104,7 +102,9 @@ export class SaveData {
 
             const clo_id = cloIdCache[cloName];
             const max_score = maxScoreMap[normalizedName]?.[cloName] ?? 0;
-
+            if(score > max_score) {
+              console.warn(`⚠️ Điểm ${score} lớn hơn điểm tối đa ${max_score} cho CLO '${cloName}' trong câu hỏi '${normalizedName}'`);
+            }
             const resultDto: CreateResultDto = {
               student_id: studentId,
               score,
@@ -112,14 +112,9 @@ export class SaveData {
               clo_id,
               max_score,
             };
-
-            console.log("==> Creating result:", resultDto);
-
             resultPromises.push(this.resultService.createResult(resultDto));
           }
         }
-
-        // Gửi song song kết quả cho từng sinh viên
         await Promise.all(resultPromises);
       }
     }
