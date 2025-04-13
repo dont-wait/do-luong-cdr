@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { CrudFormClass } from "../../../../class/CrudFormClass";
 import CrudForm from "../../../../components/CrudForm";
 import { CrudFromField, Obj } from "../../../../types/types";
 import { getData } from "../../../../utils/helps";

@@ -92,7 +92,7 @@ const Plo = () => {
       <DataTable
         data={data}
         setData={setData}
-        title='Curriculum Data'
+        title='Curriculum Table'
         columns={Columns}
         apiEndpoint={PLO_API}
         refreshTrigger={dataRefreshTrigger}
@@ -113,7 +113,7 @@ const Plo = () => {
           <DataTable
             data={subData}
             setData={setSubData}
-            title='Plo Data'
+            title='Plo Table'
             columns={SubColumns}
             apiEndpoint={PLO_DETAIL_API}
             refreshTrigger={dataRefreshTrigger}

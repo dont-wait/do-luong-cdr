@@ -6,7 +6,7 @@ import {
 } from "react-icons/md";
 import { FaUserGraduate } from "react-icons/fa6";
 import { GrTarget } from "react-icons/gr";
-import { BiSolidDetail } from "react-icons/bi";
+import { SiGoogleclassroom } from "react-icons/si";
 import { TbLogout2 } from "react-icons/tb";
 interface SidebarProps {
   isOpen: boolean;
@@ -59,6 +59,11 @@ const Sidebar: React.FC<SidebarProps> = ({
       section: "plo",
       icon: <GrTarget className='sidebar-item' />,
       label: "Plo",
+    },
+    {
+      section: "class",
+      icon: <SiGoogleclassroom className='sidebar-item' />,
+      label: "Class",
     },
   ];
 

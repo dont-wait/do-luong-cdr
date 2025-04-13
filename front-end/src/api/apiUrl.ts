@@ -10,3 +10,4 @@ export const PLO_DETAIL_API = "/plo-details";
 export const CLO_API = "/clo";
 export const PLO_CLO_API = "/plo-clo";
 export const LOGIN_API = "auth/login";
+export const CLASS_API = "/class";
