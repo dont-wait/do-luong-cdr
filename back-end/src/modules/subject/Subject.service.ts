@@ -90,13 +90,18 @@ export class SubjectService {
   }
 
   public async getAllSubjects() {
-    return await this.prisma.subject.findMany();
+    return await this.prisma.subject.findMany({
+      include: {
+        LecturerSubject: true,
+        class: true,
+      },
+    });
   }
 
   public async getSubjectById(id: string) {
     return await this.prisma.subject.findUnique({
       where: { id },
-      include: { LecturerSubject: true },
+      include: { LecturerSubject: true, class: true },
     });
   }
 
