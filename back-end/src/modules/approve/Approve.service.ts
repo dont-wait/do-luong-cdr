@@ -1,9 +1,8 @@
-import { BadRequestException, Body, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Body, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/Prisma.service';
 import { CreateApproveDto } from './dto/createApprove';
 import { UpdateApproveDto } from './dto/updateApprove';
 import { SaveData } from 'src/utils/SaveData';
-import { ApproveDataDto } from 'src/utils/saveApproveData.dto';
 import { ResultService } from '../result/Result.service';
 import { QuestionService } from '../question/Question.service';
 import { CloService } from '../clo/Clo.service';
@@ -83,21 +82,16 @@ export class ApproveService {
 
               if (approveItem.data && typeof approveItem.data === 'string') {
                 const parsedData = JSON.parse(approveItem.data);
-                console.log('📦 Parsed Approve Data:', parsedData);
           
-
                 await this.saveDataUtil.saveApprovedData(parsedData);
               } else {
-                console.warn('⚠️ Không có dữ liệu JSON hợp lệ trong approve:', approveItem.id);
+                throw new BadRequestException('⚠️ Không có dữ liệu JSON hợp lệ trong approve:', approveItem.id);
               }
             } catch (err) {
-              console.error('❌ Lỗi parse JSON trong approve:', approveItem.id, err.message);
+              throw new InternalServerErrorException('⚠️ Lỗi khi lưu dữ liệu approve:', err.message);
             }
           }
-
-
-
-
+          
         return await this.prisma.approve.update({
             where: { id: existingApprove.id },
             data: { approve }
