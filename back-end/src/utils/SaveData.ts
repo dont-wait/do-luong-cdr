@@ -43,22 +43,28 @@ export class SaveData {
     const exams = approvedData.Body;
     
     const maxScoreMap = this.parseMaxScoreMap(headers);
+    console.log(`Max Score Map: ${JSON.stringify(maxScoreMap)}`);
     for (const exam of exams) {
 
       const examId = exam.id_exam;
+      console.log(`Exam ID: ${examId}`);
       const existingExam = await this.examService.getExamById(examId);
+      console.log(`Existing Exam: ${existingExam}`);
       if (!existingExam) {
-        console.warn(`⚠️ Không tìm thấy exam với ID: ${examId}`);
+        console.log(`⚠️ Không tìm thấy exam với ID: ${examId}`);
         continue;
       }
       const students: Record<string, any>[] = exam.Data;
 
+      console.log(`Tao cau hoi cho exam ID: ${examId}`);
+      
       await Promise.all(
         headers.map(async (item) => {
           if (typeof item === "object") {
             const questionName = Object.keys(item)[0];
             const dto: CreateQuestionDto = { question_name: questionName, exam_id: examId };
             await this.questionService.createQuestion(dto);
+            console.log(`Tạo câu hỏi: ${questionName} cho exam ID: ${examId}`);
           }
         }),
       );
