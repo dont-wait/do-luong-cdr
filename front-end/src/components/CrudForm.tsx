@@ -4,6 +4,8 @@ import { Card, Form, Button, Table, Alert, ListGroup } from "react-bootstrap";
 import { CrudFormProps, Field, FormType } from "../types/types";
 import { useToast } from "../hook/useToast";
 import { postData, getData } from "../utils/helps";
+import { CiSquarePlus } from "react-icons/ci";
+import { FaTrashAlt } from "react-icons/fa";
 
 const CrudForm = ({
   formType = FormType.BASIC,
@@ -11,12 +13,17 @@ const CrudForm = ({
   fields,
   onSubmit,
   apiEndpoint,
-  existingData = [],
+  existingData = [[]],
   parentData = [],
   parentDisplayField = "name",
   childRelationField,
   childApiEndpoint,
   initialValues = {},
+  groupLabel = [],
+  listData = [[], []],
+  listLabels = ["List 1", "List 2"],
+  listDisplayField = "name",
+  listSearchFields = ["name"],
 }: CrudFormProps) => {
   // State for temporary saved items before final submission
   const [pendingItems, setPendingItems] = useState<object[]>([]);
@@ -25,6 +32,10 @@ const CrudForm = ({
   const [selectedItems, setSelectedItems] = useState<object>({});
   const [editingIndex, setEditingIndex] = useState(-1);
   const [isLoading, setIsLoading] = useState(false);
+  const [mainEntity, setMainEntity] = useState<object | null>(null);
+  const [selectedLists, setSelectedLists] = useState<object[][]>([[], []]);
+  const [searchTerms, setSearchTerms] = useState(["", ""]);
+  const [showDropdowns, setShowDropdowns] = useState(false);
   const { showToast } = useToast();
 
   const {
@@ -45,41 +56,37 @@ const CrudForm = ({
       childApiEndpoint
     ) {
       setIsLoading(true);
-      getData(`${childApiEndpoint}/${selectedParent.id}`)
+      getData(`${childApiEndpoint}/${selectedParent?.id}`)
         .then((response) => {
-          setChildItems(response.data);
+          setChildItems(response);
           setIsLoading(false);
         })
         .catch((err) => {
-          console.error("Error fetching child data:", err);
+          showToast(err, "error");
           setIsLoading(false);
         });
     }
   }, [formType, selectedParent, childApiEndpoint]);
 
   // Function to handle adding an item to the pending list
-  const handleAddItem = (data: object) => {
+  const handleAddItem = (data) => {
     // For checkbox form, combine form data with selected items
     if (formType === FormType.CHECKBOX) {
       const selectedKeys = Object.keys(selectedItems).filter(
         (key) => selectedItems[key]
       );
-
-      if (selectedKeys.length === 0) {
+      if (selectedKeys?.length === 0) {
         showToast("Please select at least one item", "info");
         return;
       }
-
-      const selectedData = existingData.filter((item) =>
-        selectedKeys.includes(item.id.toString())
+      const flatData = existingData.flat();
+      const selectedData = flatData.filter((item) =>
+        selectedKeys?.includes(item?.id?.toString())
       );
-
-      // Combine form data with selected items
-      const newItems = selectedData.map((item) => ({
+      const newItems = selectedData?.map((item) => ({
         ...item,
         ...data,
       }));
-
       setPendingItems([...pendingItems, ...newItems]);
       setSelectedItems({});
     }
@@ -87,7 +94,7 @@ const CrudForm = ({
     else if (formType === FormType.HIERARCHICAL && selectedParent) {
       const newItem = {
         ...data,
-        [childRelationField]: selectedParent.id,
+        [childRelationField]: selectedParent?.id,
       };
 
       if (editingIndex >= 0) {
@@ -98,6 +105,11 @@ const CrudForm = ({
       } else {
         setPendingItems([...pendingItems, newItem]);
       }
+    }
+    // For COMPOSITE form, save main entity data and show dropdowns
+    else if (formType === FormType.COMPOSITE) {
+      setMainEntity(data);
+      setShowDropdowns(true);
     }
     // For basic form, just add the data
     else {
@@ -115,22 +127,50 @@ const CrudForm = ({
   };
 
   // Function to handle editing an item
-  const handleEditItem = (index: number) => {
+  const handleEditItem = (index) => {
     setEditingIndex(index);
     const item = pendingItems[index];
 
     // Set form values for editing
-    fields.forEach((field) => {
-      if (item[field.name] !== undefined) {
+    fields.forEach((field: Field) => {
+      if (item[field?.name] !== undefined) {
         setValue(field.name, item[field.name]);
       }
     });
+
+    // For COMPOSITE form, we need to set up for editing
+    if (formType === FormType.COMPOSITE) {
+      // Extract and set main entity
+      const mainEntityData = {};
+      fields?.forEach((field) => {
+        mainEntityData[field?.name] = item[field?.name];
+      });
+      setMainEntity(mainEntityData);
+
+      // Extract and set selected lists
+      const newSelectedLists = [[], []];
+      listLabels?.forEach((label, idx) => {
+        const listKey = label.toLowerCase()?.replace(/\s+/g, "");
+        const listIds = item[listKey] || [];
+
+        // Find the corresponding items from the listData
+        if (listData[idx] && listIds?.length > 0) {
+          const selectedItems = listData[idx].filter((item) =>
+            listIds.includes(item?.id)
+          );
+          newSelectedLists[idx] = selectedItems;
+        }
+      });
+
+      setSelectedLists(newSelectedLists);
+      setShowDropdowns(true);
+    }
   };
 
   // Function to handle deleting an item
   const handleDeleteItem = (index) => {
     const updatedItems = [...pendingItems];
-    updatedItems.splice(index, 1);
+    updatedItems?.splice(index, 1);
     setPendingItems(updatedItems);
 
     if (editingIndex === index) {
@@ -139,22 +179,98 @@ const CrudForm = ({
     }
   };
 
+  // New function to handle adding an item to a list in COMPOSITE form
+  const handleAddToList = (item, listIndex) => {
+    const updatedLists = [...selectedLists];
+    // Check if item already exists in the list to avoid duplicates
+    if (
+      !updatedLists[listIndex].some(
+        (existingItem) => existingItem.id === item.id
+      )
+    ) {
+      updatedLists[listIndex] = [...updatedLists[listIndex], item];
+      setSelectedLists(updatedLists);
+    }
+  };
+
+  // New function to handle removing an item from a list in COMPOSITE form
+  const handleRemoveFromList = (itemIndex, listIndex) => {
+    const updatedLists = [...selectedLists];
+    updatedLists[listIndex] = updatedLists[listIndex].filter(
+      (_, index) => index !== itemIndex
+    );
+    setSelectedLists(updatedLists);
+  };
+
+  // New function to handle search term changes
+  const handleSearchChange = (term, listIndex) => {
+    const updatedTerms = [...searchTerms];
+    updatedTerms[listIndex] = term;
+    setSearchTerms(updatedTerms);
+  };
+
+  // New function to filter list items based on search terms
+  const getFilteredListItems = (listIndex) => {
+    const term = searchTerms[listIndex].toLowerCase();
+    if (!term) return listData[listIndex] || [];
+
+    return (listData[listIndex] || [])?.filter((item) => {
+      return listSearchFields?.some((field) => {
+        const fieldValue = String(item[field] || "")?.toLowerCase();
+        return fieldValue?.includes(term);
+      });
+    });
+  };
+
+  // New function to handle saving the COMPOSITE form
+  const handleSaveComposite = () => {
+    if (!mainEntity) {
+      showToast("Please enter general information first", "info");
+      return;
+    }
+
+    // Create a new item with main entity data and the selected lists
+    const newItem = {
+      ...mainEntity,
+      [listLabels[0]?.toLowerCase().replace(/\s+/g, "")]: selectedLists[0].map(
+        (item) => item.id
+      ),
+      [listLabels[1]?.toLowerCase().replace(/\s+/g, "")]: selectedLists[1].map(
+        (item) => item.id
+      ),
+    };
+
+    if (editingIndex >= 0) {
+      const updatedItems = [...pendingItems];
+      updatedItems[editingIndex] = newItem;
+      setPendingItems(updatedItems);
+      setEditingIndex(-1);
+    } else {
+      setPendingItems([...pendingItems, newItem]);
+    }
+
+    // Reset COMPOSITE form state
+    setMainEntity(null);
+    setSelectedLists([[], []]);
+    setSearchTerms(["", ""]);
+    setShowDropdowns(false);
+  };
+
   // Function to handle final submission of all pending items
   const handleFinalSubmit = async () => {
-    if (pendingItems.length === 0) {
+    if (pendingItems?.length === 0) {
       showToast("Please add at least one item before submitting", "info");
       return;
     }
 
     try {
       setIsLoading(true);
-      console.log(pendingItems);
       // Use Axios to submit data
       const responses = await Promise.all(
-        pendingItems.map((pendingItem) => postData(apiEndpoint, pendingItem))
+        pendingItems?.map((pendingItem) => postData(apiEndpoint, pendingItem))
       );
 
-      const data = responses.filter((item) => item !== undefined);
+      const data = responses?.filter((item) => item !== undefined);
 
       console.log(data);
 
@@ -165,6 +281,10 @@ const CrudForm = ({
       setPendingItems([]);
       setSelectedItems({});
       setSelectedParent(null);
+      setMainEntity(null);
+      setSelectedLists([[], []]);
+      setSearchTerms(["", ""]);
+      setShowDropdowns(false);
       reset();
       setIsLoading(false);
     } catch {
@@ -174,7 +294,7 @@ const CrudForm = ({
   };
 
   // Helper function to render form fields based on their type
-  const renderField = (field: Field) => {
+  const renderField = (field) => {
     return (
       <Form.Group className='mb-3' key={field.name}>
         <Form.Label htmlFor={field.name}>{field.label}</Form.Label>
@@ -223,7 +343,13 @@ const CrudForm = ({
                     type={field.type || "text"}
                     id={field.name}
                     value={value || ""}
-                    onChange={onChange}
+                    onChange={(e) => {
+                      const inputValue =
+                        field.type === "number"
+                          ? Number(e.target.value)
+                          : e.target.value;
+                      onChange(inputValue);
+                    }}
                     ref={ref}
                     isInvalid={!!errors[field.name]}
                   />
@@ -237,6 +363,121 @@ const CrudForm = ({
           </Form.Control.Feedback>
         )}
       </Form.Group>
+    );
+  };
+
+  // New function to render the COMPOSITE form dropdowns and lists
+  const renderCompositeListsSection = () => {
+    if (!showDropdowns) return null;
+
+    return (
+      <div className='mt-4'>
+        <div className='row'>
+          {[0, 1].map((listIndex) => (
+            <div className='col-md-6 mb-3' key={listIndex}>
+              <Card>
+                <Card.Header className='bg-secondary text-white'>
+                  {listLabels[listIndex]}
+                </Card.Header>
+                <Card.Body>
+                  <Form.Group className='mb-3'>
+                    <Form.Control
+                      type='text'
+                      placeholder={`Search ${listLabels[listIndex]}...`}
+                      value={searchTerms[listIndex]}
+                      onChange={(e) =>
+                        handleSearchChange(e.target.value, listIndex)
+                      }
+                      className='text-base'
+                    />
+                  </Form.Group>
+
+                  <div
+                    style={{ maxHeight: "200px", overflowY: "auto" }}
+                    className='mb-3'>
+                    <ListGroup>
+                      {getFilteredListItems(listIndex).map((item) => (
+                        <ListGroup.Item
+                          key={item.id}
+                          action
+                          onClick={() => handleAddToList(item, listIndex)}
+                          className='d-flex justify-content-between align-items-center'>
+                          {item[listDisplayField]}
+                          <CiSquarePlus className='text-3xl' />
+                        </ListGroup.Item>
+                      ))}
+                    </ListGroup>
+                    {getFilteredListItems(listIndex)?.length === 0 && (
+                      <p className='text-center text-muted my-2'>
+                        No items found
+                      </p>
+                    )}
+                  </div>
+
+                  <div>
+                    <h6>
+                      Selected {listLabels[listIndex]} (
+                      {selectedLists[listIndex]?.length})
+                    </h6>
+                    <div style={{ maxHeight: "150px", overflowY: "auto" }}>
+                      {selectedLists[listIndex]?.length > 0 ? (
+                        <Table size='sm' striped bordered>
+                          <tbody>
+                            {selectedLists[listIndex].map((item, idx) => (
+                              <tr key={idx}>
+                                <td>{item[listDisplayField]}</td>
+                                <td
+                                  align='center'
+                                  className='text-center'
+                                  style={{ width: "60px" }}>
+                                  <Button
+                                    className='flex justify-between align-middle'
+                                    style={{ width: "100%" }}
+                                    variant='danger'
+                                    size='sm'
+                                    onClick={() =>
+                                      handleRemoveFromList(idx, listIndex)
+                                    }>
+                                    <FaTrashAlt className='w-[50px]' />
+                                  </Button>
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </Table>
+                      ) : (
+                        <p className='text-center text-muted my-2'>
+                          No items selected
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                </Card.Body>
+              </Card>
+            </div>
+          ))}
+        </div>
+        <div className='d-flex mt-3'>
+          <Button
+            variant='primary'
+            onClick={handleSaveComposite}
+            className='me-2'>
+            {editingIndex >= 0 ? "Update Item" : "Save"}
+          </Button>
+          <Button
+            variant='secondary'
+            onClick={() => {
+              setMainEntity(null);
+              setSelectedLists([[], []]);
+              setSearchTerms(["", ""]);
+              setShowDropdowns(false);
+              setEditingIndex(-1);
+              reset();
+            }}>
+            Cancel
+          </Button>
+        </div>
+      </div>
     );
   };
 
@@ -256,7 +497,7 @@ const CrudForm = ({
                 </Card.Header>
                 <Card.Body style={{ maxHeight: "300px", overflowY: "auto" }}>
                   <ListGroup>
-                    {parentData.map((parent) => (
+                    {parentData?.map((parent) => (
                       <ListGroup.Item
                         key={parent.id}
                         active={selectedParent?.id === parent.id}
@@ -295,25 +536,31 @@ const CrudForm = ({
 
         {formType === FormType.CHECKBOX && (
           <div className='mb-4'>
-            <h5>Select Existing Items</h5>
             <Card>
-              <Card.Body style={{ maxHeight: "250px", overflowY: "auto" }}>
-                {existingData.length > 0 ? (
-                  existingData.map((item) => (
-                    <Form.Check
-                      type='checkbox'
-                      id={`check-${item.id}`}
-                      key={item.id}
-                      label={item.name || item.id}
-                      checked={selectedItems[item.id] || false}
-                      onChange={() =>
-                        setSelectedItems({
-                          ...selectedItems,
-                          [item.id]: !selectedItems[item.id],
-                        })
-                      }
-                      className='mb-2'
-                    />
+              <Card.Body
+                style={{ maxHeight: "250px", overflowY: "auto" }}
+                className='flex'>
+                {existingData?.length > 0 ? (
+                  existingData?.map((group, groupIndex) => (
+                    <div key={groupIndex} className='mb-3 flex-1'>
+                      <h5 className='px-3 py-1'>{groupLabel[groupIndex]}</h5>
+                      {group.map((item) => (
+                        <Form.Check
+                          type='checkbox'
+                          id={`check-${item.id}`}
+                          key={item.id}
+                          label={item.name || item.id}
+                          checked={selectedItems[item.id] || false}
+                          onChange={() =>
+                            setSelectedItems({
+                              ...selectedItems,
+                              [item.id]: !selectedItems[item.id],
+                            })
+                          }
+                          className='mb-2 ms-3'
+                        />
+                      ))}
+                    </div>
                   ))
                 ) : (
                   <Alert variant='warning'>No existing items available</Alert>
@@ -323,49 +570,62 @@ const CrudForm = ({
           </div>
         )}
 
-        {(formType !== FormType.HIERARCHICAL || selectedParent) && (
-          <Form onSubmit={handleSubmit(handleAddItem)}>
-            <div className='row'>
-              {fields.map((field) => (
-                <div className='col-md-6' key={field.name}>
-                  {renderField(field)}
-                </div>
-              ))}
-            </div>
+        {(formType !== FormType.HIERARCHICAL || selectedParent) &&
+          (formType !== FormType.COMPOSITE || !showDropdowns) && (
+            <Form onSubmit={handleSubmit(handleAddItem)}>
+              <div className='row'>
+                {fields?.map((field) => (
+                  <div className='col-md-6' key={field.name}>
+                    {renderField(field)}
+                  </div>
+                ))}
+              </div>
 
-            <div className='mt-3 flex'>
-              <Button
-                type='submit'
-                variant='primary'
-                className='me-2'
-                disabled={isLoading}>
-                {editingIndex >= 0 ? "Update Item" : "Add to List"}
-              </Button>
-              {editingIndex >= 0 && (
+              <div className='mt-3 d-flex'>
                 <Button
-                  variant='secondary'
-                  onClick={() => {
-                    setEditingIndex(-1);
-                    reset();
-                  }}
+                  type='submit'
+                  variant='primary'
+                  className='me-2'
                   disabled={isLoading}>
-                  Cancel
+                  {editingIndex >= 0
+                    ? "Update Item"
+                    : formType === FormType.COMPOSITE
+                    ? "Next"
+                    : "Add to List"}
                 </Button>
-              )}
-            </div>
-          </Form>
-        )}
+                {editingIndex >= 0 && (
+                  <Button
+                    variant='secondary'
+                    onClick={() => {
+                      setEditingIndex(-1);
+                      reset();
+                    }}
+                    disabled={isLoading}>
+                    Cancel
+                  </Button>
+                )}
+              </div>
+            </Form>
+          )}
 
-        {pendingItems.length > 0 && (
+        {formType === FormType.COMPOSITE && renderCompositeListsSection()}
+
+        {pendingItems?.length > 0 && (
           <div className='mt-4'>
-            <h5>Pending Items ({pendingItems.length})</h5>
+            <h5>Pending Items ({pendingItems?.length})</h5>
             <div className='table-responsive'>
               <Table striped bordered hover>
                 <thead className='table-dark'>
                   <tr className='text-center'>
-                    {fields.map((field) => (
+                    {fields?.map((field) => (
                       <th key={field.name}>{field.label}</th>
                     ))}
+                    {formType === FormType.COMPOSITE &&
+                      [0, 1]?.map((listIndex) => (
+                        <th key={`list-${listIndex}`}>
+                          {listLabels[listIndex]}
+                        </th>
+                      ))}
                     <th>Actions</th>
                   </tr>
                 </thead>
@@ -375,7 +635,20 @@ const CrudForm = ({
                       {fields.map((field) => (
                         <td key={field.name}>{item[field.name]}</td>
                       ))}
-                      <td className='flex'>
+                      {formType === FormType.COMPOSITE &&
+                        [0, 1].map((listIndex) => {
+                          const listKey = listLabels[listIndex]
+                            .toLowerCase()
+                            .replace(/\s+/g, "");
+                          const listIds = item[listKey] || [];
+                          return (
+                            <td key={`list-${listIndex}`}>
+                              {listIds?.length} item
+                              {listIds?.length !== 1 ? "s" : ""}
+                            </td>
+                          );
+                        })}
+                      <td className='d-flex justify-content-center'>
                         <Button
                           variant='warning'
                           size='sm'

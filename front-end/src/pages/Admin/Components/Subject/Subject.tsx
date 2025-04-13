@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
-import { CrudFormClass } from "../../../../class/CrudFormClass";
 import CrudForm from "../../../../components/CrudForm";
-import { CrudFromField, Obj } from "../../../../types/types";
+import DataTable from "../../../../components/DataTable";
+import { FormType, Field } from "../../../../types/types";
 import { getData } from "../../../../utils/helps";
 import {
   SUBJECT_API,
@@ -11,19 +11,88 @@ import {
 import { PK } from "../../../../api/primaryKey";
 import { useToast } from "../../../../hook/useToast";
 
+const Columns = [
+  { key: "id", label: "ID" },
+  { key: "subject_name", label: "Name" },
+  { key: "practical_credits", label: "Practical Credits" },
+  { key: "theoretical_credits", label: "Theoretical Credits" },
+  { key: "lecturer_subject_manager_id", label: "Manager ID" },
+];
+
 const Subject = () => {
-  const [curriculum, setCurriculum] = useState<Obj[]>([]);
-  const [lecturer, setLecturer] = useState<Obj[]>([]);
+  const [data, setData] = useState<object[]>([]);
+  const [dataRefreshTrigger, setDataRefreshTrigger] = useState(0);
+  const [existingData, setExistingData] = useState<object[][]>([]);
+  const [fields, setFields] = useState<Field[]>([]);
   const { showToast } = useToast();
+
+  const handleApiResponse = (responseData: object[]) => {
+    setData((prevData) => [...prevData, ...responseData]);
+  };
 
   useEffect(() => {
     const fetchCurriculums = async () => {
       try {
-        const curriculums = await getData(CURRICULUM_API);
-        setCurriculum(curriculums);
-
-        const lectuers = await getData(LECTURES_API);
-        setLecturer(lectuers);
+        let curriculums = await getData(CURRICULUM_API);
+        curriculums = curriculums.map(
+          (curriculum: { id: string; academic_name: string }) => ({
+            id: curriculum.id,
+            name: curriculum.academic_name,
+          })
+        );
+        let lectuers = await getData(LECTURES_API);
+        lectuers = lectuers.map(
+          (lecturer: {
+            id: string;
+            first_name: string;
+            last_name: string;
+          }) => ({
+            id: lecturer.id,
+            name: `${lecturer.first_name} ${lecturer.last_name}`,
+          })
+        );
+        setExistingData([curriculums, lectuers]);
+        setFields([
+          {
+            name: PK.SUBJECT_API,
+            label: "Subject ID",
+            type: "text",
+            required: true,
+          },
+          {
+            name: "subject_name",
+            label: "Subject Name",
+            type: "text",
+            required: true,
+          },
+          {
+            name: "practical_credits",
+            label: "Practical Credits",
+            type: "number",
+            required: true,
+          },
+          {
+            name: "theoretical_credits",
+            label: "Theoretical Credits",
+            type: "number",
+            required: true,
+          },
+          {
+            name: "description",
+            label: "Description",
+            type: "textarea",
+          },
+          {
+            name: "lecturer_subject_manager_id",
+            label: "Manager ID",
+            type: "select",
+            required: true,
+            options: lectuers.map((lecturer: { id: string; name: string }) => ({
+              value: lecturer.id,
+              label: lecturer.name,
+            })),
+          },
+        ]);
       } catch {
         showToast("Error fetching!", "error");
       }
@@ -31,77 +100,29 @@ const Subject = () => {
     fetchCurriculums();
   }, [showToast]);
 
-  const inputFields: CrudFromField[] = [
-    CrudFormClass.create({
-      key: PK.SUBJECT_API,
-      label: "Subject ID",
-      type: "text",
-      isRequired: true,
-      isVisible: true,
-    }),
-    CrudFormClass.create({
-      key: "subject_name",
-      label: "Subject Name",
-      type: "text",
-      isRequired: true,
-      isVisible: true,
-    }),
-    CrudFormClass.create({
-      key: "practical_credits",
-      label: "Practical Credits",
-      type: "number",
-      isRequired: true,
-      isVisible: true,
-    }),
-    CrudFormClass.create({
-      key: "theoretical_credits",
-      label: "Theoretical Credits",
-      type: "number",
-      isRequired: true,
-      isVisible: true,
-    }),
-    CrudFormClass.create({
-      key: "description",
-      label: "description",
-      type: "text",
-      isRequired: false,
-      isVisible: false,
-    }),
-    CrudFormClass.create({
-      key: "lecturer_id",
-      label: "Lecturer ID",
-      type: "text",
-      isRequired: true,
-      isVisible: false,
-      isDropBox: true,
-      dataDrop: lecturer,
-      dropLabel: "email",
-      isMultiple: true,
-    }),
-    CrudFormClass.create({
-      key: "academic_id",
-      label: "Curriculum ID",
-      type: "text",
-      isRequired: true,
-      isVisible: false,
-      isDropBox: true,
-      dataDrop: curriculum,
-      dropLabel: "academic_name",
-      isMultiple: true,
-    }),
-    CrudFormClass.create({
-      key: "lecturer_subject_manager_id",
-      label: "CNHP",
-      type: "text",
-      isRequired: false,
-      isVisible: false,
-      isDropBox: true,
-      dataDrop: [{ id: "", email: "Không có chủ nhiệm" }, ...lecturer],
-      dropLabel: "email",
-    }),
-  ];
   return (
-    <CrudForm inputFields={inputFields} url={SUBJECT_API} isFilter={true} />
+    <>
+      <DataTable
+        data={data}
+        setData={setData}
+        title='Subject Data'
+        columns={Columns}
+        apiEndpoint={SUBJECT_API}
+        refreshTrigger={dataRefreshTrigger}
+      />
+
+      <CrudForm
+        formType={FormType.COMPOSITE}
+        title='Add New Course'
+        fields={fields}
+        onSubmit={handleApiResponse}
+        apiEndpoint={SUBJECT_API}
+        listData={existingData}
+        listLabels={["academic_id", "lecturer_id"]}
+        listDisplayField='name'
+        listSearchFields={["name"]}
+      />
+    </>
   );
 };
 

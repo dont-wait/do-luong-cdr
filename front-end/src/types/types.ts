@@ -99,6 +99,11 @@ export interface CrudFormProps {
   childRelationField?: string; //  Field linking child to parent
   childApiEndpoint?: string; // - API endpoint for fetching child data
   initialValues?: object; // - Initial form values
+  groupLabel?: string[];
+  listData?: object[][];
+  listLabels?: string[];
+  listDisplayField?: string;
+  listSearchFields?: string[];
 }
 
 export interface ColumnDefinition {
@@ -114,10 +119,12 @@ export interface DataTableProps {
   apiEndpoint: string;
   refreshTrigger: number;
   showActions?: boolean;
+  groupLabel?: [];
 }
 
 export const FormType = {
-  BASIC: "basic",
-  CHECKBOX: "checkbox",
-  HIERARCHICAL: "hierarchical",
+  BASIC: "BASIC",
+  HIERARCHICAL: "HIERARCHICAL",
+  CHECKBOX: "CHECKBOX",
+  COMPOSITE: "COMPOSITE",
 };

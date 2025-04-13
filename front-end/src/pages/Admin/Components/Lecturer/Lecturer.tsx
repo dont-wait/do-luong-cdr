@@ -95,7 +95,6 @@ const Lecturer = () => {
   }, [showToast]);
 
   const handleApiResponse = (responseData: object[]) => {
-    console.log(responseData);
     setData((prevData) => [...prevData, ...responseData]);
   };
 

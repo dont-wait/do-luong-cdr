@@ -1,11 +1,11 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import CrudForm from "../../../../components/CrudForm";
 import DataTable from "../../../../components/DataTable";
 import { FormType } from "../../../../types/types";
 import { DEPARTMENT_API } from "../../../../api/apiUrl";
 import { PK } from "../../../../api/primaryKey";
 
-const Fields = [
+const fields = [
   {
     name: PK.DEPARTMENT_API,
     label: "Department ID",
@@ -57,7 +57,7 @@ const Departments: React.FC = () => {
       <CrudForm
         formType={FormType.BASIC}
         title='Manage Courses'
-        fields={Fields}
+        fields={fields}
         onSubmit={handleApiResponse}
         apiEndpoint={DEPARTMENT_API}
       />

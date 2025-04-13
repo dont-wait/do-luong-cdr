@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { DataTableProps } from "../types/types";
-import { getData, updateData, deleteData } from "../utils/helps";
+import { getData, deleteData } from "../utils/helps";
 import { useToast } from "../hook/useToast";
+import { FaSearch } from "react-icons/fa";
 
 const DataTable: React.FC<DataTableProps> = ({
   data,
@@ -95,7 +96,12 @@ const DataTable: React.FC<DataTableProps> = ({
             <div className='input-group'>
               <input
                 type='text'
-                className='form-control'
+                className='outline-none flex-1 p-2'
+                style={{
+                  border: "1px solid #8888",
+                  borderRadius: "5px",
+                  overflow: "hidden",
+                }}
                 placeholder='Search...'
                 value={searchTerm}
                 onChange={(e) => {
@@ -103,14 +109,9 @@ const DataTable: React.FC<DataTableProps> = ({
                   setCurrentPage(1);
                 }}
               />
-              {searchTerm && (
-                <button
-                  className='btn btn-outline-secondary'
-                  type='button'
-                  onClick={() => setSearchTerm("")}>
-                  <i className='fas fa-times'></i>
-                </button>
-              )}
+              <button className='bg-primary p-3'>
+                <FaSearch className='text-white' />
+              </button>
             </div>
           </div>
         </div>
