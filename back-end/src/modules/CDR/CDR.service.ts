@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { BadRequestException, Injectable } from "@nestjs/common";
 import { ExamService } from "../exam/Exam.service";
 import { QuestionService } from "../question/Question.service";
 import { ResultService } from "../result/Result.service";
@@ -59,19 +59,16 @@ export class CDRService {
         score = 0; 
       }
       if (!clo?.id || !student_id || max_score == null) {
-        console.warn(`Bỏ qua kết quả không hợp lệ: student_id=${student_id}, clo_id=${clo?.id}`);
-        continue;
+       throw new BadRequestException(`Không tìm thấy clo hoặc student_id hoặc max_score trong kết quả: ${JSON.stringify(result)}`);
       }
 
       if (score < 0 || max_score < 0 || score > max_score) {
-        console.warn(`Điểm không hợp lệ: student_id=${student_id}, score=${score}, max_score=${max_score}`);
-        continue;
+        throw new BadRequestException(`Điểm không hợp lệ trong kết quả: ${JSON.stringify(result)}`);
       }
 
       const currentClo = cloMap.get(clo.id);
       if (!currentClo?.name) {
-        console.warn(`CLO không tồn tại trong cloMap: clo_id=${clo.id}`);
-        continue;
+        throw new BadRequestException(`Không tìm thấy clo với ID: ${clo.id}`);
       }
 
       let parentCloName: string;

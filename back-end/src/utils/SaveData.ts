@@ -6,6 +6,7 @@ import { CloService } from "src/modules/clo/Clo.service"
 import { ApproveDataDto} from "./saveApproveData.dto"
 import { StudentService } from "src/modules/student/Student.service"
 import { ExamService } from "src/modules/exam/Exam.service"
+import { BadRequestException } from "@nestjs/common"
 
 function normalizeQuestionName(raw: string): string {
   return raw.replace(/\s*\(.*?\)\s*/g, '').trim();
@@ -43,20 +44,15 @@ export class SaveData {
     const exams = approvedData.Body;
     
     const maxScoreMap = this.parseMaxScoreMap(headers);
-    console.log(`Max Score Map: ${JSON.stringify(maxScoreMap)}`);
     for (const exam of exams) {
 
       const examId = exam.id_exam;
-      console.log(`Exam ID: ${examId}`);
       const existingExam = await this.examService.getExamById(examId);
-      console.log(`Existing Exam: ${existingExam}`);
       if (!existingExam) {
-        console.log(`⚠️ Không tìm thấy exam với ID: ${examId}`);
-        continue;
+        throw new BadRequestException(`Không tìm thấy exam với ID: ${examId}`);
       }
       const students: Record<string, any>[] = exam.Data;
 
-      console.log(`Tao cau hoi cho exam ID: ${examId}`);
       
       await Promise.all(
         headers.map(async (item) => {
@@ -64,7 +60,6 @@ export class SaveData {
             const questionName = Object.keys(item)[0];
             const dto: CreateQuestionDto = { question_name: questionName, exam_id: examId };
             await this.questionService.createQuestion(dto);
-            console.log(`Tạo câu hỏi: ${questionName} cho exam ID: ${examId}`);
           }
         }),
       );
@@ -76,8 +71,7 @@ export class SaveData {
         const studentId = String(student["Mã sinh viên"]);
         const existingStudent = await this.studentService.getStudent(studentId);
         if (!existingStudent) {
-          console.warn(`⚠️ Không tìm thấy sinh viên với ID: ${studentId}`);
-          continue;
+          throw new BadRequestException(`Không tìm thấy sinh viên với ID: ${studentId}`);
         }
         const resultPromises: Promise<any>[] = [];
 
@@ -90,8 +84,7 @@ export class SaveData {
           const question = listQuestion.find(q => q.question_name === normalizedName);
 
           if (!question?.id) {
-            console.warn(`⚠️ Không tìm thấy question_id cho: ${normalizedName}`);
-            continue;
+            throw new BadRequestException(`Không tìm thấy câu hỏi với tên: ${normalizedName}`);
           }
 
           for (const cloName in cloScores) {
@@ -101,15 +94,14 @@ export class SaveData {
               try {
                 cloIdCache[cloName] = await this.cloService.getCloIdByName(cloName);
               } catch (err) {
-                console.warn(`⚠️ Lỗi khi lấy CLO ID cho '${cloName}':`, err);
-                continue;
+                throw new BadRequestException(`Không tìm thấy CLO với tên: ${cloName}`);
               }
             }
 
             const clo_id = cloIdCache[cloName];
             const max_score = maxScoreMap[normalizedName]?.[cloName] ?? 0;
             if(score > max_score) {
-              console.warn(`⚠️ Điểm ${score} lớn hơn điểm tối đa ${max_score} cho CLO '${cloName}' trong câu hỏi '${normalizedName}'`);
+              throw new BadRequestException(`Điểm không hợp lệ cho sinh viên ${studentId} với câu hỏi ${normalizedName} và CLO ${cloName}`);
             }
             const resultDto: CreateResultDto = {
               student_id: studentId,
