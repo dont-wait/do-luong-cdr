@@ -124,12 +124,7 @@ export class CloService {
     }
   
   async findManyClos() {
-    return this.prisma.clo.findMany().then((clos) => { 
-      if (clos.length === 0) {
-        throw new BadRequestException('No CLO found');
-      }
-      return clos;
-    });
+    return this.prisma.clo.findMany();
   }
 
   async getCloById(id: string) {
