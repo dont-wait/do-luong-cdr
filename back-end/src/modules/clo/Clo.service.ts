@@ -79,9 +79,7 @@ export class CloService {
               const parentClo = await this.prisma.clo.findUnique({
                 where: { id: clo_parent_id },
               });
-              if (!parentClo) {
-                throw new BadRequestException(`Parent CLO not found for ${clo_name}`);
-              }
+              
             }
 
             if (ploIds && ploIds.length > 0) {
