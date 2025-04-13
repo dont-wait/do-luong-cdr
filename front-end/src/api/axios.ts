@@ -33,6 +33,7 @@ const login = async (id: string, password: string) => {
     // luu cookie vao session storage
     const token = response.data.data.access_token;
     sessionStorage.setItem("access_token", token);
+    apiClient.defaults.headers.Authorization = `Bearer ${token}`;
 
     return {
       user: response.data.data.user,

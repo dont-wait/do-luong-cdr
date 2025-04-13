@@ -1,4 +1,13 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Put } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Put,
+} from '@nestjs/common';
 import { AcademicService } from './Academic.service';
 import { CreateAcademicDto } from './dto/create-academic.dto';
 import { ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
@@ -8,19 +17,20 @@ import { Roles } from 'src/common/decorator/roles.decorator';
 @Controller('academics')
 export class AcademicController {
   constructor(private readonly academicService: AcademicService) {}
-  
+
   @Post()
-  @Roles(2001)
   @ApiOperation({ summary: 'Create new academic(s)' })
-  @ApiResponse({ status: 201, description: 'Academic(s) successfully created.' })
+  @ApiResponse({
+    status: 201,
+    description: 'Academic(s) successfully created.',
+  })
   @ApiResponse({ status: 400, description: 'Bad Request.' })
   @ApiBody({ type: CreateAcademicDto, isArray: true })
   createAcademic(@Body() data: CreateAcademicDto | CreateAcademicDto[]) {
-    return this.academicService.createAcademic(data)
+    return this.academicService.createAcademic(data);
   }
 
   @Get()
-  @Roles(2001)
   @ApiOperation({ summary: 'Get all academics' })
   @ApiResponse({ status: 200, description: 'Return all academics.' })
   findManyAcademics() {
@@ -28,7 +38,6 @@ export class AcademicController {
   }
 
   @Get(':id')
-  @Roles(2001)
   @ApiOperation({ summary: 'Get academic by id' })
   @ApiResponse({ status: 200, description: 'Return a academic by id.' })
   @ApiResponse({ status: 404, description: 'Academic not found.' })
@@ -36,23 +45,19 @@ export class AcademicController {
     return this.academicService.getAcademicById(id);
   }
 
-
-
   @Put(':id')
-  @Roles(2001)
   @ApiOperation({ summary: 'Update academic by id' })
   @ApiResponse({ status: 200, description: 'Academic successfully updated.' })
   @ApiResponse({ status: 404, description: 'Academic not found.' })
   updateAcademicPut(@Param('id') id: string, @Body() data: CreateAcademicDto) {
-    return this.academicService.updateAcademic(id, data)
+    return this.academicService.updateAcademic(id, data);
   }
 
   @Delete(':id')
-  @Roles(2001)
   @ApiOperation({ summary: 'Delete academic by id' })
   @ApiResponse({ status: 200, description: 'Academic successfully deleted.' })
   @ApiResponse({ status: 404, description: 'Academic not found.' })
   removeAcademic(@Param('id') id: string) {
-    return this.academicService.removeAcademic(id)
+    return this.academicService.removeAcademic(id);
   }
 }

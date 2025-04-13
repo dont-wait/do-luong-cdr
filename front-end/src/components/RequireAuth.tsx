@@ -9,9 +9,7 @@ const RequireAuth = ({ allowedRole }: { allowedRole: number }) => {
   const { auth } = useAuth();
   const location = useLocation();
 
-  if (auth?.accessToken) {
-    apiClient.defaults.headers.Authorization = `Bearer ${auth.accessToken}`;
-  } else {
+  if (!auth?.accessToken) {
     const access_token = sessionStorage.getItem("access_token");
     apiClient.defaults.headers.Authorization = `Bearer ${access_token}`;
   }

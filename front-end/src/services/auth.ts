@@ -12,6 +12,7 @@ export const loginHanle = async ({ id, password }: AccountData) => {
       const lecturerInfo: Lecturer = await getData(
         `${LECTURES_API}/${user.lecturer_id}`
       );
+
       localStorage.setItem(
         CNHP,
         JSON.stringify(lecturerInfo.subjects.length > 0)
