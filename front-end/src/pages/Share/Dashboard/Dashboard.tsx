@@ -2,13 +2,13 @@ import React, { JSX, Ref, useEffect, useRef, useState } from "react";
 import Chart from "chart.js/auto";
 import { FaBuilding, FaGraduationCap, FaBook } from "react-icons/fa";
 import { FaUserGraduate } from "react-icons/fa6";
-import { getData } from "../../../../utils/helps";
+import { getData } from "../../../utils/helps";
 import {
   DEPARTMENT_API,
   CURRICULUM_API,
   LECTURES_API,
   SUBJECT_API,
-} from "../../../../api/apiUrl";
+} from "../../../api/apiUrl";
 
 const Dashboard: React.FC = () => {
   const [departments, setDepartments] = useState([]);
@@ -53,7 +53,8 @@ const Dashboard: React.FC = () => {
         type: "bar",
         data: {
           labels: (departments ?? []).map(
-            (dept: object) => dept.department_name
+            (dept: object) =>
+              (dept as { department_name: string }).department_name
           ),
           datasets: [
             {

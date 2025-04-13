@@ -308,20 +308,20 @@ const Home = () => {
                           <>
                             <div className='row mt-3 g-2'>
                               <div className='col-md-4'>
-                                <span className='d-inline-flex align-items-center badge bg-success bg-opacity-25 p-2 w-100'>
+                                <span className='d-inline-flex align-items-center badge bg-success bg-opacity-25 p-2 w-100 text-black'>
                                   <i className='bi bi-check-circle me-1'></i>
                                   Thực hành: {subject.practical_credits} tín chỉ
                                 </span>
                               </div>
                               <div className='col-md-4'>
-                                <span className='d-inline-flex align-items-center badge bg-warning bg-opacity-25 p-2 w-100'>
+                                <span className='d-inline-flex align-items-center badge bg-warning bg-opacity-25 p-2 w-100 text-black'>
                                   <i className='bi bi-plus-circle me-1'></i>
                                   Lý thuyết: {subject.theoretical_credits} tín
                                   chỉ
                                 </span>
                               </div>
                               <div className='col-md-4'>
-                                <span className='d-inline-flex align-items-center badge bg-info bg-opacity-25 p-2 w-100'>
+                                <span className='d-inline-flex align-items-center badge bg-info bg-opacity-25 p-2 w-100 text-black'>
                                   <i className='bi bi-clipboard me-1'></i>
                                   Tổng:{" "}
                                   {subject.practical_credits +
