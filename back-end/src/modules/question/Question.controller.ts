@@ -24,13 +24,6 @@ export class QuestionController {
     return this.questionService.getQuestion(id);
   }
 
-  @Get(':examId')
-  @ApiOperation({summary: 'Get many questtion by examId'})
-  @ApiResponse({status: 200, description: 'Return many question'})
-  @ApiResponse({status: 404, description: 'ExamId not found'})
-  public getManyQuestionByExamId(@Param('examId') examId: string) {
-    return this.questionService.getAllQuestionsByExamId(examId);
-  }
 
   @Post()
   @ApiBody({ type: CreateQuestionDto })

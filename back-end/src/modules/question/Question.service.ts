@@ -102,4 +102,19 @@ export class QuestionService {
       throw new InternalServerErrorException(err.message);
     }
   }
+
+  public async getQuestionIdsByExamIds(examIds: string[]) {
+    const questions = await this.prisma.question.findMany({
+      where: {
+        exam_id: {
+          in: examIds,
+        },
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    return questions.map((question) => question.id);
+  }
 }
