@@ -20,7 +20,7 @@ export class AdminService {
   public async createAdmin(data: CreateAdminDto) {
     const { id, password, ...rest } = data;
 
-    const adminRole = roles.find((r) => r.role_name === 'student');
+    const adminRole = roles.find((r) => r.role_name === 'admin');
 
     if (!adminRole?.role_id)
       throw new BadRequestException('Không tìm thấy role admin');
