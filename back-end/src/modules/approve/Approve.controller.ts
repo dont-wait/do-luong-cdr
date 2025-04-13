@@ -32,8 +32,8 @@ export class ApproveController {
     }
 
     @Put()
-    @ApiOperation({ summary: 'Update an approve request' })
-    @ApiResponse({ status: 200, description: 'The approve request has been updated successfully.' })
+    @ApiOperation({ summary: 'Update and save an approve data' })
+    @ApiResponse({ status: 200, description: 'The approve data has been updated and saved successfully.' })
     @ApiResponse({ status: 400, description: 'Bad request.' })
     public async updateApprove(@Body() data: UpdateApproveDto) {
         return await this.approveService.updateApprove(data);

@@ -8,10 +8,11 @@ import { QuestionService } from '../question/Question.service';
 import { CloService } from '../clo/Clo.service';
 import { ExamService } from '../exam/Exam.service';
 import { PloCloService } from '../ploClo/PloClo.service';
+import { StudentService } from '../student/Student.service';
 
 @Module({
   controllers: [ApproveController],
-  providers: [ApproveService, SaveData, ApproveDataDto, ResultService, QuestionService, CloService, ExamService, PloCloService],
+  providers: [ApproveService, SaveData, ApproveDataDto, ResultService, QuestionService, CloService, ExamService, PloCloService, StudentService],
   exports: [ApproveService],
 })
 export class ApproveModule {}

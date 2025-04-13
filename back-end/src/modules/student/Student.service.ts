@@ -1,20 +1,12 @@
-import {
-  BadRequestException,
-  forwardRef,
-  Inject,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import {Injectable, NotFoundException, BadRequestException} from '@nestjs/common';
 import { CreateStudentDto } from './dto/create-student.dto';
 import { PrismaService } from '../prisma/Prisma.service';
-import { ClassStudentService } from '../classStudent/ClassStudent.service';
+
 
 @Injectable()
 export class StudentService {
   constructor(
     private readonly prisma: PrismaService,
-    @Inject(forwardRef(() => ClassStudentService))
-    private readonly classstudent: ClassStudentService,
   ) {}
 
   public getAllStudents() {
@@ -34,22 +26,19 @@ export class StudentService {
   }
   
   public async createStudent(createStudentDto: CreateStudentDto) {
-    const { class_id, ...Data } = createStudentDto;
-  
-    const classExists = await this.prisma.class.findUnique({
-      where: { id: class_id },
+    const existingStudent = await this.prisma.student.findFirst({
+      where: {
+        id: createStudentDto.id,
+      },
     });
-  
-    if (!classExists) {
-      throw new BadRequestException(`Class ID ${class_id} not found`);
-    }
-  
 
-    const newStudent = await this.prisma.student.create({ data: Data });
-  
-    await this.classstudent.createAClassStudent(class_id, newStudent.id);
-  
-    return newStudent;
+    if (existingStudent) {
+      throw new BadRequestException('Student ID đã tồn tại');
+    }
+
+    return this.prisma.student.create({
+      data: createStudentDto,
+    });
   }
   
 }

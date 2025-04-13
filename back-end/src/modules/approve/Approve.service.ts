@@ -1,13 +1,13 @@
-import { BadRequestException, Body, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Body, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/Prisma.service';
 import { CreateApproveDto } from './dto/createApprove';
 import { UpdateApproveDto } from './dto/updateApprove';
 import { SaveData } from 'src/utils/SaveData';
-import { ApproveDataDto } from 'src/utils/saveApproveData.dto';
 import { ResultService } from '../result/Result.service';
 import { QuestionService } from '../question/Question.service';
 import { CloService } from '../clo/Clo.service';
-import { get } from 'http';
+import { StudentService } from '../student/Student.service';
+import { ExamService } from '../exam/Exam.service';
 @Injectable()
 export class ApproveService {
     private readonly saveDataUtil: SaveData;
@@ -17,11 +17,15 @@ export class ApproveService {
         private readonly resultService: ResultService,
         private readonly questionService: QuestionService,
         private readonly cloService: CloService,
+        private readonly studentService: StudentService,
+        private readonly examService: ExamService,
     ) {
       this.saveDataUtil = new SaveData(
         this.resultService,
         this.questionService,
         this.cloService,
+        this.studentService,
+        this.examService,
       );
     }
   
@@ -75,24 +79,19 @@ export class ApproveService {
         }
         for (const approveItem of ApproveSave) {
             try {
-              // Kiểm tra nếu có data và là string thì parse
+
               if (approveItem.data && typeof approveItem.data === 'string') {
                 const parsedData = JSON.parse(approveItem.data);
-                console.log('📦 Parsed Approve Data:', parsedData);
           
-                // Có thể gọi xử lý từng cái ở đây, ví dụ:
                 await this.saveDataUtil.saveApprovedData(parsedData);
               } else {
-                console.warn('⚠️ Không có dữ liệu JSON hợp lệ trong approve:', approveItem.id);
+                throw new BadRequestException('⚠️ Không có dữ liệu JSON hợp lệ trong approve:', approveItem.id);
               }
             } catch (err) {
-              console.error('❌ Lỗi parse JSON trong approve:', approveItem.id, err.message);
+              throw new InternalServerErrorException('⚠️ Lỗi khi lưu dữ liệu approve:', err.message);
             }
           }
-
-
-
-
+          
         return await this.prisma.approve.update({
             where: { id: existingApprove.id },
             data: { approve }

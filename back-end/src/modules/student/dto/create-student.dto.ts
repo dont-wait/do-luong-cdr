@@ -16,9 +16,4 @@ export class CreateStudentDto {
   @IsNotEmpty()
   @IsString()
   last_name: string;
-
-  @ApiProperty({ description: 'Class ID', example: 'CL001' })
-  @IsNotEmpty()
-  @IsString()
-  class_id: string;
 }
