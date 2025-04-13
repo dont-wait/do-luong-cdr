@@ -87,6 +87,11 @@ export interface Field {
   isNumber?: boolean;
 }
 
+interface ruleField {
+  errMsg: string;
+  handle: (data: unknown) => boolean;
+}
+
 export interface CrudFormProps {
   formType: string; //- Type of form (basic, checkbox, hierarchical)
   title: string; // - Form title
@@ -104,6 +109,7 @@ export interface CrudFormProps {
   listLabels?: string[];
   listDisplayField?: string;
   listSearchFields?: string[];
+  rule?: ruleField;
 }
 
 export interface ColumnDefinition {

@@ -24,6 +24,7 @@ const CrudForm = ({
   listLabels = ["List 1", "List 2"],
   listDisplayField = "name",
   listSearchFields = ["name"],
+  rule,
 }: CrudFormProps) => {
   // State for temporary saved items before final submission
   const [pendingItems, setPendingItems] = useState<object[]>([]);
@@ -266,12 +267,15 @@ const CrudForm = ({
       setIsLoading(true);
       // Use Axios to submit data
       const responses = await Promise.all(
-        pendingItems?.map((pendingItem) => postData(apiEndpoint, pendingItem))
+        pendingItems?.map((pendingItem) => {
+          if (rule && !rule?.handle(pendingItem)) {
+            throw new Error(rule?.errMsg);
+          }
+          return postData(apiEndpoint, pendingItem);
+        })
       );
 
       const data = responses?.filter((item) => item !== undefined);
-
-      console.log(data);
 
       // Call the onSubmit callback with response data
       onSubmit(data);
@@ -372,9 +376,8 @@ const CrudForm = ({
     return (
       <div className='mt-4'>
         <div className='row'>
-          {listData
-            ?.map((_, idx) => idx)
-            ?.map((listIndex) => (
+          {Array.from({ length: listData?.length }, (_, i) => i)?.map(
+            (listIndex) => (
               <div className='col-md-6 mb-3' key={listIndex}>
                 <Card>
                   <Card.Header className='bg-secondary text-white'>
@@ -456,7 +459,8 @@ const CrudForm = ({
                   </Card.Body>
                 </Card>
               </div>
-            ))}
+            )
+          )}
         </div>
         <div className='d-flex mt-3'>
           <Button
@@ -622,13 +626,14 @@ const CrudForm = ({
                       <th key={field.name}>{field.label}</th>
                     ))}
                     {formType === FormType.COMPOSITE &&
-                      listData
-                        ?.map((_, idx) => idx)
-                        ?.map((listIndex) => (
-                          <th key={`list-${listIndex}`}>
-                            {listLabels[listIndex]}
-                          </th>
-                        ))}
+                      Array.from(
+                        { length: listData?.length },
+                        (_, i) => i
+                      )?.map((listIndex) => (
+                        <th key={`list-${listIndex}`}>
+                          {listLabels[listIndex]}
+                        </th>
+                      ))}
                     <th>Actions</th>
                   </tr>
                 </thead>
@@ -639,20 +644,21 @@ const CrudForm = ({
                         <td key={field.name}>{item[field.name]}</td>
                       ))}
                       {formType === FormType.COMPOSITE &&
-                        listData
-                          ?.map((_, idx) => idx)
-                          ?.map((listIndex) => {
-                            const listKey = listLabels[listIndex]
-                              .toLowerCase()
-                              .replace(/\s+/g, "");
-                            const listIds = item[listKey] || [];
-                            return (
-                              <td key={`list-${listIndex}`}>
-                                {listIds?.length} item
-                                {listIds?.length !== 1 ? "s" : ""}
-                              </td>
-                            );
-                          })}
+                        Array.from(
+                          { length: listData?.length },
+                          (_, i) => i
+                        )?.map((listIndex) => {
+                          const listKey = listLabels[listIndex]
+                            .toLowerCase()
+                            .replace(/\s+/g, "");
+                          const listIds = item[listKey] || [];
+                          return (
+                            <td key={`list-${listIndex}`}>
+                              {listIds?.length} item
+                              {listIds?.length !== 1 ? "s" : ""}
+                            </td>
+                          );
+                        })}
                       <td className='d-flex justify-content-center'>
                         <Button
                           variant='warning'
