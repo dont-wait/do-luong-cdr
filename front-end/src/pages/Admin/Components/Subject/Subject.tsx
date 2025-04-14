@@ -69,13 +69,13 @@ const Subject = () => {
             name: "practical_credits",
             label: "Practical Credits",
             type: "number",
-            required: true,
+            defaultValue: 0,
           },
           {
             name: "theoretical_credits",
             label: "Theoretical Credits",
             type: "number",
-            required: true,
+            defaultValue: 0,
           },
           {
             name: "description",
