@@ -11,12 +11,6 @@ const Columns = [
   { key: "clo_content", label: "Content" },
 ];
 
-interface clo {
-  clo_name: string;
-  clo_parent_id: string;
-  ploIds: string[];
-}
-
 interface plo {
   id: string;
   plo_name: string;
@@ -26,7 +20,6 @@ const Clo = () => {
   const [data, setData] = useState<object[]>([]);
   const [fields, setFields] = useState<Field[]>([]);
   const [plos, setPlos] = useState<{ id: string; name: string }[]>([]);
-  const [copyPlos, setCopyPlos] = useState<{ id: string; name: string }[]>([]);
   const [dataRefreshTrigger, setDataRefreshTrigger] = useState(0);
   const { showToast } = useToast();
 
@@ -40,7 +33,6 @@ const Clo = () => {
           name: plo.plo_name,
         }));
         setPlos(plos);
-        setCopyPlos(plos);
         setFields([
           {
             name: "clo_name",

@@ -120,7 +120,7 @@ const Subject = () => {
         listData={existingData}
         listLabels={["academic_id", "lecturer_id"]}
         listDisplayField='name'
-        listSearchFields={["name"]}
+        listSearchFields={["name", "id"]}
       />
     </>
   );
