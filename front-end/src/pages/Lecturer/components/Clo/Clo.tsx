@@ -84,59 +84,6 @@ const Clo = () => {
     setData((prevData) => [...prevData, ...responseData]);
   };
 
-  function handleValidate(obj: unknown): boolean {
-    try {
-      const cloData = obj as clo;
-
-      // ==== 1. Kiểm tra PLO vs CLO ====
-      for (const ploId of cloData.ploIds) {
-        const matchedPlo = copyPlos.find((plo) => plo.id === ploId);
-        if (!matchedPlo) {
-          showToast("PLO ID not found", "info");
-          return false;
-        }
-
-        const ploNum = matchedPlo.name.match(/\d+/)?.[0];
-        const cloNum = cloData.clo_name.match(/\d+/)?.[0];
-
-        if (!ploNum || !cloNum || ploNum !== cloNum) {
-          showToast(
-            `PLO ${matchedPlo.name} không khớp với CLO ${cloData.clo_name}`,
-            "info"
-          );
-          return false;
-        }
-      }
-
-      // ==== 2. Kiểm tra CLO vs CLO_PARENT_ID ====
-      if (cloData.clo_parent_id && cloData.clo_parent_id !== "null") {
-        const parentClo = (data as clo[]).find(
-          (clo) => clo.clo_parent_id === cloData.clo_parent_id
-        );
-
-        if (!parentClo) {
-          showToast("Không tìm thấy CLO cha", "info");
-          return false;
-        }
-
-        const parentNum = parentClo.clo_name.match(/\d+/)?.[0];
-        const currentNum = cloData.clo_name.match(/\d+/)?.[0];
-
-        if (!parentNum || !currentNum || parentNum !== currentNum) {
-          showToast(
-            `CLO ${cloData.clo_name} không khớp với CLO cha ${cloData.clo_parent_id}`,
-            "info"
-          );
-          return false;
-        }
-      }
-      return true;
-    } catch {
-      showToast("Validation Error", "error");
-      throw new Error("Validation Fail!");
-    }
-  }
-
   return (
     <>
       <DataTable
@@ -158,10 +105,6 @@ const Clo = () => {
         listLabels={["ploIds"]}
         listDisplayField='name'
         listSearchFields={["name"]}
-        rule={{
-          errMsg: "PLO ID Invalid!",
-          handle: handleValidate,
-        }}
       />
     </>
   );
