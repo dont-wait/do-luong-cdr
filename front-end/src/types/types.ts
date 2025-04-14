@@ -95,7 +95,7 @@ export interface Field {
 
 interface ruleField {
   errMsg: string;
-  handle: (data: unknown) => boolean;
+  handle: (data: unknown) => Promise<boolean>;
 }
 
 export interface CrudFormProps {
