@@ -69,8 +69,8 @@ const Sheet = ({ worksheet }: SheetProps) => {
 
   return (
     <div>
-      <table className='overflow-y-auto'>
-        <thead className=''>
+      <table style={{ cursor: "pointer" }} className='overflow-y-auto'>
+        <thead>
           {data.header.map((row, rowIndex) => (
             <tr key={rowIndex}>
               {row.map((cell, cellIndex) => (

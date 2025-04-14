@@ -1,12 +1,8 @@
-import {
-  FaBusinessTime,
-  FaCloudUploadAlt,
-  FaHome,
-  FaClone,
-} from "react-icons/fa";
+import { FaBusinessTime, FaHome, FaClone } from "react-icons/fa";
 import { MdOutlineDashboard } from "react-icons/md";
 import { CNHP } from "../../../../types/local";
 import { TbLogout2 } from "react-icons/tb";
+import { SiGoogletagmanager } from "react-icons/si";
 interface SidebarProps {
   isOpen: boolean;
   toggleSidebar: () => void;
@@ -36,9 +32,9 @@ const Sidebar: React.FC<SidebarProps> = ({
       label: "Home",
     },
     {
-      section: "upload",
-      icon: <FaCloudUploadAlt className='sidebar-item' />,
-      label: "Upload",
+      section: "managementclass",
+      icon: <SiGoogletagmanager className='sidebar-item' />,
+      label: "Management Class",
     },
   ];
 

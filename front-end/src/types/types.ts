@@ -39,6 +39,12 @@ export interface ErrorResponse {
   };
 }
 
+export interface Class {
+  id: string;
+  subject_id: string;
+  lecturer_id: string;
+}
+
 export interface Subject {
   id: string;
   subject_name: string;
@@ -46,6 +52,7 @@ export interface Subject {
   theoretical_credits: number;
   description: string;
   lecturer_subject_manager_id: string;
+  class: Class[];
 }
 
 export interface Lecturer {

@@ -1,8 +1,8 @@
-import { Nav, Form } from "react-bootstrap";
-import FileUpload from "../../../../components/FileUpload";
-import Sheet from "../Sheet/Sheet";
+import { Nav, Form, Button } from "react-bootstrap";
+import FileUpload from "../../../../../components/FileUpload";
+import Sheet from "../../Sheet/Sheet";
 import { useState, useEffect } from "react";
-import { useToast } from "../../../../hook/useToast";
+import { useToast } from "../../../../../hook/useToast";
 import * as XLSX from "xlsx";
 
 const Upload = () => {
@@ -12,7 +12,12 @@ const Upload = () => {
   const [isUpload, setIsUpload] = useState<boolean>(true);
   const [sheetNames, setSheetNames] = useState<string[]>([]);
   const [worksheet, setWorkSheet] = useState<XLSX.WorkSheet>();
+  const [zoom, setZoom] = useState(false);
   const { showToast } = useToast();
+
+  const togglehanlde = () => {
+    setZoom(!zoom);
+  };
 
   useEffect(() => {
     if (!file) return;
@@ -43,19 +48,27 @@ const Upload = () => {
   const displayDropBox = sheetNames.length > 0;
 
   return (
-    <>
+    <section
+      className={`${zoom ? "fixed top-0 left-[256px] z-10 h-full" : ""}`}
+      style={{ overflow: "auto" }}>
       <Nav className='p-2 flex justify-between shadow-sm sticky top-0 bg-white'>
         {displayDropBox && (
-          <Form.Select
-            onChange={(e) => setSheetIdx(Number(e.target.value))}
-            className='p-2'
-            style={{ width: "max(50px, 10vw)" }}>
-            {sheetNames.map((sheetName, idx) => (
-              <option key={idx} value={idx}>
-                {sheetName}
-              </option>
-            ))}
-          </Form.Select>
+          <>
+            <Form.Select
+              onChange={(e) => setSheetIdx(Number(e.target.value))}
+              className='p-2'
+              style={{ width: "max(50px, 10vw)" }}>
+              {sheetNames.map((sheetName, idx) => (
+                <option key={idx} value={idx}>
+                  {sheetName}
+                </option>
+              ))}
+            </Form.Select>
+
+            <Button type='button' onClick={togglehanlde}>
+              Zoom {zoom ? "in" : "out"}
+            </Button>
+          </>
         )}
       </Nav>
       {isUpload ? (
@@ -63,7 +76,7 @@ const Upload = () => {
       ) : (
         <Sheet worksheet={worksheet} />
       )}
-    </>
+    </section>
   );
 };
 

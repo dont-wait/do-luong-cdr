@@ -37,6 +37,10 @@
   font-variation-settings: "wdth" 100;
 }
 
+body {
+  transition: 0.3s ease-in;
+}
+
 .btn + .btn {
   margin-left: 10px;
 }
@@ -121,4 +125,19 @@ table {
 .filter-input:focus {
   border-color: #007bff;
   box-shadow: 0 0 0 0.2rem rgba(38, 143, 255, 0.25);
+}
+
+.list-group-item {
+  transition: all 0.2s ease;
+}
+
+.list-group-item.active,
+.list-group-item:hover {
+  background: #000f0e;
+  color: #fff;
+}
+
+.card-shadow {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }

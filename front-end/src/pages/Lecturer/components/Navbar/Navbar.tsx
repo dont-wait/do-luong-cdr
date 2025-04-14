@@ -9,7 +9,7 @@ const Navbar: React.FC<HeaderProps> = ({ activeSection }) => {
   const sectionTitles: { [key: string]: string } = {
     dashboard: "Dashboard",
     home: "Home",
-    upload: "Upload",
+    managementclass: "Management Class",
     // Add more mappings
   };
 

@@ -1,5 +1,5 @@
 import { JSX } from "react";
-import { Navbar, Dashboard, Upload, Home, Clo } from "../index";
+import { Navbar, Dashboard, ManageClass, Home, Clo } from "../index";
 import ErrorBoundary from "../../../../components/ErrorBoundary";
 import { CNHP } from "../../../../types/local";
 
@@ -12,7 +12,7 @@ const Content = ({ activeSection }: ContentProps) => {
   const sections: { [key: string]: JSX.Element } = {
     dashboard: <Dashboard />,
     home: <Home />,
-    upload: <Upload />,
+    managementclass: <ManageClass />,
   };
 
   if (isCnhp) {
