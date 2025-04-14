@@ -25,7 +25,7 @@ model Academic {
   academic_type  Int
 
   department_id String
-  department    Department @relation(fields: [department_id], references: [id])
+  department    Department @relation(fields: [department_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   academic_subject Academic_subject[]
   plo              Plo[]
@@ -36,8 +36,8 @@ model Academic_subject {
   academic_id String
   subject_id  String
 
-  academic Academic @relation(fields: [academic_id], references: [id])
-  subject  Subject  @relation(fields: [subject_id], references: [id], onDelete: Cascade)
+  academic Academic @relation(fields: [academic_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  subject  Subject  @relation(fields: [subject_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   @@id([academic_id, subject_id])
 }
@@ -48,7 +48,7 @@ model Plo {
   plo_content String @db.VarChar(255)
 
   academic_id String
-  academic    Academic @relation(fields: [academic_id], references: [id])
+  academic    Academic @relation(fields: [academic_id], references: [id], onUpdate: Cascade, onDelete: Cascade)
 
   plo_detail Plo_detail[]
   plo_clo    Plo_clo[]
@@ -58,8 +58,8 @@ model Plo_clo {
   plo_id String
   clo_id String
 
-  plo Plo @relation(fields: [plo_id], references: [id])
-  clo Clo @relation(fields: [clo_id], references: [id])
+  plo Plo @relation(fields: [plo_id], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  clo Clo @relation(fields: [clo_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   @@id([plo_id, clo_id])
 }
@@ -70,7 +70,7 @@ model Plo_detail {
   plo_detail_content     String @db.VarChar(255)
 
   plo_id String
-  plo    Plo @relation(fields: [plo_id], references: [id])
+  plo    Plo @relation(fields: [plo_id], references: [id], onUpdate: Cascade, onDelete: Cascade)
 }
 
 model Subject {
@@ -81,7 +81,7 @@ model Subject {
   description         String? @db.VarChar(255)
 
   lecturer_subject_manager_id String
-  lecturer Lecturer @relation(fields: [lecturer_subject_manager_id], references: [id], onDelete: Cascade)
+  lecturer Lecturer @relation(fields: [lecturer_subject_manager_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   academic_subject Academic_subject[]
   class            Class[]
@@ -97,8 +97,8 @@ model LecturerSubject {
   lecturer_id String
   subject_id String
 
-  lecturer Lecturer @relation(fields: [lecturer_id], references: [id])
-  subject  Subject  @relation(fields: [subject_id], references: [id], onDelete: Cascade)
+  lecturer Lecturer @relation(fields: [lecturer_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  subject  Subject  @relation(fields: [subject_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   @@id([lecturer_id, subject_id])
 }
@@ -110,7 +110,7 @@ model Clo {
   clo_parent_id String?
 
   subject_id String
-  subject    Subject @relation(fields: [subject_id], references: [id], onDelete: Cascade)
+  subject    Subject @relation(fields: [subject_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   plo_clo      Plo_clo[]
   result Result[]
@@ -123,7 +123,7 @@ model Exam {
   date_exam      DateTime? @default(now())
 
   class_id String
-  class    Class  @relation(fields: [class_id], references: [id])
+  class    Class  @relation(fields: [class_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   questions Question[]
 }
 
@@ -132,7 +132,7 @@ model Question {
   question_name    String @db.VarChar(255)
 
   exam_id String
-  exam    Exam @relation(fields: [exam_id], references: [id])
+  exam    Exam @relation(fields: [exam_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   Result Result[]
 }
@@ -147,18 +147,18 @@ model Result {
   clo_id String
   clo Clo @relation(fields: [clo_id], references: [id])
 
-  question Question @relation(fields: [question_id], references: [id])
-  student Student @relation(fields: [student_id], references: [id])
+  question Question @relation(fields: [question_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  student Student @relation(fields: [student_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
 model Class {
   id String @id
 
   subject_id String
-  subject    Subject @relation(fields: [subject_id], references: [id], onDelete: Cascade)
+  subject    Subject @relation(fields: [subject_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   lecturer_id String
-  lecturer    Lecturer @relation(fields: [lecturer_id], references: [id])
+  lecturer    Lecturer @relation(fields: [lecturer_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   exams Exam[]
 
@@ -169,8 +169,8 @@ model ClassStudent {
   student_id String 
   class_id String 
 
-  student Student @relation(fields: [student_id], references: [id])
-  class   Class   @relation(fields: [class_id], references: [id])
+  student Student @relation(fields: [student_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  class   Class   @relation(fields: [class_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   @@id([student_id, class_id])
 }
 
@@ -190,9 +190,9 @@ model User_account {
   lecturer_id String? @unique
   role_id Int
 
-  role    Role @relation(fields: [role_id], references: [id])
-  admin    Admin?   @relation(fields: [admin_id], references: [id])
-  lecturer Lecturer? @relation(fields: [lecturer_id], references: [id])
+  role    Role @relation(fields: [role_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  admin    Admin?   @relation(fields: [admin_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  lecturer Lecturer? @relation(fields: [lecturer_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
 model Lecturer {
@@ -203,9 +203,9 @@ model Lecturer {
   phone       String @unique @db.Char(12)
 
   degree_id   Int
-  degree      Degree   @relation(fields: [degree_id], references: [id])
+  degree      Degree   @relation(fields: [degree_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   academic_id String
-  academic    Academic @relation(fields: [academic_id], references: [id])
+  academic    Academic @relation(fields: [academic_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   subjects     Subject[]
   class        Class[]

@@ -227,55 +227,55 @@ Table Approve {
   }
 }
 
-Ref: Academic.department_id > Department.id
+Ref: Academic.department_id > Department.id [delete: Cascade]
 
-Ref: Academic_subject.academic_id > Academic.id
+Ref: Academic_subject.academic_id > Academic.id [delete: Cascade]
 
 Ref: Academic_subject.subject_id > Subject.id [delete: Cascade]
 
-Ref: Plo.academic_id > Academic.id
+Ref: Plo.academic_id > Academic.id [delete: Cascade]
 
-Ref: Plo_clo.plo_id > Plo.id
+Ref: Plo_clo.plo_id > Plo.id [delete: Cascade]
 
-Ref: Plo_clo.clo_id > Clo.id
+Ref: Plo_clo.clo_id > Clo.id [delete: Cascade]
 
-Ref: Plo_detail.plo_id > Plo.id
+Ref: Plo_detail.plo_id > Plo.id [delete: Cascade]
 
 Ref: Subject.lecturer_subject_manager_id > Lecturer.id [delete: Cascade]
 
-Ref: LecturerSubject.lecturer_id > Lecturer.id
+Ref: LecturerSubject.lecturer_id > Lecturer.id [delete: Cascade]
 
 Ref: LecturerSubject.subject_id > Subject.id [delete: Cascade]
 
 Ref: Clo.subject_id > Subject.id [delete: Cascade]
 
-Ref: Exam.class_id > Class.id
+Ref: Exam.class_id > Class.id [delete: Cascade]
 
-Ref: Question.exam_id > Exam.id
+Ref: Question.exam_id > Exam.id [delete: Cascade]
 
 Ref: Result.clo_id > Clo.id
 
-Ref: Result.question_id > Question.id
+Ref: Result.question_id > Question.id [delete: Cascade]
 
-Ref: Result.student_id > Student.id
+Ref: Result.student_id > Student.id [delete: Cascade]
 
 Ref: Class.subject_id > Subject.id [delete: Cascade]
 
-Ref: Class.lecturer_id > Lecturer.id
+Ref: Class.lecturer_id > Lecturer.id [delete: Cascade]
 
-Ref: ClassStudent.student_id > Student.id
+Ref: ClassStudent.student_id > Student.id [delete: Cascade]
 
-Ref: ClassStudent.class_id > Class.id
+Ref: ClassStudent.class_id > Class.id [delete: Cascade]
 
-Ref: User_account.role_id > Role.id
+Ref: User_account.role_id > Role.id [delete: Cascade]
 
-Ref: User_account.admin_id - Admin.id
+Ref: User_account.admin_id - Admin.id [delete: Cascade]
 
-Ref: User_account.lecturer_id - Lecturer.id
+Ref: User_account.lecturer_id - Lecturer.id [delete: Cascade]
 
-Ref: Lecturer.degree_id > Degree.id
+Ref: Lecturer.degree_id > Degree.id [delete: Cascade]
 
-Ref: Lecturer.academic_id > Academic.id
+Ref: Lecturer.academic_id > Academic.id [delete: Cascade]
 
 Ref: Approve.subject_id > Subject.id [delete: Cascade]
 
