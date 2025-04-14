@@ -76,6 +76,12 @@ export interface Degree {
   degree_name: string;
 }
 
+export interface Class {
+  id: string;
+  lecturer_id: string;
+  subject_id: string;
+}
+
 export interface Field {
   name: string; // - Field name (used as form field ID)
   label: string; // - Display label

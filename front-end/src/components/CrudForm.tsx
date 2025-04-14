@@ -263,14 +263,29 @@ const CrudForm = ({
       return;
     }
 
+    // validate
+    if (rule) {
+      // Create an array of promises for validation
+      const validationPromises = pendingItems.map(async (pendingItem) => {
+        return await rule?.handle(pendingItem);
+      });
+
+      // Wait for all promises to resolve
+      const validationResults = await Promise.all(validationPromises);
+
+      // Check if all validations are true
+      const isValid = validationResults.every((result) => result === true);
+
+      if (!isValid) {
+        return;
+      }
+    }
+
     try {
       setIsLoading(true);
       // Use Axios to submit data
       const responses = await Promise.all(
         pendingItems?.map((pendingItem) => {
-          if (rule && !rule?.handle(pendingItem)) {
-            throw new Error(rule?.errMsg);
-          }
           return postData(apiEndpoint, pendingItem);
         })
       );
@@ -684,7 +699,9 @@ const CrudForm = ({
             <Button
               variant='primary'
               className='mt-2'
-              onClick={handleFinalSubmit}
+              onClick={async () => {
+                await handleFinalSubmit();
+              }}
               disabled={isLoading}>
               {isLoading ? (
                 <>
