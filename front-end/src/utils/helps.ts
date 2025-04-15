@@ -2,7 +2,6 @@ import * as XLSX from "xlsx";
 import { Class, FormattedCell, MergedCell } from "../types/types";
 import { apiClient } from "../api/axios";
 import { STATE } from "../api/state";
-import { get } from "react-hook-form";
 
 export function handleFormatData(ws: XLSX.WorkSheet): {
   header: FormattedCell[][];
@@ -280,7 +279,7 @@ export const getData = async (url: string) => {
   }
 };
 
-export const postData = async (url: string, info: object | object[]) => {
+export const postData = async (url: string, info: any) => {
   try {
     console.log("POSTing to:", url, "with data:", info);
     const res = await apiClient.post(url, info);

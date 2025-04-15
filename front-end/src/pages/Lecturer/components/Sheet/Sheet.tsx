@@ -1,7 +1,11 @@
 import { useState, useEffect } from "react";
 import * as XLSX from "xlsx";
 import { FormattedCell, Class } from "../../../../types/types";
-import { handleFormatData, handleFormattoJSON } from "../../../../utils/helps";
+import {
+  handleFormatData,
+  handleFormattoJSON,
+  postData,
+} from "../../../../utils/helps";
 
 interface SheetProps {
   worksheet: XLSX.WorkSheet | undefined;
@@ -119,13 +123,13 @@ const Sheet = ({ worksheet, workbook, selectedClass }: SheetProps) => {
         </button>
 
         <button
-          onClick={async () =>
-            setJson(
-              JSON.stringify(await handleFormattoJSON(selectedClass, workbook))
-            )
-          }
+          onClick={async () => {
+            const data = await handleFormattoJSON(selectedClass, workbook);
+            setJson(JSON.stringify(data));
+            await postData("/cdr/SaveData", data);
+          }}
           className='mt-4 px-4 py-2 m-3 bg-blue-600 text-white rounded'>
-          Convert To JSON
+          Submit
         </button>
       </div>
 
