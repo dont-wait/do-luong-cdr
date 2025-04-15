@@ -68,8 +68,8 @@ export function handleFormatData(ws: XLSX.WorkSheet): {
     else data.push(rowData);
   }
 
-  const data_redundants = data.filter(
-    (row) => row.length !== data[data.length - 1].length
+  const data_redundants = data.filter((row) =>
+    row.some((cell) => cell.isHeading === true)
   );
 
   if (data_redundants) {
@@ -166,7 +166,6 @@ const buildTree = (
   headers: (string[] | Record<string, Record<string, string[]>>)[]
 ): HeaderTree => {
   const tree: HeaderTree = {};
-
   headers.forEach((header) => {
     if (Array.isArray(header)) {
       header.forEach((key) => {
@@ -213,15 +212,70 @@ const mapDataToTree = (
   return traverse(tree);
 };
 
+function transform(headers: any[][]) {
+  const [row0, row1, row2, row3] = headers;
+
+  const fixedCount = row0[0].value === null ? row0[0].colspan : 0;
+
+  const fixedHeaders = row2.slice(0, fixedCount).map((cell) => cell.value);
+  const result: any[] = [fixedHeaders];
+
+  // Tính start-end index cho mỗi nhóm trong row0
+  const groups = row0
+    .slice(1)
+    .filter((cell) => cell.value !== null)
+    .map((cell) => ({
+      name: cell.value.split(" (")[0],
+      colspan: cell.colspan,
+    }));
+
+  // Dàn phẳng row1 (CLOs)
+  const flattenedCLOs = row1.flatMap((cell) => {
+    const count = cell.colspan || 1;
+    return Array(count).fill(cell.value);
+  });
+
+  // Lấy các điểm từ row3 (bỏ fixed)
+  const flatPoints = row3.slice(fixedCount).map((cell) => cell.value);
+
+  let start = 0;
+  for (const group of groups) {
+    const end = start + group.colspan;
+    const cloGroup = flattenedCLOs.slice(start, end);
+    const pointGroup = flatPoints.slice(start, end);
+
+    const groupData: Record<string, string[]> = {};
+
+    for (let i = 0; i < cloGroup.length; i++) {
+      const clo = cloGroup[i];
+      const point = pointGroup[i];
+      if (!groupData[clo]) groupData[clo] = [];
+      if (point != null) groupData[clo].push(point.toString());
+    }
+
+    result.push({ [group.name]: groupData });
+    start = end;
+  }
+
+  // Điểm tổng
+  const totalPoint = row2[fixedCount + flatPoints.length]?.value;
+  if (totalPoint != null) {
+    result.push({ "Điểm Số": { [totalPoint]: [] } });
+  }
+
+  return result;
+}
+
 export const handleFormattoJSON = (
   header: FormattedCell[][],
   data: FormattedCell[][]
 ) => {
+  console.log(JSON.stringify(header));
   if (header.length === 1) return header[0].map((cell) => cell.value);
-
-  console.log(data);
+  console.log(transform(header));
   const copyHeader = header.map((row) => [...row]);
   const firstRow = copyHeader[0];
+
   const headerTree = buildTree(
     firstRow.map((cell) => parseheader(cell, copyHeader))
   );

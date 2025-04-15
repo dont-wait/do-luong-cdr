@@ -18,6 +18,11 @@ const Sheet = ({ worksheet }: SheetProps) => {
     if (worksheet) setData(handleFormatData(worksheet));
   }, [worksheet]);
 
+  useEffect(() => {
+    console.log(data.header);
+    console.log(data.data);
+  }, [data]);
+
   // Hàm xử lý thay đổi giá trị ô
   const handleCellChange = (
     rowIndex: number,
@@ -69,7 +74,7 @@ const Sheet = ({ worksheet }: SheetProps) => {
 
   return (
     <div>
-      <table style={{ cursor: "pointer" }} className='overflow-y-auto'>
+      <table style={{ cursor: "pointer" }} className='overflow-y-auto bg-white'>
         <thead>
           {data.header.map((row, rowIndex) => (
             <tr key={rowIndex}>
