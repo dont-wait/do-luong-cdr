@@ -6,6 +6,8 @@ import { useToast } from "../../../../hook/useToast";
 import ClassListItem from "./components/ClassListItem";
 import SubjectDetails from "./components/SubjectDetails";
 import Upload from "./components/Upload";
+import useAuth from "../../../../hook/useAuth";
+import { USER_ID } from "../../../../types/local";
 
 interface LecturerSubject {
   lecturer_id: string;
@@ -19,12 +21,15 @@ const ManageClass = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isSubjectsLoading, setIsSubjectsLoading] = useState(false);
   const { showToast } = useToast();
+  const { auth } = useAuth();
 
   useEffect(() => {
     const fetchLecturerData = async () => {
       try {
         setIsLoading(true);
-        const response = await getData(`${LECTURES_API}/LEC001`);
+        const id =
+          auth?.user ?? JSON.parse(localStorage.getItem(USER_ID) ?? "");
+        const response = await getData(`${LECTURES_API}/${id}`);
         setLecturer(response);
 
         // Fetch subjects taught by this lecturer
