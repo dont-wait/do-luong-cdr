@@ -16,13 +16,22 @@ export class ExamController {
   createExam(@Body() data: CreateExamDto | CreateExamDto[]) {
     return this.examService.createExam(data);
   }
-
+  @Get('by-class/:class_id')
+  @ApiOperation({summary: 'Get exams by Class Id'})
+  @ApiOkResponse({description: 'Exam retrieved successfully'})
+  @ApiResponse({status: 404, description: 'Class not found'})
+  @ApiResponse({status: 200, description: 'HERE!'})
+  getAllExamsByClassId(@Param('class_id') class_id: string) {
+    return this.examService.getExamsByClassId(class_id);
+  }
+  
   @Get()
   @ApiOperation({ summary: 'Get all exams' })
   @ApiOkResponse({ description: 'List of all exams retrieved successfully' })
   getAllExams() {
     return this.examService.getAllExams();
   }
+  
 
   @Get(':id')
   @ApiOperation({ summary: 'Get exam by ID' })
@@ -31,7 +40,6 @@ export class ExamController {
   getExamById(@Param('id') id: string) {
     return this.examService.getExamById(id);
   }
-
 
 
   @Delete(':id')
