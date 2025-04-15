@@ -7,6 +7,7 @@ import { ApproveDataDto} from "./saveApproveData.dto"
 import { StudentService } from "src/modules/student/Student.service"
 import { ExamService } from "src/modules/exam/Exam.service"
 import { BadRequestException } from "@nestjs/common"
+import { CreateStudentDto } from "src/modules/student/dto/create-student.dto"
 
 function normalizeQuestionName(raw: string): string {
   return raw.replace(/\s*\(.*?\)\s*/g, '').trim();
@@ -66,9 +67,20 @@ export class SaveData {
 
       const listQuestion = await this.questionService.getAllQuestionsByExamId(examId);
       const cloIdCache: Record<string, string> = {};
-
       for (const student of students) {
         const studentId = String(student["Mã sinh viên"]);
+        const lastname_sinhvien = student["Họ đệm"];
+        const firstname_sinhvien = student["Tên"];
+        const studentcreat: CreateStudentDto = {
+          id: studentId,
+          last_name: lastname_sinhvien,
+          first_name: firstname_sinhvien,
+        };
+        
+        const studentExist = await this.studentService.createStudent(studentcreat);
+        if (!studentExist) {
+          throw new BadRequestException(`Không thể tạo sinh viên với ID: ${studentId}`);
+        }
         const existingStudent = await this.studentService.getStudent(studentId);
         if (!existingStudent) {
           throw new BadRequestException(`Không tìm thấy sinh viên với ID: ${studentId}`);
@@ -76,6 +88,7 @@ export class SaveData {
         const resultPromises: Promise<any>[] = [];
 
         for (const key in student) {
+
           if (!key.startsWith("Câu")) continue;
 
           const cloScores = student[key];
