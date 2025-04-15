@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateExamDto } from './dto/create-exam.dto';
 import { PrismaService } from '../prisma/Prisma.service';
 
@@ -45,11 +45,11 @@ export class ExamService {
   }
 
   async getAllExams() {
-    return this.prisma.exam.findMany();
+    return await this.prisma.exam.findMany();
   }
 
   async getExamById(id: string) {
-    return this.prisma.exam.findUnique({ where: { id } });
+    return await this.prisma.exam.findUnique({ where: { id } });
   }
 
   async updateExam(id: string, data: CreateExamDto) {
@@ -60,8 +60,13 @@ export class ExamService {
     return this.prisma.exam.delete({ where: { id } });
   }
   public async getExamsByClassId(class_id: string) {
+    const classExist = await this.prisma.class.findUnique({ where: { id: class_id } });
+    if (!classExist)
+      throw new NotFoundException(`Class with ${class_id} NOT EXISTED`);
+  
     return this.prisma.exam.findMany({
       where: { class_id },
     });
   }
+  
 }
