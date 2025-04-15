@@ -158,7 +158,7 @@ const ManageClass = () => {
                   <h5 className='text-lg font-semibold border-b pb-2 mb-3'>
                     Upload File
                   </h5>
-                  <Upload />
+                  <Upload selectedClass={selectedClass} />
                 </div>
               </div>
             </div>

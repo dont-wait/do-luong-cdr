@@ -3,9 +3,14 @@ import FileUpload from "../../../../../components/FileUpload";
 import Sheet from "../../Sheet/Sheet";
 import { useState, useEffect } from "react";
 import { useToast } from "../../../../../hook/useToast";
+import { Class } from "../../../../../types/types";
 import * as XLSX from "xlsx";
 
-const Upload = () => {
+interface UploadProps {
+  selectedClass: Class;
+}
+
+const Upload = ({ selectedClass }: UploadProps) => {
   const [file, setFile] = useState<File>();
   const [workbook, setWorkbook] = useState<XLSX.WorkBook>();
   const [sheetIdx, setSheetIdx] = useState<number>(0);
@@ -74,7 +79,11 @@ const Upload = () => {
       {isUpload ? (
         <FileUpload files={file} setFiles={setFile} />
       ) : (
-        <Sheet worksheet={worksheet} />
+        <Sheet
+          worksheet={worksheet}
+          workbook={workbook}
+          selectedClass={selectedClass}
+        />
       )}
     </section>
   );

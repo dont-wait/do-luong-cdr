@@ -1,7 +1,8 @@
 import * as XLSX from "xlsx";
-import { FormattedCell, MergedCell } from "../types/types";
+import { Class, FormattedCell, MergedCell } from "../types/types";
 import { apiClient } from "../api/axios";
 import { STATE } from "../api/state";
+import { get } from "react-hook-form";
 
 export function handleFormatData(ws: XLSX.WorkSheet): {
   header: FormattedCell[][];
@@ -68,8 +69,8 @@ export function handleFormatData(ws: XLSX.WorkSheet): {
     else data.push(rowData);
   }
 
-  const data_redundants = data.filter((row) =>
-    row.some((cell) => cell.isHeading === true)
+  const data_redundants = data.filter(
+    (row) => row.length !== data[data.length - 1].length
   );
 
   if (data_redundants) {
@@ -86,202 +87,186 @@ export function handleFormatData(ws: XLSX.WorkSheet): {
   };
 }
 
-function parseheader(
-  cell: FormattedCell,
-  header: FormattedCell[][]
-): string[] | Record<string, Record<string, string[]>> {
-  const keys: FormattedCell[] = [];
-  const label = cell.value;
-  const res: string[] | Record<string, Record<string, string[]>> = label
-    ? {}
-    : [];
-  const nOfRows = header.length;
-  const currCell = cell;
-  let currRowIdx = 0;
-  let nextRowIdx = currCell.rowspan ?? 1;
-  const info = new Map<string, string[]>();
-
-  while (currRowIdx + nextRowIdx < nOfRows) {
-    let currColIdx = currCell.colspan ?? 1;
-    let s: FormattedCell | undefined;
-
-    if (!label) {
-      while (currColIdx) {
-        s = header[nextRowIdx].shift();
-        (res as string[]).push(
-          s?.value ? s.value.toString() : JSON.stringify(s?.value)
-        );
-        currColIdx -= s?.colspan ?? 1;
-      }
-    } else {
-      if (currRowIdx === 0) {
-        while (currColIdx) {
-          s = header[nextRowIdx].shift();
-          if (s) keys.push(s);
-          if (s?.value) info.set(s.value.toString(), []);
-          currColIdx -= s?.colspan ?? 1;
-        }
-      } else {
-        keys.forEach((key) => {
-          currColIdx = key.colspan ?? 1;
-          while (currColIdx) {
-            s = header[nextRowIdx].shift();
-            if (s?.value && key.value) {
-              info.get(key.value.toString())?.push(JSON.stringify(s.value));
-            }
-            currColIdx -= s?.colspan ?? 1;
-          }
-        });
-      }
-
-      if (nextRowIdx === nOfRows - 2) {
-        keys.forEach((key) => {
-          currColIdx = key.colspan ?? 1;
-          while (currColIdx) {
-            s = header[nextRowIdx + 1].shift();
-            if (s?.value && key.value) {
-              info.get(key.value.toString())?.push(JSON.stringify(s.value));
-            }
-            currColIdx -= s?.colspan ?? 1;
-          }
-        });
-      }
-
-      // Chuyển Map về Object
-      (res as Record<string, any>)[label] = Object.fromEntries(info);
+function transform(headers: FormattedCell[][]) {
+  const copyHeaders = headers.map((row) => [...row]);
+  const [row0, row1, ...rows] = copyHeaders;
+  const lastRow = rows[rows.length - 1];
+  // loai bo o tong diem
+  row0.pop();
+  lastRow.pop();
+  // tao group cap 1
+  let groupLevel1: Record<string, Array<string | undefined>>;
+  const groudLevel1Arr: Record<string, Array<string | undefined>>[] = [];
+  for (let n = row1.length - 1; n >= 0; n--) {
+    groupLevel1 = {};
+    const key = row1[n].value;
+    const value = lastRow.slice(
+      lastRow.length - (row1[n].colspan ?? 1),
+      lastRow.length
+    );
+    lastRow.splice(lastRow.length - (row1[n].colspan ?? 1), lastRow.length);
+    if (key) {
+      groupLevel1[key] = value.map((v) => v.value?.toString());
+      groudLevel1Arr.unshift(groupLevel1);
     }
-
-    currRowIdx = nextRowIdx;
-    nextRowIdx += s?.rowspan ?? 1;
   }
-
-  return res;
+  let groupLevel2: Record<string | number | symbol, object>;
+  const groupLevel2Arr = [];
+  // tao group cap 2
+  for (let n = row0.length - 1; n >= 0; n--) {
+    groupLevel2 = {};
+    const key = row0[n].value?.toString()?.match(/Câu\s\d+/g);
+    let idx = groudLevel1Arr.length - 1;
+    let total = 0;
+    const flag = row0[n].colspan ?? 1;
+    while (total !== flag && idx >= 0) {
+      const ks = Object.keys(groudLevel1Arr[idx]);
+      ks.forEach((k) => {
+        total += groudLevel1Arr[idx][k].length;
+      });
+      --idx;
+    }
+    const value = groudLevel1Arr.slice(idx + 1, groudLevel1Arr.length);
+    groudLevel1Arr.splice(idx + 1, groudLevel1Arr.length);
+    if (key) {
+      const temp: Record<string, Array<string | undefined>> = {};
+      value.forEach((v) => {
+        const keys = Object.keys(v);
+        keys.forEach((k) => {
+          temp[k] = v[k];
+        });
+      });
+      groupLevel2[key] = temp;
+      groupLevel2Arr.unshift(groupLevel2);
+    }
+  }
+  const firstCellColspan = row0[0].colspan ?? 1;
+  const anotherInfos: (string | number | null)[] = [];
+  for (let i = 0; i < firstCellColspan; i++) {
+    anotherInfos.push(headers[2][i].value);
+  }
+  groupLevel2Arr.unshift(anotherInfos);
+  return groupLevel2Arr;
 }
 
-interface HeaderTree {
-  [key: string]: number | string | HeaderTree | null;
+function createColumnMap(headerData) {
+  const map = {};
+  const baseColumnsCount = headerData[0].length;
+  let colIndex = baseColumnsCount; // bắt đầu từ cột sau phần thông tin cơ bản
+
+  // Duyệt qua header từ index 1 trở đi (các câu)
+  for (let i = 1; i < headerData.length; i++) {
+    const questionObj = headerData[i];
+    const questionName = Object.keys(questionObj)[0];
+    const cloMapping = questionObj[questionName];
+
+    // Mỗi key trong cloMapping đại diện cho 1 CLO với mảng các điểm tối đa cho các cột của nó
+    for (const cloKey in cloMapping) {
+      const maxArray = cloMapping[cloKey];
+      for (let j = 0; j < maxArray.length; j++) {
+        map[colIndex] = {
+          question: questionName,
+          clo: cloKey,
+          max: parseFloat(maxArray[j]),
+        };
+        colIndex++;
+      }
+    }
+  }
+  return map;
 }
 
-const buildTree = (
-  headers: (string[] | Record<string, Record<string, string[]>>)[]
-): HeaderTree => {
-  const tree: HeaderTree = {};
-  headers.forEach((header) => {
-    if (Array.isArray(header)) {
-      header.forEach((key) => {
-        tree[key] = null;
-      });
-    } else {
-      Object.entries(header).forEach(([key, value]) => {
-        tree[key] = {};
-        Object.entries(value).forEach(([subKey, subValue]) => {
-          (tree[key] as HeaderTree)[subKey] = subValue.length
-            ? parseFloat(subValue[0])
-            : [];
-        });
-      });
-    }
-  });
+function convertStudentRow(row, baseHeader, columnMap) {
+  const result = {};
 
-  return tree;
-};
-
-const mapDataToTree = (
-  tree: HeaderTree,
-  rowData: FormattedCell[]
-): Record<string, any> => {
-  let index = 0; // Biến đếm vị trí dữ liệu trong rowData
-
-  const traverse = (node: HeaderTree | number | string | null): any => {
-    if (node === null) {
-      return rowData[index++]?.value ?? null; // Gán giá trị từ rowData
-    }
-    if (typeof node === "number" || typeof node === "string") {
-      return rowData[index++]?.value ?? "null";
-    }
-    if (typeof node === "object") {
-      const obj: Record<string, any> = {};
-      Object.entries(node).forEach(([key, value]) => {
-        obj[key] = traverse(value); // Đệ quy để duyệt hết cây
-      });
-      return obj;
-    }
-    return null;
-  };
-
-  return traverse(tree);
-};
-
-function transform(headers: any[][]) {
-  const [row0, row1, row2, row3] = headers;
-
-  const fixedCount = row0[0].value === null ? row0[0].colspan : 0;
-
-  const fixedHeaders = row2.slice(0, fixedCount).map((cell) => cell.value);
-  const result: any[] = [fixedHeaders];
-
-  // Tính start-end index cho mỗi nhóm trong row0
-  const groups = row0
-    .slice(1)
-    .filter((cell) => cell.value !== null)
-    .map((cell) => ({
-      name: cell.value.split(" (")[0],
-      colspan: cell.colspan,
-    }));
-
-  // Dàn phẳng row1 (CLOs)
-  const flattenedCLOs = row1.flatMap((cell) => {
-    const count = cell.colspan || 1;
-    return Array(count).fill(cell.value);
-  });
-
-  // Lấy các điểm từ row3 (bỏ fixed)
-  const flatPoints = row3.slice(fixedCount).map((cell) => cell.value);
-
-  let start = 0;
-  for (const group of groups) {
-    const end = start + group.colspan;
-    const cloGroup = flattenedCLOs.slice(start, end);
-    const pointGroup = flatPoints.slice(start, end);
-
-    const groupData: Record<string, string[]> = {};
-
-    for (let i = 0; i < cloGroup.length; i++) {
-      const clo = cloGroup[i];
-      const point = pointGroup[i];
-      if (!groupData[clo]) groupData[clo] = [];
-      if (point != null) groupData[clo].push(point.toString());
-    }
-
-    result.push({ [group.name]: groupData });
-    start = end;
+  // 1. Lấy thông tin cơ bản
+  for (let i = 0; i < baseHeader.length; i++) {
+    result[baseHeader[i]] = row[i] ? row[i].value : null;
   }
 
-  // Điểm tổng
-  const totalPoint = row2[fixedCount + flatPoints.length]?.value;
-  if (totalPoint != null) {
-    result.push({ "Điểm Số": { [totalPoint]: [] } });
+  // 2. Duyệt qua các cột còn lại và tổng hợp điểm
+  // Cấu trúc tạm: { [questionName]: { clo: { [cloName]: { student: number, max: number } } } }
+  const aggregated = {};
+
+  for (let col = baseHeader.length; col < row.length; col++) {
+    const cell = row[col];
+    if (!cell || !columnMap[col]) continue;
+
+    const { question, clo, max } = columnMap[col];
+    const cellValue = parseFloat(cell.value);
+    const score = isNaN(cellValue) ? 0 : cellValue;
+
+    // Nếu câu này chưa có, khởi tạo
+    if (!aggregated[question]) {
+      aggregated[question] = { clo: {} };
+    }
+    // Nếu CLO này chưa có trong câu, khởi tạo
+    if (!aggregated[question].clo[clo]) {
+      aggregated[question].clo[clo] = { student: 0, max: 0 };
+    }
+
+    // Cộng dồn điểm sinh viên và điểm tối đa
+    aggregated[question].clo[clo].student += score;
+    aggregated[question].clo[clo].max += max;
+  }
+
+  // 3. Đưa thông tin tổng hợp vào result với key "Câu X (totalMax)"
+  for (const question in aggregated) {
+    let totalMaxForQuestion = 0;
+    const cloResult = {};
+    for (const clo in aggregated[question].clo) {
+      const { student, max } = aggregated[question].clo[clo];
+      cloResult[clo] = student; // ta chỉ lưu điểm sinh viên (theo yêu cầu)
+      totalMaxForQuestion += max;
+    }
+    // Tạo key với format: "Câu X (totalMax)"
+    const questionKey = `${question} (${totalMaxForQuestion})`;
+    result[questionKey] = cloResult;
   }
 
   return result;
 }
 
-export const handleFormattoJSON = (
-  header: FormattedCell[][],
-  data: FormattedCell[][]
-) => {
-  console.log(JSON.stringify(header));
-  if (header.length === 1) return header[0].map((cell) => cell.value);
-  console.log(transform(header));
-  const copyHeader = header.map((row) => [...row]);
-  const firstRow = copyHeader[0];
+function convertData(headerData, data) {
+  const baseHeader = headerData[0];
+  const columnMap = createColumnMap(headerData);
+  const resultArray = [];
+  for (const row of data) {
+    const obj = convertStudentRow(row, baseHeader, columnMap);
+    resultArray.push(obj);
+  }
+  return resultArray;
+}
 
-  const headerTree = buildTree(
-    firstRow.map((cell) => parseheader(cell, copyHeader))
+interface Exam {
+  id: string;
+  exam_name: string;
+}
+
+export const handleFormattoJSON = async (
+  selectedClass: Class,
+  workbook: XLSX.WorkBook | undefined
+) => {
+  const examInfo: Exam[] = await getData(`exams/by-class/${selectedClass.id}`);
+  const wsData = workbook?.SheetNames.map((name) =>
+    handleFormatData(workbook.Sheets[name])
   );
-  const dataTree = data.map((row) => mapDataToTree(headerTree, row));
-  console.log(dataTree);
-  return dataTree;
+  const examResults = wsData?.map((exam, idx) => {
+    const header = transform(exam.header);
+    const exam_id = examInfo.find(
+      (exam) => exam.exam_name === workbook?.SheetNames[idx]
+    )?.id;
+
+    const res = {
+      header,
+      body: {
+        exam_id,
+        data: convertData(transform(exam.header), exam.data),
+      },
+    };
+    return res;
+  });
+  return examResults;
 };
 
 export const getData = async (url: string) => {

@@ -1,13 +1,15 @@
 import { useState, useEffect } from "react";
 import * as XLSX from "xlsx";
-import { FormattedCell } from "../../../../types/types";
+import { FormattedCell, Class } from "../../../../types/types";
 import { handleFormatData, handleFormattoJSON } from "../../../../utils/helps";
 
 interface SheetProps {
   worksheet: XLSX.WorkSheet | undefined;
+  workbook: XLSX.WorkBook | undefined;
+  selectedClass: Class;
 }
 
-const Sheet = ({ worksheet }: SheetProps) => {
+const Sheet = ({ worksheet, workbook, selectedClass }: SheetProps) => {
   const [data, setData] = useState({
     header: [] as FormattedCell[][],
     data: [] as FormattedCell[][],
@@ -68,7 +70,7 @@ const Sheet = ({ worksheet }: SheetProps) => {
   };
 
   return (
-    <div>
+    <div className='bg-white'>
       <table style={{ cursor: "pointer" }} className='overflow-y-auto bg-white'>
         <thead>
           {data.header.map((row, rowIndex) => (
@@ -117,8 +119,10 @@ const Sheet = ({ worksheet }: SheetProps) => {
         </button>
 
         <button
-          onClick={() =>
-            setJson(JSON.stringify(handleFormattoJSON(data.header, data.data)))
+          onClick={async () =>
+            setJson(
+              JSON.stringify(await handleFormattoJSON(selectedClass, workbook))
+            )
           }
           className='mt-4 px-4 py-2 m-3 bg-blue-600 text-white rounded'>
           Convert To JSON
