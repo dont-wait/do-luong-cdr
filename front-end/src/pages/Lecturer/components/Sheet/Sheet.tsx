@@ -18,11 +18,6 @@ const Sheet = ({ worksheet }: SheetProps) => {
     if (worksheet) setData(handleFormatData(worksheet));
   }, [worksheet]);
 
-  useEffect(() => {
-    console.log(data.header);
-    console.log(data.data);
-  }, [data]);
-
   // Hàm xử lý thay đổi giá trị ô
   const handleCellChange = (
     rowIndex: number,
