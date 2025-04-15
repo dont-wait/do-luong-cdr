@@ -18,7 +18,6 @@ const Sheet = ({ worksheet, workbook, selectedClass }: SheetProps) => {
     header: [] as FormattedCell[][],
     data: [] as FormattedCell[][],
   });
-  const [json, setJson] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     if (worksheet) setData(handleFormatData(worksheet));
@@ -124,16 +123,15 @@ const Sheet = ({ worksheet, workbook, selectedClass }: SheetProps) => {
 
         <button
           onClick={async () => {
-            const data = await handleFormattoJSON(selectedClass, workbook);
-            setJson(JSON.stringify(data));
-            await postData("/cdr/SaveData", data);
+            postData(
+              "/cdr/SaveData",
+              await handleFormattoJSON(selectedClass, workbook)
+            );
           }}
           className='mt-4 px-4 py-2 m-3 bg-blue-600 text-white rounded'>
           Submit
         </button>
       </div>
-
-      {json && <div>{json}</div>}
     </div>
   );
 };
