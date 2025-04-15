@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Param, Post } from "@nestjs/common";
 import { ApiTags, ApiOperation, ApiOkResponse, ApiResponse } from "@nestjs/swagger";
 import { CDRService } from "./CDR.service";
-import { ApproveDataDto } from "src/utils/saveApproveData.dto";
+import { MultiExamDto } from "src/utils/SaveDataExam.dto";
 @ApiTags('cdr')
 @Controller('cdr')
 export class CDRController {
@@ -17,7 +17,7 @@ export class CDRController {
     @ApiOperation({ summary: 'Save data for students' })
     @ApiOkResponse({ description: 'Save data for students successfully' })
     @ApiResponse({ status: 404, description: 'Save data for students failed' })
-    async saveDataForStudents(@Body() Data: ApproveDataDto) {
+    async saveDataForStudents(@Body() Data: MultiExamDto) {
         return this.cdrService.SaveDataForStudent(Data);
     }
 }

@@ -83,7 +83,7 @@ export class ApproveService {
               if (approveItem.data && typeof approveItem.data === 'string') {
                 const parsedData = JSON.parse(approveItem.data);
           
-                await this.saveDataUtil.saveApprovedData(parsedData);
+                await this.saveDataUtil.saveMultiExamData(parsedData);
               } else {
                 throw new BadRequestException('⚠️ Không có dữ liệu JSON hợp lệ trong approve:', approveItem.id);
               }

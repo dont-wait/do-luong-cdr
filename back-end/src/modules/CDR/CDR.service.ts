@@ -4,7 +4,7 @@ import { QuestionService } from "../question/Question.service";
 import { ResultService } from "../result/Result.service";
 import { PrismaService } from "../prisma/Prisma.service";
 import { SaveData } from "src/utils/SaveData";
-import { ApproveDataDto } from "src/utils/saveApproveData.dto";
+import { MultiExamDto } from "src/utils/SaveDataExam.dto";
 import { CloService } from "../clo/Clo.service";
 import { StudentService } from "../student/Student.service";
 
@@ -135,23 +135,11 @@ export class CDRService {
       data: formattedResults
     };
   }
-  public async SaveDataForStudent(ApproveSave: ApproveDataDto) {
-      console.log("ApproveData",ApproveSave);
-      if (!ApproveSave) {
+  public async SaveDataForStudent(DataExam: MultiExamDto) {
+      console.log("ApproveData", DataExam);
+      if (!DataExam) {
           throw new Error("Không có dữ liệu approve");
       }
-      return await this.saveDataUtil.saveApprovedData(ApproveSave).then(() => {
-          return {
-              statusCode: 200,
-              message: "Lưu dữ liệu approve thành công",
-              data: ApproveSave
-          };
-      }).catch((error) => {
-          return {
-              statusCode: 500,
-              message: "Lưu dữ liệu approve thất bại",
-              error: error.message
-          };
-      }); 
+      return await this.saveDataUtil.saveMultiExamData(DataExam)
   }
 }
