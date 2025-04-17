@@ -6,18 +6,26 @@ import {
   handleFormattoJSON,
   postData,
 } from "../../../../utils/helps";
+import { useToast } from "../../../../hook/useToast";
 
 interface SheetProps {
   worksheet: XLSX.WorkSheet | undefined;
   workbook: XLSX.WorkBook | undefined;
   selectedClass: Class;
+  setClassId: (id: string) => void;
 }
 
-const Sheet = ({ worksheet, workbook, selectedClass }: SheetProps) => {
+const Sheet = ({
+  worksheet,
+  workbook,
+  selectedClass,
+  setClassId,
+}: SheetProps) => {
   const [data, setData] = useState({
     header: [] as FormattedCell[][],
     data: [] as FormattedCell[][],
   });
+  const { showToast } = useToast();
 
   useEffect(() => {
     if (worksheet) setData(handleFormatData(worksheet));
@@ -123,10 +131,16 @@ const Sheet = ({ worksheet, workbook, selectedClass }: SheetProps) => {
 
         <button
           onClick={async () => {
-            postData(
-              "/cdr/SaveData",
-              await handleFormattoJSON(selectedClass, workbook)
-            );
+            try {
+              await postData(
+                "/cdr/SaveData",
+                await handleFormattoJSON(selectedClass, workbook)
+              );
+              showToast("Submit Success!", "success");
+              setClassId(selectedClass.id);
+            } catch {
+              showToast("Submit Error!", "error");
+            }
           }}
           className='mt-4 px-4 py-2 m-3 bg-blue-600 text-white rounded'>
           Submit

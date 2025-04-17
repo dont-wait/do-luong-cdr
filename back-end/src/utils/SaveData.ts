@@ -7,11 +7,7 @@ import { StudentService } from 'src/modules/student/Student.service';
 import { ExamService } from 'src/modules/exam/Exam.service';
 import { BadRequestException } from '@nestjs/common';
 import { CreateStudentDto } from 'src/modules/student/dto/create-student.dto';
-import { MultiExamDto, FullExamDto } from './SaveDataExam.dto';
-
-function normalizeQuestionName(raw: string): string {
-  return raw.replace(/\s*\(.*?\)\s*/g, '').trim();
-}
+import { MultiExamDto } from './SaveDataExam.dto';
 
 export class SaveData {
   constructor(
@@ -22,120 +18,136 @@ export class SaveData {
     private readonly examService: ExamService,
   ) {}
 
-  private parseMaxScoreMap(headers: any[]): Record<string, Record<string, number>> {
-    const maxScoreMap: Record<string, Record<string, number>> = {};
-
-    for (const item of headers) {
-      if (typeof item === 'object') {
-        const questionName = Object.keys(item)[0];
-        const cloMap = item[questionName];
-
-        const cloScores: Record<string, number> = {};
-        for (const clo in cloMap) {
-          const scores = cloMap[clo].map(Number);
-          cloScores[clo] = Math.max(...scores);
-        }
-
-        maxScoreMap[questionName] = cloScores;
-      }
-    }
-
-    return maxScoreMap;
-  }
-
   public async saveMultiExamData(multiExamData: MultiExamDto): Promise<void> {
-    for (const exam of multiExamData) {
-      const examId = exam.body.exam_id;
+    for (const [idx, exam] of multiExamData.entries()) {
+      const { header, body } = exam;
+      const [studentInfo, ...questionObjectList] = header;
+      const { exam_id, data } = body;
 
-      const existingExam = await this.examService.getExamById(examId);
-      if (!existingExam) {
-        throw new BadRequestException(`Không tìm thấy Exam với ID: ${examId}`);
+      if (!Array.isArray(studentInfo) || studentInfo.length < 4) {
+        throw new BadRequestException('Thông tin sinh viên không hợp lệ.');
       }
 
-      const headers = exam.header;
-      const data = exam.body.data;
+      const maSV = studentInfo[1];
+      const ho = studentInfo[2];
+      const ten = studentInfo[3];
 
-      const metaHeaders = headers.slice(1); 
-      const maxScoreMap = this.parseMaxScoreMap(metaHeaders);
+      // Lưu thông tin sinh viên trong vòng lặp đầu tiên
+      if (idx === 0) {
+        await Promise.all(
+          data.map(async (student) => {
+            const studentId = String(student[maSV]);
+            const lastName = String(student[ho]);
+            const firstName = String(student[ten]);
 
-      await Promise.all(
-        metaHeaders.map(async (item) => {
-          if (typeof item === 'object') {
-            const questionName = Object.keys(item)[0];
-            const dto: CreateQuestionDto = {
-              question_name: questionName,
-              exam_id: examId,
+            const studentDto: CreateStudentDto = {
+              id: studentId,
+              last_name: lastName,
+              first_name: firstName,
             };
-            await this.questionService.createQuestion(dto);
+
+            // Lưu thông tin sinh viên
+            await this.studentService.createStudent(studentDto);
+          }),
+        );
+      }
+
+      // Lưu câu hỏi và điểm của từng sinh viên cho câu hỏi đó
+      for (const questionObject of questionObjectList) {
+        const questionNames = Object.keys(questionObject);
+
+        for (const questionName of questionNames) {
+          const questionDto: CreateQuestionDto = {
+            exam_id: exam_id,
+            question_name: questionName,
+          };
+
+          // Lưu thông tin câu hỏi
+          await this.questionService.createQuestion(questionDto);
+
+          // Lấy ra các CLO của câu hỏi hiện tại
+          const cloPoints = questionObject[questionName] as {
+            [cloName: string]: string[];
+          };
+
+          const maxScores: { [cloName: string]: number } = {};
+          for (const [cloName, points] of Object.entries(cloPoints)) {
+            if (!Array.isArray(points)) {
+              throw new BadRequestException(
+                `Expected points to be an array for CLO: ${cloName}`,
+              );
+            }
+
+            const totalPoints = points.reduce(
+              (sum, point) => sum + Number(point),
+              0,
+            );
+            maxScores[cloName] = totalPoints;
           }
-        }),
-      );
 
-      const listQuestion = await this.questionService.getAllQuestionsByExamId(examId);
-      const cloIdCache: Record<string, string> = {};
+          // Tính điểm tối đa của câu hỏi hiện tại
+          const totalMaxCloScore = Object.values(maxScores).reduce(
+            (sum, score) => sum + score,
+            0,
+          );
 
-      for (const student of data) {
-        const studentId = String(student['Mã sinh viên']);
-        const lastName = student['Họ đệm'];
-        const firstName = student['Tên'];
+          // Lấy CLO IDs
+          const cloIds: Record<string, string> = {};
+          const cloNames = Object.keys(cloPoints);
 
-        const studentDto: CreateStudentDto = {
-          id: studentId,
-          last_name: lastName,
-          first_name: firstName,
-        };
-
-        await this.studentService.createStudent(studentDto);
-        const existingStudent = await this.studentService.getStudent(studentId);
-        if (!existingStudent) {
-          throw new BadRequestException(`Không tìm thấy sinh viên với ID: ${studentId}`);
-        }
-
-        const resultPromises: Promise<any>[] = [];
-
-        for (const key in student) {
-          if (!key.startsWith('Câu')) continue;
-
-          const cloScores = student[key];
-          const normalizedName = normalizeQuestionName(key);
-
-          const question = listQuestion.find(q => q.question_name === normalizedName);
-          if (!question?.id) {
-            throw new BadRequestException(`Không tìm thấy câu hỏi "${normalizedName}"`);
-          }
-
-          for (const cloName in cloScores) {
-            const score = Number(cloScores[cloName]);
-
-
-            if (!cloIdCache[cloName]) {
-              try {
-                cloIdCache[cloName] = await this.cloService.getCloIdByName(cloName);
-              } catch (err) {
-                throw new BadRequestException(`Không tìm thấy CLO "${cloName}"`);
+          await Promise.all(
+            cloNames.map(async (cloName) => {
+              if (!cloIds[cloName]) {
+                try {
+                  cloIds[cloName] =
+                    await this.cloService.getCloIdByName(cloName);
+                } catch {
+                  throw new BadRequestException(
+                    `Không tìm thấy CLO "${cloName}"`,
+                  );
+                }
               }
-            }
+            }),
+          );
 
-            const clo_id = cloIdCache[cloName];
-            const max_score = maxScoreMap[normalizedName]?.[cloName] ?? 0;
+          // Lấy danh sách câu hỏi để tìm ID
+          const listQuestions =
+            await this.questionService.getAllQuestionsByExamId(exam_id);
+          const questionId = listQuestions.find(
+            (question) => question.question_name === questionName,
+          )?.id;
 
-            if (score > max_score) {
-              throw new BadRequestException(`Điểm không hợp lệ cho SV ${studentId}, câu "${normalizedName}", CLO "${cloName}"`);
-            }
-
-            const resultDto: CreateResultDto = {
-              student_id: studentId,
-              score,
-              question_id: question.id,
-              clo_id,
-              max_score,
-            };
-
-            resultPromises.push(this.resultService.createResult(resultDto));
+          if (!questionId) {
+            throw new BadRequestException(
+              `Không tìm thấy câu hỏi "${questionName}"`,
+            );
           }
-        }
 
-        await Promise.all(resultPromises);
+          // Lặp qua các sinh viên và lưu kết quả
+          await Promise.all(
+            data.map(async (student) => {
+              const cloScores = student[
+                `${questionName} (${totalMaxCloScore})`
+              ] as {
+                [cloName: string]: number;
+              };
+
+              await Promise.all(
+                cloNames.map(async (cloName) => {
+                  const resultDto: CreateResultDto = {
+                    score: cloScores[cloName],
+                    student_id: String(student[maSV]),
+                    question_id: questionId,
+                    clo_id: cloIds[cloName],
+                    max_score: maxScores[cloName],
+                  };
+
+                  await this.resultService.createResult(resultDto);
+                }),
+              );
+            }),
+          );
+        }
       }
     }
   }

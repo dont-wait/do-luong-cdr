@@ -14,8 +14,8 @@ interface StudentAnswerDto {
   STT: number;
   'Mã sinh viên': number;
   'Họ đệm': string;
-  'Tên': string;
-  'Máy'?: string | null;
+  Tên: string;
+  Máy?: string | null;
   [questionKey: string]: any; // để bắt các key như "Câu 1 (2)", "Câu 2 (3)"...
 }
 
@@ -30,4 +30,3 @@ export interface FullExamDto {
 }
 
 export type MultiExamDto = FullExamDto[];
-

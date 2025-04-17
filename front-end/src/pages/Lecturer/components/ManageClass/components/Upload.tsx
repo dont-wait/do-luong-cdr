@@ -8,9 +8,10 @@ import * as XLSX from "xlsx";
 
 interface UploadProps {
   selectedClass: Class;
+  setClassId: (id: string) => void;
 }
 
-const Upload = ({ selectedClass }: UploadProps) => {
+const Upload = ({ selectedClass, setClassId }: UploadProps) => {
   const [file, setFile] = useState<File>();
   const [workbook, setWorkbook] = useState<XLSX.WorkBook>();
   const [sheetIdx, setSheetIdx] = useState<number>(0);
@@ -83,6 +84,7 @@ const Upload = ({ selectedClass }: UploadProps) => {
           worksheet={worksheet}
           workbook={workbook}
           selectedClass={selectedClass}
+          setClassId={setClassId}
         />
       )}
     </section>

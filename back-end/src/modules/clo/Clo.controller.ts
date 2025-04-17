@@ -1,7 +1,23 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, BadRequestException, Put } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  BadRequestException,
+  Put,
+} from '@nestjs/common';
 import { CloService } from './Clo.service';
 import { CreateCloDto } from './dto/create-clo.dto';
-import { ApiTags, ApiResponse, ApiParam, ApiBody } from '@nestjs/swagger';
+import {
+  ApiOperation,
+  ApiTags,
+  ApiResponse,
+  ApiParam,
+  ApiBody,
+} from '@nestjs/swagger';
 
 @ApiTags('CLO')
 @Controller('clo')
@@ -26,12 +42,10 @@ export class CloController {
   @ApiParam({ name: 'id', type: 'string' })
   @ApiResponse({ status: 200, description: 'Chi tiết CLO' })
   @ApiResponse({ status: 400, description: 'ID không hợp lệ' })
-  @ApiResponse({status: 404, description: 'ID NOT FOUND'})
+  @ApiResponse({ status: 404, description: 'ID NOT FOUND' })
   async findOne(@Param('id') id: string) {
     return this.cloService.getCloById(id);
   }
-
-
 
   @Delete(':id')
   @ApiParam({ name: 'id', type: 'string' })
@@ -49,7 +63,6 @@ export class CloController {
   async update(@Param('id') id: string, @Body() data: CreateCloDto) {
     return this.cloService.updateClo(id, data);
   }
-
 
   async deleteCloById(@Param('id') id: string) {
     return this.cloService.remove(id);
