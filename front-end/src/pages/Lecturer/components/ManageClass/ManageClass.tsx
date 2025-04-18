@@ -105,10 +105,13 @@ const ManageClass = () => {
 
   if (isLoading) {
     return (
-      <div className='d-flex justify-content-center align-items-center'>
-        <div className='spinner-border text-primary' role='status'>
+      <div className='fixed top-0 left-[256px] bottom-0 right-0 py-5 bg-[rgba(0,0,0,0.5)] flex flex-col justify-center align-middle'>
+        <div
+          className='spinner-border text-white relative left-[50%] translate-x-[-50%]'
+          role='status'>
           <span className='visually-hidden'>Loading...</span>
         </div>
+        <p className='mt-2 text-white text-center'>Đang tải dữ liệu ...</p>
       </div>
     );
   }

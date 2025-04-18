@@ -197,11 +197,15 @@ const StudentResultsAnalyzer: React.FC<Props> = ({ selectedClassId }) => {
 
   if (isLoading) {
     return (
-      <div className='container my-4 text-center py-5'>
-        <div className='spinner-border text-primary' role='status'>
+      <div className='fixed top-0 left-[256px] bottom-0 right-0 py-5 bg-[rgba(0,0,0,0.5)] flex flex-col justify-center align-middle'>
+        <div
+          className='spinner-border text-white relative left-[50%] translate-x-[-50%]'
+          role='status'>
           <span className='visually-hidden'>Loading...</span>
         </div>
-        <p className='mt-2 text-muted'>Đang tải dữ liệu sinh viên...</p>
+        <p className='mt-2 text-white text-center'>
+          Đang tải dữ liệu sinh viên...
+        </p>
       </div>
     );
   }
@@ -257,12 +261,14 @@ const StudentResultsAnalyzer: React.FC<Props> = ({ selectedClassId }) => {
               <tbody>
                 {filtered.map((s) => (
                   <tr key={s.id} className='text-center'>
-                    <td>{s.id}</td>
-                    <td>
+                    <td valign='middle'>{s.id}</td>
+                    <td valign='middle'>
                       {s.last_name} {s.first_name}
                     </td>
                     {examFields.map((f) => (
-                      <td key={f}>{s.examList[f].toFixed(1)}</td>
+                      <td valign='middle' key={f}>
+                        {s.examList[f].toFixed(1)}
+                      </td>
                     ))}
                     {cloFields.map((f) => {
                       return (
