@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect, ChangeEvent } from "react";
 import * as XLSX from "xlsx";
 import { FormattedCell, Class } from "../../../../types/types";
 import {
@@ -15,103 +15,123 @@ interface SheetProps {
   setClassId: (id: string) => void;
 }
 
-const Sheet = ({
+const Sheet: React.FC<SheetProps> = ({
   worksheet,
   workbook,
   selectedClass,
   setClassId,
-}: SheetProps) => {
-  const [data, setData] = useState({
-    header: [] as FormattedCell[][],
-    data: [] as FormattedCell[][],
-  });
+}) => {
+  const [data, setData] = useState<{
+    header: FormattedCell[][];
+    data: FormattedCell[][];
+  }>({ header: [], data: [] });
   const { showToast } = useToast();
 
   useEffect(() => {
-    if (worksheet) setData(handleFormatData(worksheet));
+    if (worksheet) {
+      setData(handleFormatData(worksheet));
+    }
   }, [worksheet]);
 
-  // Hàm xử lý thay đổi giá trị ô
+  // Handle cell value change: update state and worksheet
   const handleCellChange = (
     rowIndex: number,
     cellIndex: number,
     newValue: string
   ) => {
-    setData((prevData) => {
-      const updatedData = { ...prevData };
-      updatedData.data[rowIndex][cellIndex] = {
-        ...updatedData.data[rowIndex][cellIndex],
-        value: newValue,
+    setData((prev) => {
+      const updated: typeof prev = {
+        header: prev.header,
+        data: prev.data.map((row, r) =>
+          row.map((cell, c) =>
+            r === rowIndex && c === cellIndex
+              ? { ...cell, value: newValue }
+              : cell
+          )
+        ),
       };
-      return updatedData;
+
+      // Also update the underlying worksheet if available
+      if (worksheet) {
+        const headerRows = prev.header.length;
+        const excelRow = rowIndex + headerRows; // zero-based
+        const excelCol = cellIndex;
+        const address = XLSX.utils.encode_cell({ r: excelRow, c: excelCol });
+        const cell = worksheet![address] || {};
+        // Preserve original type if possible, else treat as string
+        worksheet![address] = {
+          ...cell,
+          v: newValue,
+          t: "s",
+        };
+      }
+
+      return updated;
     });
   };
 
-  // Hàm xuất dữ liệu ra Excel với giữ nguyên merge cells
+  // Export current data (including updated worksheet) to Excel
   const exportToExcel = () => {
+    if (!worksheet) return;
     const worksheetData = [
       ...data.header.map((row) => row.map((cell) => cell.value || "")),
       ...data.data.map((row) => row.map((cell) => cell.value || "")),
     ];
+    const newSheet = XLSX.utils.aoa_to_sheet(worksheetData);
 
-    const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
-
-    // Xử lý merge cells
+    // Copy merges from original data
     const merges: XLSX.Range[] = [];
-    [...data.header, ...data.data].forEach((row, rowIndex) => {
-      row.forEach((cell, cellIndex) => {
-        if ((cell.rowspan ?? 1) > 1 || (cell.colspan ?? 1) > 1) {
+    [...data.header, ...data.data].forEach((row, rIdx) => {
+      row.forEach((cell, cIdx) => {
+        const rowspan = cell.rowspan ?? 1;
+        const colspan = cell.colspan ?? 1;
+        if (rowspan > 1 || colspan > 1) {
           merges.push({
-            s: { r: rowIndex, c: cellIndex },
-            e: {
-              r: rowIndex + (cell.rowspan || 1) - 1,
-              c: cellIndex + (cell.colspan || 1) - 1,
-            },
+            s: { r: rIdx, c: cIdx },
+            e: { r: rIdx + rowspan - 1, c: cIdx + colspan - 1 },
           });
         }
       });
     });
+    newSheet["!merges"] = merges;
 
-    worksheet["!merges"] = merges;
-
-    // Xuất file Excel
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
-    XLSX.writeFile(workbook, "modified_data.xlsx");
+    const newWb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(newWb, newSheet, "Sheet1");
+    XLSX.writeFile(newWb, "modified_data.xlsx");
   };
 
   return (
     <div className='bg-white'>
-      <table style={{ cursor: "pointer" }} className='overflow-y-auto bg-white'>
+      <table className='overflow-y-auto bg-white'>
         <thead>
-          {data.header.map((row, rowIndex) => (
-            <tr key={rowIndex}>
-              {row.map((cell, cellIndex) => (
+          {data.header.map((row, r) => (
+            <tr key={r}>
+              {row.map((cell, c) => (
                 <th
-                  key={cellIndex}
+                  key={c}
                   rowSpan={cell.rowspan}
                   colSpan={cell.colspan}
-                  className='text-center p-2 bg-gray-800 text-white roboto-600 border'>
-                  {cell.value !== null ? cell.value : ""}
+                  className='text-center p-2 bg-gray-800 text-white border'>
+                  {cell.value ?? ""}
                 </th>
               ))}
             </tr>
           ))}
         </thead>
         <tbody>
-          {data.data.map((row, rowIndex) => (
-            <tr key={rowIndex}>
-              {row.map((cell, cellIndex) => (
+          {data.data.map((row, r) => (
+            <tr key={r}>
+              {row.map((cell, c) => (
                 <td
-                  key={cellIndex}
+                  key={c}
                   rowSpan={cell.rowspan}
                   colSpan={cell.colspan}
-                  className='text-center p-2 bg-white roboto-300 border border-gray-500'>
+                  className='text-center p-2 border border-gray-500'>
                   <input
                     type='text'
-                    value={cell.value !== null ? cell.value : ""}
-                    onChange={(e) =>
-                      handleCellChange(rowIndex, cellIndex, e.target.value)
+                    value={cell.value ?? ""}
+                    onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                      handleCellChange(r, c, e.target.value)
                     }
                     className='w-full text-center border-none focus:outline-none'
                   />
@@ -122,13 +142,12 @@ const Sheet = ({
         </tbody>
       </table>
 
-      <div className='flex align-middle p-2'>
+      <div className='flex items-center p-2'>
         <button
           onClick={exportToExcel}
           className='mt-4 px-4 py-2 m-3 bg-blue-600 text-white rounded'>
           Save & Export to Excel
         </button>
-
         <button
           onClick={async () => {
             try {
