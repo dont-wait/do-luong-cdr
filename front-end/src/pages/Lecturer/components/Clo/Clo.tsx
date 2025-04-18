@@ -1,38 +1,51 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { FormType, Field } from "../../../../types/types";
 import CrudForm from "../../../../components/CrudForm";
 import DataTable from "../../../../components/DataTable";
 import { getData } from "../../../../utils/helps";
 import { CLO_API, SUBJECT_API, PLO_API } from "../../../../api/apiUrl";
 import { useToast } from "../../../../hook/useToast";
+import { ColumnDefinition } from "../../../../types/types";
 
-const Columns = [
-  { key: "clo_name", label: "Name" },
-  { key: "clo_content", label: "Content" },
-];
-
-interface plo {
+// Define type for CLO record
+interface CloRecord {
   id: string;
-  plo_name: string;
+  clo_name: string;
+  clo_content: string;
+  clo_parent_id: string | null;
+  subject_id: string;
 }
 
-const Clo = () => {
-  const [data, setData] = useState<object[]>([]);
+// Define columns with visibility
+const Columns: ColumnDefinition[] = [
+  { key: "clo_name", label: "Name", visible: true },
+  { key: "clo_content", label: "Content", visible: true },
+  { key: "clo_parent_id", label: "Clo Parent ID", visible: false },
+  { key: "subject_id", label: "Subject ID", visible: false },
+];
+
+const Clo: React.FC = () => {
+  const [data, setData] = useState<CloRecord[]>([]);
   const [fields, setFields] = useState<Field[]>([]);
   const [plos, setPlos] = useState<{ id: string; name: string }[]>([]);
-  const [dataRefreshTrigger, setDataRefreshTrigger] = useState(0);
   const { showToast } = useToast();
 
+  // Fetch subjects and PLOs for form options
   useEffect(() => {
-    const fetchCurriculums = async () => {
+    const fetchResources = async () => {
       try {
-        const subjects = await getData(SUBJECT_API);
-        let plos = await getData(PLO_API);
-        plos = plos.map((plo: plo) => ({
+        const subjects: { id: string; subject_name: string }[] = await getData(
+          SUBJECT_API
+        );
+        const ploData: { id: string; plo_name: string }[] = await getData(
+          PLO_API
+        );
+        const mappedPlos = ploData.map((plo) => ({
           id: plo.id,
           name: plo.plo_name,
         }));
-        setPlos(plos);
+        setPlos(mappedPlos);
+
         setFields([
           {
             name: "clo_name",
@@ -54,42 +67,42 @@ const Clo = () => {
           },
           {
             name: "subject_id",
-            label: "Subject ID",
+            label: "Subject",
             type: "select",
             required: true,
-            options: subjects.map(
-              (subject: { id: string; subject_name: string }) => ({
-                value: subject.id,
-                label: subject.subject_name,
-              })
-            ),
+            options: subjects.map((subj) => ({
+              value: subj.id,
+              label: subj.subject_name,
+            })),
           },
         ]);
       } catch {
-        showToast("Error fetching!", "error");
+        showToast("Error fetching resources!", "error");
       }
     };
-    fetchCurriculums();
+
+    fetchResources();
   }, [showToast]);
 
+  // Handle API response from CrudForm (object[] to CloRecord[])
   const handleApiResponse = (responseData: object[]) => {
-    setData((prevData) => [...prevData, ...responseData]);
+    const newRecords = responseData as CloRecord[];
+    setData((prev) => [...prev, ...newRecords]);
   };
 
   return (
     <>
-      <DataTable
+      <DataTable<CloRecord>
         data={data}
         setData={setData}
-        title='Clo Data'
+        title='CLO Data'
         columns={Columns}
         apiEndpoint={CLO_API}
-        refreshTrigger={dataRefreshTrigger}
       />
 
       <CrudForm
         formType={FormType.COMPOSITE}
-        title='Add New Clo'
+        title='Add New CLO'
         fields={fields}
         onSubmit={handleApiResponse}
         apiEndpoint={CLO_API}

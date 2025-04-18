@@ -21,7 +21,6 @@ const Columns = [
 
 const Subject = () => {
   const [data, setData] = useState<object[]>([]);
-  const [dataRefreshTrigger, setDataRefreshTrigger] = useState(0);
   const [existingData, setExistingData] = useState<object[][]>([]);
   const [fields, setFields] = useState<Field[]>([]);
   const { showToast } = useToast();
@@ -108,7 +107,6 @@ const Subject = () => {
         title='Subject Data'
         columns={Columns}
         apiEndpoint={SUBJECT_API}
-        refreshTrigger={dataRefreshTrigger}
       />
 
       <CrudForm

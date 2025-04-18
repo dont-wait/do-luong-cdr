@@ -21,7 +21,6 @@ const Class = () => {
   const [subjects, setSubjects] = useState<object[]>([]);
   const [data, setData] = useState<object[]>([]);
   const [fields, setFields] = useState<Field[]>([]);
-  const [dataRefreshTrigger, setDataRefreshTrigger] = useState(0);
   const { showToast } = useToast();
 
   const handleValidate = async (formData: unknown): Promise<boolean> => {
@@ -101,7 +100,6 @@ const Class = () => {
         title='Class Table'
         columns={Columns}
         apiEndpoint={CLASS_API}
-        refreshTrigger={dataRefreshTrigger}
       />
       <CrudForm
         formType={FormType.HIERARCHICAL}

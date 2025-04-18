@@ -63,7 +63,6 @@ const Plo = () => {
   const [data, setData] = useState<object[]>([]);
   const [subData, setSubData] = useState<object[]>([]);
   const [curriculums, setCurrculums] = useState([]);
-  const [dataRefreshTrigger, setDataRefreshTrigger] = useState(0);
   const { showToast } = useToast();
 
   useEffect(() => {
@@ -94,7 +93,6 @@ const Plo = () => {
         title='Curriculum Table'
         columns={Columns}
         apiEndpoint={PLO_API}
-        refreshTrigger={dataRefreshTrigger}
       />
       <CrudForm
         formType={FormType.HIERARCHICAL}
@@ -115,7 +113,6 @@ const Plo = () => {
             title='Plo Table'
             columns={SubColumns}
             apiEndpoint={PLO_DETAIL_API}
-            refreshTrigger={dataRefreshTrigger}
           />
           <CrudForm
             formType={FormType.HIERARCHICAL}

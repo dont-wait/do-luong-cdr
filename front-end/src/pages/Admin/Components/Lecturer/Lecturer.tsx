@@ -25,7 +25,6 @@ const Lecturer = () => {
   const [data, setData] = useState<object[]>([]);
   const [curriculum, setCurriculum] = useState<object[]>([]);
   const [fields, setFields] = useState<Field[]>([]);
-  const [dataRefreshTrigger, setDataRefreshTrigger] = useState(0);
   const { showToast } = useToast();
 
   useEffect(() => {
@@ -106,7 +105,6 @@ const Lecturer = () => {
         title='Cirriculum Data'
         columns={Columns}
         apiEndpoint={LECTURES_API}
-        refreshTrigger={dataRefreshTrigger}
       />
       <CrudForm
         formType={FormType.HIERARCHICAL}

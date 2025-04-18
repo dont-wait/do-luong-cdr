@@ -37,7 +37,6 @@ const Columns = [
 
 const Departments: React.FC = () => {
   const [data, setData] = useState<object[]>([]);
-  const [dataRefreshTrigger, setDataRefreshTrigger] = useState(0);
 
   const handleApiResponse = (responseData: object[]) => {
     setData((prevData) => [...prevData, ...responseData]);
@@ -51,7 +50,6 @@ const Departments: React.FC = () => {
         title='Department Data'
         columns={Columns}
         apiEndpoint={DEPARTMENT_API}
-        refreshTrigger={dataRefreshTrigger}
       />
 
       <CrudForm

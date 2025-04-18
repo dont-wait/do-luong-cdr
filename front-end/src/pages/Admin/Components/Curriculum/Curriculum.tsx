@@ -76,8 +76,7 @@ const Columns = [
 
 const Curriculum = () => {
   const [data, setData] = useState<object[]>([]);
-  const [department, setDepartment] = useState<object[]>([]);
-  const [dataRefreshTrigger, setDataRefreshTrigger] = useState(0);
+  const [department, setDepartment] = useState<object[]>();
   const { showToast } = useToast();
 
   useEffect(() => {
@@ -105,7 +104,6 @@ const Curriculum = () => {
         title='Cirriculum Data'
         columns={Columns}
         apiEndpoint={CURRICULUM_API}
-        refreshTrigger={dataRefreshTrigger}
       />
       <CrudForm
         formType={FormType.HIERARCHICAL}

@@ -128,6 +128,7 @@ export interface CrudFormProps {
 export interface ColumnDefinition {
   key: string;
   label: string;
+  visible: boolean;
 }
 
 export interface DataTableProps {
