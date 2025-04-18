@@ -86,21 +86,23 @@ const ManageClass = () => {
     return subjects[classItem.subject_id] || null;
   };
 
-  const handleClassClick = (classItem: Class) => {
+  const handleClassClick = async (classItem: Class) => {
     setSelectedClass((prevSelected) =>
       prevSelected?.id === classItem.id ? null : classItem
     );
-    const getStudentResult = async () => {
+    console.log(classItem);
+    const getStudentResult = async (classItem: Class) => {
       try {
-        if (selectedClass) {
-          await getData(`/cdr/grading/${selectedClass}`);
-          setClassId(selectedClass?.id);
+        if (classItem) {
+          console.log(classItem.id);
+          await getData(`/cdr/grading/${classItem.id}`);
+          setClassId(classItem?.id);
         }
       } catch {
         setClassId("");
       }
     };
-    getStudentResult();
+    await getStudentResult(classItem);
   };
 
   if (isLoading) {
@@ -145,7 +147,9 @@ const ManageClass = () => {
                             classItem={classItem}
                             subject={getSubjectForClass(classItem)}
                             isSelected={selectedClass?.id === classItem.id}
-                            onClick={() => handleClassClick(classItem)}
+                            onClick={async () =>
+                              await handleClassClick(classItem)
+                            }
                           />
                         ))}
                       </ul>
