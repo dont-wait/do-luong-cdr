@@ -256,7 +256,7 @@ const DataTable = <T extends { id: number | string }>({
         <>
           <div className='modal-backdrop fade show'></div>
           <div className='modal d-block' tabIndex={-1}>
-            <div className='modal-dialog'>
+            <div className='modal-dialog relative top-[50%] translate-y-[-50%]'>
               <div className='modal-content'>
                 <div className='modal-header'>
                   <h5 className='modal-title'>Update {title}</h5>
