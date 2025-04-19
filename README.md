@@ -1,4 +1,8 @@
-<img src="./LoginPage.png"/>
+<img src="./screenshorts/LoginPage.png"/>
+<img src="./screenshorts/Home&apos;sLecturePage.png"/>
+<img src="./screenshorts/ManageClass.png"/>
+<img src="./screenshorts/GradeReport.png"/>
+<img src="./screenshorts/Chart.png"/>
 
 # Education Outcome Measurement System
 
