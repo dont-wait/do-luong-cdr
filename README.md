@@ -20,7 +20,7 @@ Hệ thống quản lý và đánh giá tự động Chuẩn đầu ra (CDR) cho
 
 ### 2.2 Backend
 - NestJS framework
-- PostgreSQL database
+- MySQL database
 - Prisma ORM
 - JWT authentication
 
@@ -136,7 +136,7 @@ JWT_EXPIRES_IN=""
 ```bash
 cd back-end
 npm install
-npm run db:migrate
+npx prisma db push
 npm run start:dev
 ```
 
