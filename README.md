@@ -1,6 +1,6 @@
 <img src="./LoginPage.png"/>
 
-# Automated CDR Management System
+# Education Outcome Measurement System
 
 ## 1. Tổng quan
 Hệ thống quản lý và đánh giá tự động Chuẩn đầu ra (CDR) cho ngành CNTT, bao gồm:
